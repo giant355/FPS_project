@@ -1,0 +1,43 @@
+# Unity generated
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Asset meta data should be tracked
+# !*.meta
+
+# Visual Studio / Rider cache
+.vs/
+.idea/
+*.csproj
+*.sln
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# VS Code
+.vscode/
+
+# JetBrains Rider
+.idea/
+
+# OS generated
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Crashlytics
+crashlytics-build.properties
