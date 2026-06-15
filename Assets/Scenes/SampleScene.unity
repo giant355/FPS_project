@@ -877,6 +877,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1348606744}
+    - targetCorrespondingSourceObject: {fileID: 100010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1348606748}
+    - targetCorrespondingSourceObject: {fileID: 100010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1348606746}
   m_SourcePrefab: {fileID: 100100000, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
 --- !u!1001 &266202975
 PrefabInstance:
@@ -3242,45 +3248,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa544be7ba3a6264ea9d34004562c044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WaypointNetwork: {fileID: 1648304568}
-  CurrentIndex: 0
-  HasPath: 0
-  PathPending: 0
-  PathStatus: 0
-  JumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -0.0028280355
-      value: -0.00067425705
-      inSlope: 2.0509644
-      outSlope: 2.0509644
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.4946965
-      value: 1.0197308
-      inSlope: -0.010914812
-      outSlope: -0.010914812
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.9948782
-      value: -0.026582679
-      inSlope: -2.341408
-      outSlope: -2.341408
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.12124199
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  MixedMode: 1
 --- !u!195 &643050145
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3988,32 +3955,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a20ba4cbdeb0154ca3e1050995ca0d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SliderDistance: 2
-  Duration: 0.1
-  JumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!208 &1338614126
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -4110,7 +4051,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 1
+  m_Speed: 1.05
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -4189,7 +4130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e040fbf269ca443ba4ed3036c5dbe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stoppingDistance: 0
+  _stoppingDistance: 1.65
   _currentStateType: 1
   _targetTrigger: {fileID: 307651389}
   _sensorTrigger: {fileID: 1196006586}
@@ -4200,6 +4141,37 @@ MonoBehaviour:
   _hearing: 0.5
   _satisfaction: 0.5
   _health: 100
+--- !u!114 &1348606746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348606728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c6b57f35dc6d414499c1d3bda5de07d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _idleTimeRange: {x: 5, y: 10}
+--- !u!114 &1348606748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348606728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 477287595754bd44e97a9898cecd826b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _waypointNetwork: {fileID: 1648304568}
+  _randomPatrol: 0
+  _currentWaypoint: 0
+  _turnOnSpotThreshold: 359.8
+  _slerpSpeed: 5
+  _speed: 1.08
 --- !u!1 &1465568262 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 189676, guid: 22e8e9479d52a604abc938e32f8c8873, type: 3}
@@ -4617,32 +4589,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a20ba4cbdeb0154ca3e1050995ca0d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SliderDistance: 2
-  Duration: 0.1
-  JumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &1772492614
 GameObject:
   m_ObjectHideFlags: 0

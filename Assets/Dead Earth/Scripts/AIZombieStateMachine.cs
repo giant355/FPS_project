@@ -33,14 +33,19 @@ public class AIZombieStateMachine :AIStateMachine
     public int attackType { get { return _attackType; } set { _attackType = value; } }
     public bool feeding { get { return _feeding; } set { _feeding = value; } }
     public int seeking { get { return _seeking; } set { _seeking = value; } }
+
+    /// <summary>
+    /// ÔÚanimatorÃæ°åÉèÖÃ
+    /// </summary>
     public float speed
     {
-        get { return _navAgent != null ? _navAgent.speed : 0.0f; }
-        set { if(navAgent!=null)navAgent.speed = value; }
+        get { return _speed; }
+        set { _speed = value; }
     }
     protected override void Update()
     {
         base.Update();
+
         if (_animator != null)
         {
             _animator.SetFloat(_speedHash, _speed);

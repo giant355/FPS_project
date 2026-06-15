@@ -28,6 +28,7 @@ public struct AITarget
         _collider = collider;
         _position = position;
         _distance = distance;
+        _time = Time.time;
     }
     public void Clear()
     {
@@ -84,8 +85,14 @@ public abstract class AIStateMachine : MonoBehaviour
             return Mathf.Max(radius, _sensorTrigger.radius * _sensorTrigger.transform.lossyScale.z);
         }
     }
+    /// <summary>
+    /// 当前_target的类型
+    /// </summary>
+	public AITargetType		targetType 	   { get { return _target.AITargetType; }}
+    public Vector3 targetPosition { get { return _target.position; } }
+
     public bool useRootPosition { get { return _rootPositionRefCount > 0; }}
-    public bool useRootRotation { get { return _rootRotationRefCount > 0; } }
+    public bool useRootRotation { get { return _rootRotationRefCount > 0; }}
     // Start is called before the first frame update
     protected virtual void Awake()
     {
@@ -98,6 +105,14 @@ public abstract class AIStateMachine : MonoBehaviour
         {
             if(_collider)GameSceneManager.Instance.RegisterAIStateMachine(_collider.GetInstanceID(),this);
             if(_sensorTrigger)GameSceneManager.Instance.RegisterAIStateMachine(_sensorTrigger.GetInstanceID(),this);
+            // -------------------------------------------------------------------------
+            // BUG修复：原代码只注册了Collider和SensorTrigger的ID，但ColliderIsVisible中
+            // 通过hit.rigidbody.GetInstanceID()查询。Collider和Rigidbody是不同的Component，
+            // 其GetInstanceID()不同，导致本僵尸的身体部件永远查不到匹配，无法过滤自身遮挡。
+            // 修复：额外用根Transform的ID注册，查询时用hit.transform.root.GetInstanceID()。
+            // 同一僵尸层级下的所有组件共享同一个root Transform，可正确匹配。
+            // -------------------------------------------------------------------------
+            GameSceneManager.Instance.RegisterAIStateMachine(transform.GetInstanceID(), this);
         }
     }
     protected virtual void Start()
@@ -167,6 +182,9 @@ public abstract class AIStateMachine : MonoBehaviour
             _targetTrigger.enabled = true;
         }
     }
+    /// <summary>
+    /// 清空_target
+    /// </summary>
     public void ClearTarget()
     {
         _target.Clear();
@@ -189,17 +207,27 @@ public abstract class AIStateMachine : MonoBehaviour
     protected virtual void Update()
     {
         if (_currentState == null) return;
+
         AIStateType newStateType = _currentState.OnUpdate();
         if(newStateType!=_currentStateType)
         {
             AIState newState = null;
-            if(_states.TryGetValue(newStateType,out newState))//���Ϊ�棬newState�ز�Ϊnull
+            if(_states.TryGetValue(newStateType,out newState))
             {
                 _currentState.OnExitState();
                 newState.OnEnterState();
                 _currentState = newState;
             }
+            else if(_states.TryGetValue(AIStateType.Idle,out newState))
+            {
+                _currentState.OnExitState();
+                newState.OnEnterState();
+                _currentState = newState;
+            }
+            _currentStateType = newStateType;
+
         }
+        print(_currentState);
     }
     protected virtual void OnTriggerEnter(Collider other)
     {
@@ -233,10 +261,12 @@ public abstract class AIStateMachine : MonoBehaviour
             _navAgent.updatePosition = positionUpdate;
             _navAgent.updateRotation = rorationUpdate;
         }
+        
     }
-    public void AddRootMotionRequest(int rootPosition,int rootRotation)
+    public void AddRootMotionRequest(int rootPosition, int rootRotation)
     {
         _rootPositionRefCount += rootPosition;
         _rootRotationRefCount += rootRotation;
     }
+    
 }

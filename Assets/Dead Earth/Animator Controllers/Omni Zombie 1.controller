@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 0
+  _rootPosition: 1
   _rootRotation: 0
 --- !u!1101 &-6191862035170014943
 AnimatorStateTransition:
@@ -330,7 +330,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: Speed
-    m_EventTreshold: 1
+    m_EventTreshold: 1.01
   - m_ConditionMode: 4
     m_ConditionEvent: Speed
     m_EventTreshold: 2
@@ -679,7 +679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 0
+  _rootPosition: 1
   _rootRotation: 0
 --- !u!1102 &4097520310436088089
 AnimatorState:
@@ -723,7 +723,7 @@ AnimatorStateTransition:
     m_EventTreshold: 2
   - m_ConditionMode: 3
     m_ConditionEvent: Speed
-    m_EventTreshold: 0.1
+    m_EventTreshold: 1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8789841951808216794}
   m_Solo: 0
@@ -764,7 +764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 0
+  _rootPosition: 1
   _rootRotation: 0
 --- !u!206 &5065574819242023452
 BlendTree:
@@ -838,7 +838,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0.1
   - m_ConditionMode: 4
     m_ConditionEvent: Speed
-    m_EventTreshold: 1
+    m_EventTreshold: 1.01
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1249592787356342651}
   m_Solo: 0
@@ -933,7 +933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 0
+  _rootPosition: 1
   _rootRotation: 0
 --- !u!114 &8243703483133344735
 MonoBehaviour:
