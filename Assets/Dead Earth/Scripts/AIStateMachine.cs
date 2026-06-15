@@ -50,9 +50,16 @@ public abstract class AIStateMachine : MonoBehaviour
     protected int _rootRotationRefCount = 0;
 
     [SerializeField][Range(0, 10)] public float _stoppingDistance;
+    [SerializeField] protected AIWayPointNetwork _waypointNetwork = null;
+    [SerializeField] protected bool _randomPatrol = false;
+    [SerializeField] protected int _currentWaypoint = -1;
     [SerializeField] protected AIStateType _currentStateType = AIStateType.Idle;
     [SerializeField] protected SphereCollider _targetTrigger=null;
     [SerializeField] protected SphereCollider _sensorTrigger=null;
+    /// <summary>
+    /// 是否到达
+    /// </summary>
+    protected bool _isTargetReached = false;
 
     protected Animator _animator = null;
     protected NavMeshAgent _navAgent = null;
@@ -93,6 +100,21 @@ public abstract class AIStateMachine : MonoBehaviour
 
     public bool useRootPosition { get { return _rootPositionRefCount > 0; }}
     public bool useRootRotation { get { return _rootRotationRefCount > 0; }}
+    public bool isTargetReached { get { return _isTargetReached; } }
+    /// <summary>
+    /// 近战范围内
+    /// </summary>
+    public bool inMeleeRange { get; set; }
+    public int targetColliderID
+    {
+        get
+        {
+            if (_target.collider)
+                return _target.collider.GetInstanceID();
+            else
+                return -1;
+        }
+    }
     // Start is called before the first frame update
     protected virtual void Awake()
     {
@@ -202,6 +224,8 @@ public abstract class AIStateMachine : MonoBehaviour
         {
             _target.distance = Vector3.Distance(_target.position,this.transform.position);
         }
+
+        _isTargetReached = false;
     }
     // Update is called once per frame
     protected virtual void Update()
@@ -225,18 +249,68 @@ public abstract class AIStateMachine : MonoBehaviour
                 _currentState = newState;
             }
             _currentStateType = newStateType;
-
         }
-        print(_currentState);
     }
+    /// <summary>
+    /// 获取下一个wayPoint的transform，并设置_target
+    /// </summary>
+    /// <param name="increment">是否增加wayPoint索引</param>
+    /// <returns></returns>
+    public Vector3 GetWaypointPosition(bool increment)
+    {
+        if (_currentWaypoint == -1)
+        {
+            if (_randomPatrol)
+                _currentWaypoint = Random.Range(0, _waypointNetwork.Waypoints.Count);
+            else
+                _currentWaypoint = 0;
+        }
+        else if (increment)
+            NextWaypoint();
+
+        if (_waypointNetwork.Waypoints[_currentWaypoint] != null)
+        {
+            Transform newWaypoint = _waypointNetwork.Waypoints[_currentWaypoint];
+            SetTarget(AITargetType.Waypoint, null, newWaypoint.position,
+                      Vector3.Distance(newWaypoint.position, transform.position));
+            return newWaypoint.position;
+        }
+        return Vector3.zero;
+    }
+    /// <summary>
+    /// 设置当前wayPoint索引
+    /// </summary>
+    private void NextWaypoint()
+    {
+        if (_randomPatrol && _waypointNetwork.Waypoints.Count > 1)
+        {
+            int oldWaypoint = _currentWaypoint;
+            while (_currentWaypoint == oldWaypoint)
+                _currentWaypoint = Random.Range(0, _waypointNetwork.Waypoints.Count);
+        }
+        else
+            _currentWaypoint = _currentWaypoint == _waypointNetwork.Waypoints.Count - 1 ? 0 : _currentWaypoint + 1;
+    }
+
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (_targetTrigger == null || other != _targetTrigger||_currentState==null) return;
+        if (_targetTrigger == null || other != _targetTrigger || _currentState == null) return;
+
+        _isTargetReached = true;
         _currentState.OnDestinationReached(true);
     }
+
+    protected virtual void OnTriggerStay(Collider other)
+    {
+        if (_targetTrigger == null || other != _targetTrigger) return;
+        _isTargetReached = true;
+    }
+
     protected virtual void OnTriggerExit(Collider other)
     {
         if (_targetTrigger == null || other != _targetTrigger || _currentState == null) return;
+
+        _isTargetReached = false;
         _currentState.OnDestinationReached(false);
     }
     public virtual void OnTriggerEvent(AITriggerEventType type,Collider other)

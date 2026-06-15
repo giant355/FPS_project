@@ -63,7 +63,7 @@ public class AIZombieState_Alerted1 : AIZombieState
         if (_zombieStateMachine.AudioThreat.AITargetType == AITargetType.None &&
             _zombieStateMachine.VisualThreat.AITargetType == AITargetType.Visual_Food)
         {
-            _zombieStateMachine.SetTarget(_stateMachine.VisualThreat);
+            _zombieStateMachine.SetTarget(_zombieStateMachine.VisualThreat);
             return AIStateType.Pursuit;
         }
 

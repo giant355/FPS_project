@@ -883,6 +883,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1348606746}
+    - targetCorrespondingSourceObject: {fileID: 100010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1348606750}
   m_SourcePrefab: {fileID: 100100000, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
 --- !u!1001 &266202975
 PrefabInstance:
@@ -4169,9 +4172,24 @@ MonoBehaviour:
   _waypointNetwork: {fileID: 1648304568}
   _randomPatrol: 0
   _currentWaypoint: 0
-  _turnOnSpotThreshold: 359.8
+  _turnOnSpotThreshold: 80
   _slerpSpeed: 5
-  _speed: 1.08
+  _speed: 1.44
+--- !u!114 &1348606750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348606728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbfc55ca16b73e54cbf5dc9b1dd003b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxDuration: 10
+  _waypointAngleThreshold: 90
+  _threatAngleThreshold: 10
 --- !u!1 &1465568262 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 189676, guid: 22e8e9479d52a604abc938e32f8c8873, type: 3}

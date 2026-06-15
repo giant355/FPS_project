@@ -191,7 +191,7 @@ public abstract class AIZombieState : AIState
                     // BUG修复：原代码用hit.rigidbody.GetInstanceID()查询，但注册的key是Collider的ID，
                     // 两者为不同Component，ID不匹配，导致自身Body Part无法被正确过滤。
                     // 改为用hit.transform.root.GetInstanceID()，与Awake中注册的根Transform ID匹配。
-                    if (_stateMachine != GameSceneManager.Instance.GetAIStateMachine(hit.transform.root.GetInstanceID()))
+                    if (_zombieStateMachine != GameSceneManager.Instance.GetAIStateMachine(hit.transform.root.GetInstanceID()))
                     {
                         // 存储碰撞体、距离和击中信息
                         closestColliderDistance = hit.distance;

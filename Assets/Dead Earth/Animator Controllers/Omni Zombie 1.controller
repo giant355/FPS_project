@@ -948,7 +948,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 1
-  _rootRotation: 1
+  _rootRotation: 0
 --- !u!114 &8322280628649465430
 MonoBehaviour:
   m_ObjectHideFlags: 1
