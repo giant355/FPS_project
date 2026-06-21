@@ -74,12 +74,7 @@ public abstract class AIStateMachine : MonoBehaviour
     {
         get
         {
-            if (_sensorTrigger == null) return Vector3.zero;
-            Vector3 point=_sensorTrigger.transform.position;
-            point.x += _sensorTrigger.center.x * _sensorTrigger.transform.lossyScale.x;
-            point.y += _sensorTrigger.center.y * _sensorTrigger.transform.lossyScale.y;
-            point.z += _sensorTrigger.center.z * _sensorTrigger.transform.lossyScale.z;
-            return point;
+            return _sensorTrigger.transform.TransformPoint(_sensorTrigger.center);
         }
     }
     public float sensorRadius
@@ -232,17 +227,23 @@ public abstract class AIStateMachine : MonoBehaviour
     {
         if (_currentState == null) return;
 
+        // 可视化 desiredVelocity（黄线）和 steeringTarget（蓝点）
+        if (_navAgent)
+        {
+            Debug.DrawRay(transform.position, _navAgent.desiredVelocity, Color.yellow);
+        }
+
         AIStateType newStateType = _currentState.OnUpdate();
-        if(newStateType!=_currentStateType)
+        if (newStateType != _currentStateType)
         {
             AIState newState = null;
-            if(_states.TryGetValue(newStateType,out newState))
+            if (_states.TryGetValue(newStateType, out newState))
             {
                 _currentState.OnExitState();
                 newState.OnEnterState();
                 _currentState = newState;
             }
-            else if(_states.TryGetValue(AIStateType.Idle,out newState))
+            else if (_states.TryGetValue(AIStateType.Idle, out newState))
             {
                 _currentState.OnExitState();
                 newState.OnEnterState();
@@ -252,12 +253,13 @@ public abstract class AIStateMachine : MonoBehaviour
         }
     }
     /// <summary>
-    /// 获取下一个wayPoint的transform，并设置_target
+    /// 获取下一个wayPoint的transform，并设置_target=下一个waypoint
     /// </summary>
     /// <param name="increment">是否增加wayPoint索引</param>
     /// <returns></returns>
     public Vector3 GetWaypointPosition(bool increment)
     {
+        //print("切换目标");
         if (_currentWaypoint == -1)
         {
             if (_randomPatrol)
@@ -278,7 +280,7 @@ public abstract class AIStateMachine : MonoBehaviour
         return Vector3.zero;
     }
     /// <summary>
-    /// 设置当前wayPoint索引
+    /// 设置下一个_currentWaypoint
     /// </summary>
     private void NextWaypoint()
     {

@@ -11,6 +11,8 @@ public class AIZombieStateMachine :AIStateMachine
     [SerializeField][Range(0.0f, 1.0f)] float _hearing = 1f;
     [SerializeField][Range(0.0f, 1.0f)] float _satisfaction = 1f;
     [SerializeField][Range(0, 100)] int _health = 100;
+    [SerializeField] float _replenishRate = 0.1f;
+    [SerializeField] float _depletionRate = 0.01f;
 
     private int _seeking = 0;
     private int _attackType = 0;
@@ -33,6 +35,8 @@ public class AIZombieStateMachine :AIStateMachine
     public int attackType { get { return _attackType; } set { _attackType = value; } }
     public bool feeding { get { return _feeding; } set { _feeding = value; } }
     public int seeking { get { return _seeking; } set { _seeking = value; } }
+    public float replenishRate { get { return _replenishRate; } }
+    public float depletionRate { get { return _depletionRate; } }
 
     /// <summary>
     /// ‘⁄animator√Ê∞Â…Ë÷√
@@ -45,7 +49,7 @@ public class AIZombieStateMachine :AIStateMachine
     protected override void Update()
     {
         base.Update();
-
+        print("VisualThreat:"+VisualThreat.AITargetType);
         if (_animator != null)
         {
             _animator.SetFloat(_speedHash, _speed);
@@ -54,4 +58,5 @@ public class AIZombieStateMachine :AIStateMachine
             _animator.SetInteger(_attackHash, _attackType);
         }
     }
+    
 }

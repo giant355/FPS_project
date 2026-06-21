@@ -53,6 +53,9 @@ public abstract class AIZombieState : AIState
         if (_zombieStateMachine == null)
             return;
 
+        //print("other:"+other.name);
+        //print("other.Tag:"+other.tag);
+
         // 不关心退出事件，只处理进入和停留
         if (eventType != AITriggerEventType.Exit)
         {
@@ -73,6 +76,7 @@ public abstract class AIZombieState : AIState
                     RaycastHit hitInfo;
                     if (ColliderIsVisible(other, out hitInfo, _playerLayerMask))
                     {
+                print("i can see player");
                         // 在视野内且距离近，视线畅通，存储为当前最危险的威胁
                         _zombieStateMachine.VisualThreat.Set(AITargetType.Visual_Player, other, other.transform.position, distance);
                     }
@@ -153,6 +157,7 @@ public abstract class AIZombieState : AIState
     // -------------------------------------------------------------------------------------
     protected virtual bool ColliderIsVisible(Collider other, out RaycastHit hitInfo, int layerMask = -1)
     {
+        print("check visable");
         // 确保有值可返回
         hitInfo = new RaycastHit();
 
@@ -210,7 +215,8 @@ public abstract class AIZombieState : AIState
         }
 
         // 如果最近的碰撞体就是我们要测试的目标，说明视线畅通
-        if (closestCollider && closestCollider.gameObject == other.gameObject) return true;
+        if (closestCollider && closestCollider.gameObject == other.gameObject) 
+            return true;
 
         // 否则有东西挡在目标和僵尸之间，视线被遮挡
         return false;

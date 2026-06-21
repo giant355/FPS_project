@@ -17,6 +17,7 @@ public class AISensor:MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
+        print(other.gameObject.name);
         if (_parentStateMachine != null)
             _parentStateMachine.OnTriggerEvent(AITriggerEventType.Stay, other);
     }

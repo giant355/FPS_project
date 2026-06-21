@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class GameSceneManager : MonoBehaviour
 {
+    [SerializeField] private ParticleSystem _bloodParticles = null;
+
     private static GameSceneManager _instance = null;
     public static GameSceneManager Instance => _instance;
+    public ParticleSystem bloodParticles {  get { return _bloodParticles; } }
     public void Awake()
     {
         if (_instance == null)
@@ -15,7 +18,14 @@ public class GameSceneManager : MonoBehaviour
         }
         else if(_instance != this)
         {
-            Destroy(gameObject);
+            Destroy(gameObject);    
+        }
+    }
+    public void OnDestroy()
+    {
+        if(_instance==this)
+        {
+            _instance = null;
         }
     }
     private Dictionary<int,AIStateMachine> _stateMachines = new Dictionary<int,AIStateMachine>();
