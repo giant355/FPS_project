@@ -59,7 +59,7 @@ public class AIZombieState_Feeding1 : AIZombieState
         _timer += Time.deltaTime;
 
         print(_zombieStateMachine.feeding);
-        if (_zombieStateMachine.satisfaction > 0.9f)
+        if (_zombieStateMachine.satisfaction > 0.99f)
         {
             _zombieStateMachine.GetWaypointPosition(false);
             return AIStateType.Alerted;

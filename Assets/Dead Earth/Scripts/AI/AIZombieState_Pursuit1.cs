@@ -56,19 +56,19 @@ public class AIZombieState_Pursuit1 : AIZombieState
     // 描述	: 此状态的核心逻辑
     // ---------------------------------------------------------------------
 
-   // 开始
-   //  ├─ 超时？→ 切换到 Patrol（巡逻）
-   //  ├─ 追击玩家 + 进入近战范围？→ 切换到 Attack（攻击）
-   //  ├─ 已到达目标？
-   //  │   ├─ 音频/光源 → ClearTarget → Alerted（警觉）
-   //  │   └─ 食物 → Feeding（进食）
-   //  ├─ 导航路径丢失？→ Alerted
-   //  ├─ 旋转更新逻辑
-   //  └─ 威胁优先级判断
-   //  ├─ 视觉玩家威胁 → 持续追击（动态重新寻路）
-   //  ├─ 当前目标是玩家最后位置 → 持续追击
-   //  ├─ 视觉光源威胁 → 视情况 Alerted 或继续追击
-   //  └─ 音频威胁 → 视情况 Alerted 或继续追击
+    // 开始
+    //  ├─ 超时？→ 切换到 Patrol（巡逻）
+    //  ├─ 追击玩家 + 进入近战范围？→ 切换到 Attack（攻击）
+    //  ├─ 已到达目标？
+    //  │   ├─ 音频/光源 → ClearTarget → Alerted（警觉）
+    //  │   └─ 食物 → Feeding（进食）
+    //  ├─ 导航路径丢失？→ Alerted
+    //  ├─ 旋转更新逻辑
+    //  └─ 威胁优先级判断
+    //  ├─ 视觉玩家威胁 → 持续追击（动态重新寻路）
+    //  ├─ 当前目标是玩家最后位置 → 持续追击
+    //  ├─ 视觉光源威胁 → 视情况 Alerted 或继续追击
+    //  └─ 音频威胁 → 视情况 Alerted 或继续追击
     public override AIStateType OnUpdate()
     {
         _timer += Time.deltaTime;
@@ -103,7 +103,7 @@ public class AIZombieState_Pursuit1 : AIZombieState
 
         // 如果由于某种原因导航代理丢失了路径，则转入警觉状态
         // 这样它会尝试重新获取目标，或者最终放弃并恢复巡逻
-        if ((!_zombieStateMachine.navAgent.pathPending&&!_zombieStateMachine.navAgent.hasPath) ||
+        if ((!_zombieStateMachine.navAgent.pathPending && !_zombieStateMachine.navAgent.hasPath) ||
             _zombieStateMachine.navAgent.pathStatus == NavMeshPathStatus.PathInvalid)
         {
             return AIStateType.Alerted;
@@ -145,7 +145,7 @@ public class AIZombieState_Pursuit1 : AIZombieState
                 {
                     // 为代理重新寻路
                     _zombieStateMachine.navAgent.SetDestination(_zombieStateMachine.VisualThreat.position);
-                    print("122");
+                    //print("122");
                     _repathTimer = 0.0f;
                 }
             }

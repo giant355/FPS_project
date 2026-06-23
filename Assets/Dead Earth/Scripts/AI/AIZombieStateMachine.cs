@@ -49,7 +49,7 @@ public class AIZombieStateMachine :AIStateMachine
     protected override void Update()
     {
         base.Update();
-        print("VisualThreat:"+VisualThreat.AITargetType);
+        //print("VisualThreat:"+VisualThreat.AITargetType);
         if (_animator != null)
         {
             _animator.SetFloat(_speedHash, _speed);
@@ -57,6 +57,8 @@ public class AIZombieStateMachine :AIStateMachine
             _animator.SetInteger(_seekingHash, _seeking);
             _animator.SetInteger(_attackHash, _attackType);
         }
+
+        _satisfaction = Mathf.Max(0,_satisfaction -  depletionRate * Time.deltaTime * Mathf.Pow(_speed,3));
     }
     
 }
