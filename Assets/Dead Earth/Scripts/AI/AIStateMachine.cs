@@ -54,8 +54,13 @@ public abstract class AIStateMachine : MonoBehaviour
     [SerializeField] protected bool _randomPatrol = false;
     [SerializeField] protected int _currentWaypoint = -1;
     [SerializeField] protected AIStateType _currentStateType = AIStateType.Idle;
+    [SerializeField] Transform _rootBone = null;
     [SerializeField] protected SphereCollider _targetTrigger=null;
     [SerializeField] protected SphereCollider _sensorTrigger=null;
+    
+    protected List<Rigidbody> _bodyParts = new List<Rigidbody>();
+    protected int _aiBodyPartLayer = -1;
+    protected bool _cinematicEnabled = false;
     /// <summary>
     /// 是否到达
     /// </summary>
@@ -110,6 +115,13 @@ public abstract class AIStateMachine : MonoBehaviour
                 return -1;
         }
     }
+
+    public bool cinematicEnabled
+    {
+        get { return _cinematicEnabled; }
+        set { _cinematicEnabled = value;}
+    }
+
     // Start is called before the first frame update
     protected virtual void Awake()
     {
@@ -117,6 +129,7 @@ public abstract class AIStateMachine : MonoBehaviour
         _animator = GetComponent<Animator>();
         _collider = GetComponent<Collider>();
         _navAgent = GetComponent<NavMeshAgent>();
+        _aiBodyPartLayer = LayerMask.NameToLayer("AI Body Part");
 
         if(GameSceneManager.Instance != null)
         {
@@ -129,7 +142,18 @@ public abstract class AIStateMachine : MonoBehaviour
             // 修复：额外用根Transform的ID注册，查询时用hit.transform.root.GetInstanceID()。
             // 同一僵尸层级下的所有组件共享同一个root Transform，可正确匹配。
             // -------------------------------------------------------------------------
-            GameSceneManager.Instance.RegisterAIStateMachine(transform.GetInstanceID(), this);
+            GameSceneManager.Instance.RegisterAIStateMachine(transform.root.GetInstanceID(), this);
+        }
+        if(_rootBone != null)
+        {
+            Rigidbody[] bodies = _rootBone.GetComponentsInChildren<Rigidbody>();
+            foreach(Rigidbody bodyPart in bodies)
+            {
+                if(bodyPart != null&&bodyPart.gameObject.layer == _aiBodyPartLayer)
+                {
+                    _bodyParts.Add(bodyPart);
+                }
+            }
         }
     }
     protected virtual void Start()
@@ -344,5 +368,7 @@ public abstract class AIStateMachine : MonoBehaviour
         _rootPositionRefCount += rootPosition;
         _rootRotationRefCount += rootRotation;
     }
+
+    public virtual void TakeDamage(Vector3 position, Vector3 force, int damage, Rigidbody bodyPart, CharacterManager characterManager, int hitDirection = 0) { }
     
 }

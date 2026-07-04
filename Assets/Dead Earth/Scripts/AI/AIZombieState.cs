@@ -157,7 +157,7 @@ public abstract class AIZombieState : AIState
     // -------------------------------------------------------------------------------------
     protected virtual bool ColliderIsVisible(Collider other, out RaycastHit hitInfo, int layerMask = -1)
     {
-        print("check visable");
+        //print("check visable");
         // 确保有值可返回
         hitInfo = new RaycastHit();
 

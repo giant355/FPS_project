@@ -9,7 +9,7 @@ public class AIZombieState_Attack1 : AIZombieState
     [SerializeField][Range(0.0f, 90.0f)] float _lookAtAngleThreshold = 15.0f;
     [SerializeField] float _slerpSpeed = 5.0f;
     [SerializeField] float _verticalOffset = 0.5f;
-
+    [SerializeField] float _stoppingDistance = 1.2f;
 
     // 私有变量
     private float _currentLookAtWeight = 0.0f;
@@ -45,14 +45,22 @@ public class AIZombieState_Attack1 : AIZombieState
         Vector3 targetPos;
         Quaternion newRot;
 
+        //MeleeZone只是判断僵尸可以攻击了，而这里是为了更加精准的控制进入MeleeZone后什么时候攻击
+        if (Vector3.Distance(_zombieStateMachine.transform.position, _zombieStateMachine.targetPosition) < _stoppingDistance)
+            _zombieStateMachine.speed = 0;
+        else
+            _zombieStateMachine.speed = _speed;
+
         // 是否看到了玩家这个视觉威胁
         if (_zombieStateMachine.VisualThreat.AITargetType == AITargetType.Visual_Player)
         {
+            print("1");
             // 设置新的目标
             _zombieStateMachine.SetTarget(_stateMachine.VisualThreat);
 
             // 如果已经不在近战范围内，就切换回追击状态
             if (!_zombieStateMachine.inMeleeRange) return AIStateType.Pursuit;
+
 
             if (!_zombieStateMachine.useRootRotation)
             {

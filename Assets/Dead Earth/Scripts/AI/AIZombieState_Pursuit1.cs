@@ -46,6 +46,7 @@ public class AIZombieState_Pursuit1 : AIZombieState
 
 
         // 设置目标路径(_target.position)
+        //if( _zombieStateMachine.navAgent != null )
         _zombieStateMachine.navAgent.SetDestination(_zombieStateMachine.targetPosition);
         _zombieStateMachine.navAgent.isStopped = false;
 

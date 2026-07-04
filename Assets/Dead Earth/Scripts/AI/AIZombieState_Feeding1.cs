@@ -58,7 +58,7 @@ public class AIZombieState_Feeding1 : AIZombieState
     {
         _timer += Time.deltaTime;
 
-        print(_zombieStateMachine.feeding);
+        //print(_zombieStateMachine.feeding);
         if (_zombieStateMachine.satisfaction > 0.99f)
         {
             _zombieStateMachine.GetWaypointPosition(false);
@@ -95,7 +95,7 @@ public class AIZombieState_Feeding1 : AIZombieState
 
             }
         }
-        print(_zombieStateMachine.useRootRotation);
+        //print(_zombieStateMachine.useRootRotation);
         if (!_zombieStateMachine.useRootRotation)
         {
             //一直朝向目标
