@@ -44,19 +44,23 @@ public abstract class AIState:MonoBehaviour
         radius = Mathf.Max(radius, col.radius * col.transform.lossyScale.z);
     }
     /// <summary>
-    /// xy平面有向角度，遵循右手定则
+    /// XZ水平面有向角度，忽略高度差
     /// </summary>
     /// <param name="fromVector"></param>
     /// <param name="toVector"></param>
     /// <returns></returns>
     public static float FindSignedAngle(Vector3 fromVector, Vector3 toVector)
     {
-        if (fromVector == toVector)
+        // Only yaw matters here. Ignore height so chest/head hits can still count as center hits.
+        fromVector.y = 0.0f;
+        toVector.y = 0.0f;
+
+        if (fromVector.sqrMagnitude < 0.0001f || toVector.sqrMagnitude < 0.0001f)
             return 0.0f;
 
-        float angle = Vector3.Angle(fromVector, toVector);
-        Vector3 cross = Vector3.Cross(fromVector, toVector);
-        angle *= Mathf.Sign(cross.y);
-        return angle;
+        fromVector.Normalize();
+        toVector.Normalize();
+
+        return Vector3.SignedAngle(fromVector, toVector, Vector3.up);
     }
 }

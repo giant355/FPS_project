@@ -8,6 +8,7 @@ using UnityEngine.AI;
 public enum AIStateType { None,Idle,Alerted,Patrol,Attack,Feeding,Pursuit,Dead}
 public enum AITargetType { None,Waypoint,Visual_Player,Visual_Light,Visual_Food,Audio}
 public enum AITriggerEventType { Enter,Stay,Exit}
+public enum AIBoneAlignmentType {XAxis,YAxis,ZAxis, XAxisInverted, YAxisInverted, ZAxisInverted }
 public struct AITarget
 {
     private AITargetType _AITargetType;
@@ -54,7 +55,8 @@ public abstract class AIStateMachine : MonoBehaviour
     [SerializeField] protected bool _randomPatrol = false;
     [SerializeField] protected int _currentWaypoint = -1;
     [SerializeField] protected AIStateType _currentStateType = AIStateType.Idle;
-    [SerializeField] Transform _rootBone = null;
+    [SerializeField] protected Transform _rootBone = null;
+    [SerializeField] protected AIBoneAlignmentType _rootBoneAlignment = AIBoneAlignmentType.ZAxis;
     [SerializeField] protected SphereCollider _targetTrigger=null;
     [SerializeField] protected SphereCollider _sensorTrigger=null;
     

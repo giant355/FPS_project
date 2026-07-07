@@ -671,7 +671,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_TagString
-      value: Upper Body
+      value: Head
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_Layer
@@ -3050,7 +3050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec82a6e0d21a2bf409771079420c505b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bloodParticles: {fileID: 1571727474}
+  _bloodParticles: {fileID: 6412267581060585244}
 --- !u!1 &579727323
 GameObject:
   m_ObjectHideFlags: 0
@@ -8716,7 +8716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &1571727473
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -58590,7 +58590,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!198 &6412267581060585244
 ParticleSystem:
   m_ObjectHideFlags: 0
