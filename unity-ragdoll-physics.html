@@ -1,0 +1,1395 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unity Ragdoll Physics 教学页</title>
+  <style>
+    :root {
+      --bg: #f6f7f2;
+      --paper: #ffffff;
+      --ink: #18201f;
+      --muted: #61706d;
+      --line: #d9ded5;
+      --panel: #ecf1ed;
+      --teal: #0c7c76;
+      --teal-dark: #07534f;
+      --orange: #c8642a;
+      --yellow: #e9c95b;
+      --red: #b74343;
+      --blue: #3067b0;
+      --code: #111c22;
+      --shadow: 0 18px 45px rgba(20, 32, 29, 0.10);
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--teal-dark);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .side-nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      background: #17221f;
+      color: #eef5f1;
+      overflow-y: auto;
+    }
+
+    .brand {
+      margin-bottom: 28px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      padding-bottom: 22px;
+    }
+
+    .brand small {
+      display: block;
+      color: #a8bab4;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 1.42rem;
+      line-height: 1.15;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-list a {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 10px;
+      border-radius: 7px;
+      color: #dce8e4;
+      text-decoration: none;
+    }
+
+    .nav-list a:hover,
+    .nav-list a:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.10);
+      color: #ffffff;
+    }
+
+    .nav-note {
+      margin-top: 26px;
+      padding: 14px;
+      border-left: 3px solid var(--yellow);
+      color: #c7d6d1;
+      font-size: 0.92rem;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      padding: 44px clamp(20px, 5vw, 64px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .section-kicker {
+      margin: 0 0 6px;
+      color: var(--teal-dark);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.18;
+    }
+
+    h1 {
+      max-width: 900px;
+      font-size: clamp(2rem, 4vw, 4rem);
+    }
+
+    h2 {
+      font-size: clamp(1.55rem, 2.7vw, 2.45rem);
+    }
+
+    h3 {
+      font-size: 1.08rem;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .lead {
+      max-width: 880px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .workspace-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 8px 11px;
+      border: 1px solid #cbd7d0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.70);
+      color: #40504d;
+      font-size: 0.9rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+      gap: 26px;
+      align-items: start;
+      margin-top: 34px;
+    }
+
+    .sim-panel,
+    .control-panel,
+    .explain-panel,
+    .code-panel,
+    .table-panel,
+    .source-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .sim-panel {
+      overflow: hidden;
+    }
+
+    .sim-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fdfdfb;
+    }
+
+    .sim-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #e8f3ef;
+      color: var(--teal-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      min-height: 320px;
+      background:
+        linear-gradient(rgba(23, 34, 31, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 34, 31, 0.05) 1px, transparent 1px),
+        #f9fbf7;
+      background-size: 28px 28px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .legend-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex: 0 0 14px;
+    }
+
+    .mark-bone {
+      background: var(--teal);
+    }
+
+    .mark-collider {
+      border: 2px solid var(--orange);
+      background: transparent;
+    }
+
+    .mark-joint {
+      background: var(--yellow);
+    }
+
+    .mark-force {
+      background: var(--red);
+    }
+
+    .control-panel {
+      padding: 18px;
+    }
+
+    .control-panel h2 {
+      font-size: 1.35rem;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      min-height: 42px;
+      border: 1px solid #b8c8c3;
+      border-radius: 7px;
+      background: #ffffff;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    button:hover,
+    button:focus {
+      border-color: var(--teal);
+      outline: 3px solid rgba(12, 124, 118, 0.16);
+    }
+
+    .primary-button {
+      border-color: var(--teal);
+      background: var(--teal);
+      color: #ffffff;
+    }
+
+    .danger-button {
+      border-color: #d0a1a1;
+      color: #762525;
+    }
+
+    .slider-list {
+      display: grid;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .slider-row label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: #344340;
+      font-size: 0.94rem;
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--teal);
+    }
+
+    .concept-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .concept {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .concept b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--teal-dark);
+    }
+
+    .concept p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 144px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .flow-step::before {
+      content: attr(data-step);
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 12px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .flow-step h3 {
+      margin-bottom: 8px;
+    }
+
+    .flow-step p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 22px;
+      align-items: start;
+      margin-top: 24px;
+    }
+
+    .explain-panel {
+      padding: 20px;
+    }
+
+    .diagram {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f9fbf7;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: #344340;
+    }
+
+    .tick {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e8f3ef;
+      color: var(--teal-dark);
+      font-weight: 900;
+    }
+
+    .table-panel {
+      overflow: hidden;
+      margin-top: 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #edf4f1;
+      color: #22302d;
+      font-size: 0.92rem;
+    }
+
+    td {
+      color: #394945;
+      font-size: 0.94rem;
+    }
+
+    td:first-child {
+      width: 23%;
+      color: var(--teal-dark);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #f3ead1;
+      color: #75511b;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .code-panel {
+      overflow: hidden;
+      margin-top: 22px;
+      background: var(--code);
+      color: #d9f1ed;
+    }
+
+    .code-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      color: #a6c7c1;
+      font-size: 0.9rem;
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px;
+      overflow-x: auto;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      tab-size: 4;
+    }
+
+    code {
+      font-family: Consolas, "Cascadia Code", monospace;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    summary {
+      padding: 15px 16px;
+      cursor: pointer;
+      color: #24322f;
+      font-weight: 800;
+    }
+
+    details p {
+      padding: 0 16px 16px;
+      color: var(--muted);
+    }
+
+    .source-panel {
+      padding: 18px;
+      box-shadow: none;
+    }
+
+    .source-list {
+      margin: 12px 0 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    .source-list li + li {
+      margin-top: 8px;
+    }
+
+    .mini-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 980px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .side-nav {
+        position: static;
+        height: auto;
+        padding: 20px;
+      }
+
+      .nav-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-grid,
+      .two-col,
+      .flow,
+      .problem-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .concept-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row,
+      .legend {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      section {
+        padding: 32px 16px;
+      }
+
+      .nav-list {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row,
+      .legend {
+        grid-template-columns: 1fr;
+      }
+
+      th,
+      td {
+        display: block;
+        width: 100%;
+      }
+
+      td:first-child {
+        width: 100%;
+        white-space: normal;
+        border-bottom: 0;
+        padding-bottom: 3px;
+      }
+
+      td:last-child {
+        padding-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="side-nav" aria-label="学习目录">
+      <div class="brand">
+        <small>Unity Physics Lab</small>
+        <strong>Ragdoll Physics 学习页</strong>
+      </div>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="#overview"><span>01</span><span>先看整体</span></a></li>
+          <li><a href="#mental-model"><span>02</span><span>核心模型</span></a></li>
+          <li><a href="#wizard"><span>03</span><span>Ragdoll Wizard</span></a></li>
+          <li><a href="#joint"><span>04</span><span>Character Joint</span></a></li>
+          <li><a href="#runtime"><span>05</span><span>死亡切换代码</span></a></li>
+          <li><a href="#debug"><span>06</span><span>调试排查</span></a></li>
+        </ul>
+      </nav>
+      <p class="nav-note">学习顺序：先理解“动画控制”和“物理控制”的切换，再看每个骨骼上的 Rigidbody、Collider、Character Joint。</p>
+    </aside>
+
+    <main>
+      <section id="overview">
+        <div class="section-inner">
+          <p class="section-kicker">Goal</p>
+          <h1>用一个页面搞懂 Unity 的 Ragdoll Physics</h1>
+          <p class="lead">Ragdoll 的本质不是“播放一个死亡动画”，而是让角色的骨骼从 Animator 控制切换成物理系统控制。每个关键骨骼都有自己的 Collider、Rigidbody 和 Joint，死亡时它们会受重力、碰撞和外力影响。</p>
+          <span class="workspace-tag">Unity 版本参考：2022.3 LTS</span>
+
+          <div class="hero-grid">
+            <div class="sim-panel">
+              <div class="sim-toolbar">
+                <div class="sim-title">
+                  <span>交互演示：动画角色切换成 ragdoll</span>
+                  <span class="status-pill"><span class="dot"></span><span id="modeLabel">Animator 控制</span></span>
+                </div>
+                <span class="mini-note">按按钮看骨骼如何被物理接管</span>
+              </div>
+              <div class="canvas-wrap">
+                <canvas id="ragdollCanvas" width="960" height="600" aria-label="Ragdoll physics visual demo"></canvas>
+              </div>
+              <div class="legend">
+                <span><i class="legend-mark mark-bone"></i>骨骼段</span>
+                <span><i class="legend-mark mark-collider"></i>碰撞体范围</span>
+                <span><i class="legend-mark mark-joint"></i>关节点</span>
+                <span><i class="legend-mark mark-force"></i>冲击方向</span>
+              </div>
+            </div>
+
+            <div class="control-panel">
+              <p class="section-kicker">Try It</p>
+              <h2>操作一下</h2>
+              <p class="lead">先保持动画控制，再切到 ragdoll。你会看到骨骼不再被站立姿势锁住，而是受重力和约束影响。</p>
+              <div class="button-row">
+                <button id="toggleMode" class="primary-button" type="button">切换</button>
+                <button id="hitChest" class="danger-button" type="button">冲击</button>
+                <button id="resetPose" type="button">重置</button>
+              </div>
+              <div class="slider-list">
+                <div class="slider-row">
+                  <label for="forceSlider"><span>冲击力度</span><span id="forceValue">38</span></label>
+                  <input id="forceSlider" type="range" min="10" max="80" value="38">
+                </div>
+                <div class="slider-row">
+                  <label for="stiffnessSlider"><span>关节约束强度</span><span id="stiffnessValue">70%</span></label>
+                  <input id="stiffnessSlider" type="range" min="35" max="95" value="70">
+                </div>
+              </div>
+              <p class="mini-note">关节太松会像绳子，太硬可能抖动。真实项目里还要看质量、碰撞体大小和 solver iterations。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mental-model">
+        <div class="section-inner">
+          <p class="section-kicker">Mental Model</p>
+          <h2>先建立三个核心概念</h2>
+          <div class="concept-strip">
+            <article class="concept">
+              <b>1. Animator 是正常活着时的控制者</b>
+              <p>跑、走、攻击、受击通常由 Animator 改骨骼 Transform。这个阶段 ragdoll 的刚体一般设为 kinematic。</p>
+            </article>
+            <article class="concept">
+              <b>2. Rigidbody + Collider 让骨骼进入物理世界</b>
+              <p>每段主要骨骼有一个简化碰撞体，常见是 Capsule、Box、Sphere。碰撞体不需要完全贴合网格，但要足够合理。</p>
+            </article>
+            <article class="concept">
+              <b>3. Character Joint 限制骨骼不要散架</b>
+              <p>Joint 把前臂连到上臂、上臂连到肩、头连到脖子，并限制每个方向能转多少。</p>
+            </article>
+          </div>
+
+          <div class="flow" aria-label="Ragdoll workflow">
+            <article class="flow-step" data-step="1">
+              <h3>准备骨骼角色</h3>
+              <p>角色需要是带骨骼的 Skinned Mesh，普通静态模型不能直接像人体一样 ragdoll。</p>
+            </article>
+            <article class="flow-step" data-step="2">
+              <h3>生成物理组件</h3>
+              <p>用 Ragdoll Wizard 给主要骨骼创建 Collider、Rigidbody 和 Character Joint。</p>
+            </article>
+            <article class="flow-step" data-step="3">
+              <h3>修正碰撞体</h3>
+              <p>手臂、腿、头的 collider 太大会悬空，太小会穿地。通常宁可略小也不要明显太大。</p>
+            </article>
+            <article class="flow-step" data-step="4">
+              <h3>修正关节轴</h3>
+              <p>检查 Axis、Swing Axis 和 twist/swing limits，尤其是肘、膝、头、脖子。</p>
+            </article>
+            <article class="flow-step" data-step="5">
+              <h3>死亡时切换</h3>
+              <p>关闭 Animator、NavMeshAgent、主 CapsuleCollider，打开 ragdoll 刚体和碰撞。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="wizard">
+        <div class="section-inner">
+          <p class="section-kicker">Setup</p>
+          <h2>用 Ragdoll Wizard 创建第一版</h2>
+          <p class="lead">Unity 的 Ragdoll Wizard 会自动给你生成 Collider、Rigidbody 和 Joint，但自动结果只是起点，后面通常需要手动调整。</p>
+
+          <div class="two-col">
+            <div class="explain-panel">
+              <h3>操作流程</h3>
+              <ul class="checklist">
+                <li><span class="tick">1</span><span>把角色实例拖到场景 Hierarchy 里，展开骨骼层级。</span></li>
+                <li><span class="tick">2</span><span>打开 <strong>GameObject &gt; 3D Object &gt; Ragdoll...</strong>。</span></li>
+                <li><span class="tick">3</span><span>把骨骼 Transform 拖到对应槽位，例如 Pelvis、Left Hips、Left Knee、Left Arm、Head。</span></li>
+                <li><span class="tick">4</span><span>Total Mass 可以先用默认值，例如 20。点击 Create。</span></li>
+                <li><span class="tick">5</span><span>进入 Scene 视图检查 collider 大小和关节方向。</span></li>
+              </ul>
+            </div>
+
+            <div class="table-panel">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Wizard 槽位</th>
+                    <th>通常对应的骨骼</th>
+                    <th>检查重点</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Pelvis</td>
+                    <td>Hips / Pelvis</td>
+                    <td>身体重心，很多 ragdoll 的稳定性从这里开始。</td>
+                  </tr>
+                  <tr>
+                    <td>Left Hips / Right Hips</td>
+                    <td>Upper Leg / Thigh</td>
+                    <td>大腿 collider 不要太粗，否则倒地时像悬空。</td>
+                  </tr>
+                  <tr>
+                    <td>Left Knee / Right Knee</td>
+                    <td>Lower Leg / Shin</td>
+                    <td>膝盖应主要向一个方向弯，反向限制要小。</td>
+                  </tr>
+                  <tr>
+                    <td>Left Arm / Right Arm</td>
+                    <td>Upper Arm</td>
+                    <td>肩部和上臂连接点要在肩附近。</td>
+                  </tr>
+                  <tr>
+                    <td>Left Elbow / Right Elbow</td>
+                    <td>Forearm</td>
+                    <td>肘部 twist axis 经常需要手动修正。</td>
+                  </tr>
+                  <tr>
+                    <td>Middle Spine</td>
+                    <td>Spine / Spine1</td>
+                    <td>Box Collider 要包住胸腹，不要挤进头或腿。</td>
+                  </tr>
+                  <tr>
+                    <td>Head</td>
+                    <td>Head</td>
+                    <td>头部 sphere collider 半径要接近头，不只是脸。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="joint">
+        <div class="section-inner">
+          <p class="section-kicker">Character Joint</p>
+          <h2>参数怎么理解</h2>
+          <p class="lead">Character Joint 是 ragdoll 的关键。它像一个可限制角度的球窝关节：物体还是 Rigidbody，但旋转范围被 Low/High Twist 和 Swing Limit 限住。</p>
+
+          <div class="two-col">
+            <div class="explain-panel">
+              <h3>肘关节例子</h3>
+              <p class="mini-note">前臂能向胸口弯很多，但不能明显向后折。这个“不对称限制”就是 Character Joint 很适合 ragdoll 的原因。</p>
+              <svg class="diagram" viewBox="0 0 640 420" role="img" aria-label="Character Joint axis diagram">
+                <rect x="0" y="0" width="640" height="420" fill="#f9fbf7"></rect>
+                <line x1="110" y1="300" x2="310" y2="220" stroke="#0c7c76" stroke-width="34" stroke-linecap="round" opacity="0.92"></line>
+                <line x1="330" y1="214" x2="525" y2="130" stroke="#0c7c76" stroke-width="34" stroke-linecap="round" opacity="0.65"></line>
+                <circle cx="320" cy="216" r="26" fill="#e9c95b" stroke="#7a5b0f" stroke-width="3"></circle>
+                <path d="M320 216 L320 86" stroke="#c8642a" stroke-width="8" stroke-linecap="round"></path>
+                <path d="M320 86 L300 112 M320 86 L340 112" stroke="#c8642a" stroke-width="8" stroke-linecap="round"></path>
+                <path d="M320 216 C250 150 250 280 320 326" fill="none" stroke="#3067b0" stroke-width="5" stroke-dasharray="10 8"></path>
+                <path d="M330 215 C430 155 456 120 508 120" fill="none" stroke="#b74343" stroke-width="5" stroke-dasharray="10 8"></path>
+                <text x="342" y="90" fill="#9b461d" font-size="24" font-weight="700">Axis / Twist</text>
+                <text x="92" y="342" fill="#145d59" font-size="22" font-weight="700">Lower Arm</text>
+                <text x="462" y="108" fill="#145d59" font-size="22" font-weight="700">Upper Arm</text>
+                <text x="348" y="265" fill="#6d4c0b" font-size="22" font-weight="700">Anchor</text>
+                <text x="60" y="92" fill="#3067b0" font-size="20" font-weight="700">Low Twist: 少量反折</text>
+                <text x="382" y="318" fill="#b74343" font-size="20" font-weight="700">High Twist: 大幅前弯</text>
+              </svg>
+            </div>
+
+            <div class="table-panel">
+              <table>
+                <thead>
+                  <tr>
+                    <th>参数</th>
+                    <th>作用</th>
+                    <th>调法</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Connected Body</td>
+                    <td>当前骨骼连接到哪个 Rigidbody。为空时连接到世界空间。</td>
+                    <td>前臂连上臂，大腿连骨盆，头连脖子或上脊柱。</td>
+                  </tr>
+                  <tr>
+                    <td>Anchor</td>
+                    <td>关节在当前物体本地空间的旋转点。</td>
+                    <td>肘关节放在肘部，膝关节放在膝盖，不要放在骨骼中心。</td>
+                  </tr>
+                  <tr>
+                    <td>Axis</td>
+                    <td>主扭转轴，Scene 里通常是橙色 gizmo。</td>
+                    <td>决定 Low/High Twist 的方向。方向错了，限制会像“装反”。</td>
+                  </tr>
+                  <tr>
+                    <td>Swing Axis</td>
+                    <td>摆动轴，另一个轴由 Unity 根据前两个轴推导。</td>
+                    <td>用于限制侧向摆动，通常不需要比 twist 调得更细。</td>
+                  </tr>
+                  <tr>
+                    <td>Low Twist Limit</td>
+                    <td>主轴负方向限制，单位是度。</td>
+                    <td>肘和膝通常设置成小负值，例如 -5 到 -15，避免反折。</td>
+                  </tr>
+                  <tr>
+                    <td>High Twist Limit</td>
+                    <td>主轴正方向限制，单位是度。</td>
+                    <td>肘向前弯可较大，例如 70 到 120，按模型效果调。</td>
+                  </tr>
+                  <tr>
+                    <td>Swing 1 / Swing 2 Limit</td>
+                    <td>另外两个方向的对称旋转限制。</td>
+                    <td>角度太小容易不稳定；不用小角度时可以直接锁到 0。</td>
+                  </tr>
+                  <tr>
+                    <td>Enable Collision</td>
+                    <td>连接的两个 Rigidbody 是否互相碰撞。</td>
+                    <td>相邻骨骼通常关闭，否则 collider 轻微重叠会互相弹开。</td>
+                  </tr>
+                  <tr>
+                    <td>Enable Projection</td>
+                    <td>关节超出限制时强行拉回。</td>
+                    <td>出现拉伸、散架时再开；它能稳住，但可能有突然修正感。</td>
+                  </tr>
+                  <tr>
+                    <td>Mass Scale</td>
+                    <td>只影响 joint 求解时的有效质量。</td>
+                    <td>连接的刚体质量差太多会抖，尽量让质量接近。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="runtime">
+        <div class="section-inner">
+          <p class="section-kicker">Runtime Switch</p>
+          <h2>死亡时怎么从动画切到 ragdoll</h2>
+          <p class="lead">关键是让两个系统不要同时控制骨骼。活着时 Animator 控制，ragdoll 刚体设为 kinematic；死亡时关闭 Animator 和导航，打开 ragdoll 物理。</p>
+
+          <div class="code-panel">
+            <div class="code-head">
+              <span>RagdollController.cs</span>
+              <span>核心逻辑示例</span>
+            </div>
+            <pre><code>using UnityEngine;
+using UnityEngine.AI;
+
+public class RagdollController : MonoBehaviour
+{
+    [SerializeField] private Animator animator;
+    [SerializeField] private NavMeshAgent navAgent;
+    [SerializeField] private Collider standingCollider;
+    [SerializeField] private Rigidbody[] ragdollBodies;
+    [SerializeField] private Collider[] ragdollColliders;
+
+    private void Awake()
+    {
+        SetRagdoll(false);
+    }
+
+    public void Die(Vector3 hitPoint, Vector3 hitForce)
+    {
+        SetRagdoll(true);
+
+        Rigidbody closest = FindClosestBody(hitPoint);
+        if (closest != null)
+        {
+            closest.AddForceAtPosition(hitForce, hitPoint, ForceMode.Impulse);
+        }
+    }
+
+    private void SetRagdoll(bool enabled)
+    {
+        if (animator != null)
+            animator.enabled = !enabled;
+
+        if (navAgent != null)
+            navAgent.enabled = !enabled;
+
+        if (standingCollider != null)
+            standingCollider.enabled = !enabled;
+
+        foreach (Rigidbody body in ragdollBodies)
+        {
+            body.isKinematic = !enabled;
+            body.detectCollisions = enabled;
+        }
+
+        foreach (Collider col in ragdollColliders)
+        {
+            col.enabled = enabled;
+        }
+    }
+
+    private Rigidbody FindClosestBody(Vector3 point)
+    {
+        Rigidbody best = null;
+        float bestDistance = float.PositiveInfinity;
+
+        foreach (Rigidbody body in ragdollBodies)
+        {
+            float distance = Vector3.SqrMagnitude(body.worldCenterOfMass - point);
+            if (distance &lt; bestDistance)
+            {
+                bestDistance = distance;
+                best = body;
+            }
+        }
+
+        return best;
+    }
+}</code></pre>
+          </div>
+
+          <div class="concept-strip">
+            <article class="concept">
+              <b>为什么关 Animator？</b>
+              <p>Animator 会继续写骨骼 Transform，物理也想移动骨骼，两个系统会抢控制权，表现为抖动或奇怪拉扯。</p>
+            </article>
+            <article class="concept">
+              <b>为什么关 NavMeshAgent？</b>
+              <p>AI 导航还在移动角色根物体，尸体会被继续拖着走。死亡后通常要禁用 agent。</p>
+            </article>
+            <article class="concept">
+              <b>为什么关站立胶囊体？</b>
+              <p>角色倒地后，原来的大 CapsuleCollider 还竖着会挡玩家，也会让尸体碰撞很怪。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="debug">
+        <div class="section-inner">
+          <p class="section-kicker">Debug</p>
+          <h2>常见问题排查</h2>
+          <div class="problem-grid">
+            <details open>
+              <summary>尸体悬空</summary>
+              <p>通常是 Collider 太大。缩小手臂、腿、头的 Radius 或 Size，让 collider 更接近 mesh。倒地时接触地面的是 collider，不是模型表面。</p>
+            </details>
+            <details>
+              <summary>角色死亡后疯狂抖动</summary>
+              <p>检查 Animator 是否关闭、相邻骨骼的 Enable Collision 是否关闭、刚体质量差异是否太大，以及 joint 限制角是否过小。</p>
+            </details>
+            <details>
+              <summary>手臂或腿弯曲方向不对</summary>
+              <p>检查 Character Joint 的 Axis。Axis 决定 Low/High Twist 的方向，自动生成后经常需要对前臂或小腿手动修正。</p>
+            </details>
+            <details>
+              <summary>尸体被 AI 继续拖着走</summary>
+              <p>死亡时关闭 NavMeshAgent，也要停止状态机继续设置 destination、速度或根运动。</p>
+            </details>
+            <details>
+              <summary>骨骼像被拉长</summary>
+              <p>可能是关节约束无法满足。避免出生在墙里，必要时打开 Enable Projection，并提高 Physics 的 solver iterations。</p>
+            </details>
+            <details>
+              <summary>性能变差</summary>
+              <p>不要给每个小骨头都加复杂物理。只给头、胸、骨盆、上臂、前臂、大腿、小腿等关键骨骼加 collider 和 rigidbody。</p>
+            </details>
+          </div>
+
+          <div class="source-panel" style="margin-top: 24px;">
+            <h3>官方参考</h3>
+            <ul class="source-list">
+              <li><a href="https://docs.unity3d.com/2022.3/Documentation/Manual/wizard-RagdollWizard.html">Unity Manual: Create a ragdoll</a></li>
+              <li><a href="https://docs.unity3d.com/2022.3/Documentation/Manual/class-CharacterJoint.html">Unity Manual: Character Joint component reference</a></li>
+              <li><a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Rigidbody-isKinematic.html">Unity Scripting API: Rigidbody.isKinematic</a></li>
+              <li><a href="https://docs.unity3d.com/2022.3/Documentation/Manual/RagdollStability.html">Unity Manual: Joint and Ragdoll stability</a></li>
+            </ul>
+            <p class="mini-note">这个页面按 Unity 2022.3 LTS 组织内容。不同 Unity 版本的 Inspector 名称可能略有变化，但 ragdoll 的控制思路相同。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("ragdollCanvas");
+    const ctx = canvas.getContext("2d");
+    const modeLabel = document.getElementById("modeLabel");
+    const toggleMode = document.getElementById("toggleMode");
+    const hitChest = document.getElementById("hitChest");
+    const resetPose = document.getElementById("resetPose");
+    const forceSlider = document.getElementById("forceSlider");
+    const forceValue = document.getElementById("forceValue");
+    const stiffnessSlider = document.getElementById("stiffnessSlider");
+    const stiffnessValue = document.getElementById("stiffnessValue");
+
+    const restPose = {
+      head: [480, 125],
+      neck: [480, 172],
+      chest: [480, 230],
+      pelvis: [480, 318],
+      leftShoulder: [412, 205],
+      rightShoulder: [548, 205],
+      leftElbow: [356, 270],
+      rightElbow: [604, 270],
+      leftHand: [330, 352],
+      rightHand: [630, 352],
+      leftKnee: [432, 420],
+      rightKnee: [528, 420],
+      leftFoot: [402, 530],
+      rightFoot: [558, 530]
+    };
+
+    const bonePairs = [
+      ["head", "neck"],
+      ["neck", "chest"],
+      ["chest", "pelvis"],
+      ["leftShoulder", "rightShoulder"],
+      ["leftShoulder", "chest"],
+      ["rightShoulder", "chest"],
+      ["leftShoulder", "leftElbow"],
+      ["leftElbow", "leftHand"],
+      ["rightShoulder", "rightElbow"],
+      ["rightElbow", "rightHand"],
+      ["pelvis", "leftKnee"],
+      ["leftKnee", "leftFoot"],
+      ["pelvis", "rightKnee"],
+      ["rightKnee", "rightFoot"]
+    ];
+
+    const jointNames = ["neck", "chest", "pelvis", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftKnee", "rightKnee"];
+    const points = {};
+    let constraints = [];
+    let ragdollMode = false;
+    let lastHit = null;
+    let time = 0;
+
+    function distance(a, b) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function createPoint(name, x, y) {
+      points[name] = { x, y, oldX: x, oldY: y, pinned: false };
+    }
+
+    function resetSimulation() {
+      Object.keys(points).forEach((key) => delete points[key]);
+      Object.entries(restPose).forEach(([name, pos]) => createPoint(name, pos[0], pos[1]));
+      constraints = bonePairs.map(([a, b]) => ({
+        a,
+        b,
+        len: distance(points[a], points[b])
+      }));
+      ragdollMode = false;
+      lastHit = null;
+      updateModeLabel();
+    }
+
+    function updateModeLabel() {
+      modeLabel.textContent = ragdollMode ? "Ragdoll 物理控制" : "Animator 控制";
+      toggleMode.textContent = ragdollMode ? "回到动画" : "切换";
+    }
+
+    function setCanvasScale() {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.max(320, Math.floor(rect.width * ratio));
+      canvas.height = Math.max(260, Math.floor(rect.height * ratio));
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    function mapX(x) {
+      return x * (canvas.clientWidth / 960);
+    }
+
+    function mapY(y) {
+      return y * (canvas.clientHeight / 600);
+    }
+
+    function simulateAnimator() {
+      time += 0.018;
+      const sway = Math.sin(time * 2.4) * 7;
+      Object.entries(restPose).forEach(([name, pos]) => {
+        const p = points[name];
+        const offset = name.includes("Hand") ? sway * 1.2 : name.includes("Elbow") ? sway : sway * 0.35;
+        const targetX = pos[0] + offset;
+        const targetY = pos[1] + Math.abs(Math.sin(time * 2)) * 2;
+        p.x += (targetX - p.x) * 0.18;
+        p.y += (targetY - p.y) * 0.18;
+        p.oldX = p.x;
+        p.oldY = p.y;
+      });
+    }
+
+    function simulatePhysics() {
+      const gravity = 0.72;
+      Object.values(points).forEach((p) => {
+        const vx = (p.x - p.oldX) * 0.992;
+        const vy = (p.y - p.oldY) * 0.992;
+        p.oldX = p.x;
+        p.oldY = p.y;
+        p.x += vx;
+        p.y += vy + gravity;
+      });
+
+      const stiffness = Number(stiffnessSlider.value) / 100;
+      const iterations = Math.round(5 + stiffness * 9);
+      for (let i = 0; i < iterations; i++) {
+        constraints.forEach((c) => {
+          const a = points[c.a];
+          const b = points[c.b];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const d = Math.sqrt(dx * dx + dy * dy) || 0.001;
+          const diff = (d - c.len) / d;
+          const adjustX = dx * 0.5 * diff * stiffness;
+          const adjustY = dy * 0.5 * diff * stiffness;
+          a.x += adjustX;
+          a.y += adjustY;
+          b.x -= adjustX;
+          b.y -= adjustY;
+        });
+
+        Object.values(points).forEach((p) => {
+          const floor = 548;
+          if (p.y > floor) {
+            p.y = floor;
+            p.x += (p.oldX - p.x) * 0.18;
+          }
+          p.x = Math.max(70, Math.min(890, p.x));
+        });
+      }
+    }
+
+    function drawCapsule(a, b, radius) {
+      const ax = mapX(a.x);
+      const ay = mapY(a.y);
+      const bx = mapX(b.x);
+      const by = mapY(b.y);
+      ctx.save();
+      ctx.strokeStyle = "rgba(200, 100, 42, 0.72)";
+      ctx.lineWidth = radius;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawLine(a, b, color, width) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(mapX(a.x), mapY(a.y));
+      ctx.lineTo(mapX(b.x), mapY(b.y));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawJoint(p, radius) {
+      ctx.save();
+      ctx.fillStyle = "#e9c95b";
+      ctx.strokeStyle = "#7a5b0f";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(mapX(p.x), mapY(p.y), radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawArrow(hit) {
+      if (!hit) return;
+      ctx.save();
+      ctx.strokeStyle = "#b74343";
+      ctx.fillStyle = "#b74343";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(mapX(hit.x - 120), mapY(hit.y - 28));
+      ctx.lineTo(mapX(hit.x), mapY(hit.y));
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(mapX(hit.x), mapY(hit.y));
+      ctx.lineTo(mapX(hit.x - 24), mapY(hit.y - 18));
+      ctx.lineTo(mapX(hit.x - 16), mapY(hit.y + 14));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawScene() {
+      ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+      ctx.save();
+      ctx.strokeStyle = "#cbd7d0";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, mapY(555));
+      ctx.lineTo(canvas.clientWidth, mapY(555));
+      ctx.stroke();
+      ctx.fillStyle = "#5a6865";
+      ctx.font = "600 14px Microsoft YaHei, sans-serif";
+      ctx.fillText("Floor / 地面", 18, mapY(582));
+      ctx.restore();
+
+      [["head", "neck", 32], ["neck", "chest", 34], ["chest", "pelvis", 42], ["leftShoulder", "leftElbow", 24],
+       ["leftElbow", "leftHand", 20], ["rightShoulder", "rightElbow", 24], ["rightElbow", "rightHand", 20],
+       ["pelvis", "leftKnee", 30], ["leftKnee", "leftFoot", 24], ["pelvis", "rightKnee", 30], ["rightKnee", "rightFoot", 24]]
+        .forEach(([a, b, r]) => drawCapsule(points[a], points[b], r));
+
+      bonePairs.forEach(([a, b]) => drawLine(points[a], points[b], "#0c7c76", 8));
+      jointNames.forEach((name) => drawJoint(points[name], 7));
+      drawArrow(lastHit);
+
+      ctx.save();
+      ctx.fillStyle = "#17221f";
+      ctx.font = "800 17px Microsoft YaHei, sans-serif";
+      ctx.fillText(ragdollMode ? "Physics controls bones" : "Animator writes bone transforms", 20, 30);
+      ctx.fillStyle = "#61706d";
+      ctx.font = "14px Microsoft YaHei, sans-serif";
+      ctx.fillText(ragdollMode ? "Rigidbody isKinematic = false" : "Rigidbody isKinematic = true", 20, 54);
+      ctx.restore();
+    }
+
+    function tick() {
+      if (ragdollMode) {
+        simulatePhysics();
+      } else {
+        simulateAnimator();
+      }
+      drawScene();
+      requestAnimationFrame(tick);
+    }
+
+    toggleMode.addEventListener("click", () => {
+      ragdollMode = !ragdollMode;
+      if (ragdollMode) {
+        Object.values(points).forEach((p) => {
+          p.oldX = p.x;
+          p.oldY = p.y;
+        });
+      }
+      updateModeLabel();
+    });
+
+    hitChest.addEventListener("click", () => {
+      if (!ragdollMode) {
+        ragdollMode = true;
+        updateModeLabel();
+      }
+      const force = Number(forceSlider.value);
+      const chest = points.chest;
+      chest.oldX = chest.x - force;
+      chest.oldY = chest.y + force * 0.18;
+      points.head.oldX = points.head.x - force * 0.38;
+      points.pelvis.oldX = points.pelvis.x - force * 0.25;
+      lastHit = { x: chest.x, y: chest.y };
+      window.setTimeout(() => { lastHit = null; }, 900);
+    });
+
+    resetPose.addEventListener("click", resetSimulation);
+
+    forceSlider.addEventListener("input", () => {
+      forceValue.textContent = forceSlider.value;
+    });
+
+    stiffnessSlider.addEventListener("input", () => {
+      stiffnessValue.textContent = `${stiffnessSlider.value}%`;
+    });
+
+    window.addEventListener("resize", setCanvasScale);
+    resetSimulation();
+    setCanvasScale();
+    tick();
+  </script>
+</body>
+</html>

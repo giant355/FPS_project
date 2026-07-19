@@ -12,6 +12,7 @@ public class AIZombieState_Feeding1 : AIZombieState
     /// zombie_eating的哈希
     /// </summary>
     private int _eatingStateHash = Animator.StringToHash("zombie_eating");
+    private int _crawlEatingStateHash = Animator.StringToHash("Crawling Feeding State");
     /// <summary>
     /// Cinematic的层索引
     /// </summary>
@@ -29,7 +30,7 @@ public class AIZombieState_Feeding1 : AIZombieState
     //└─ 默认保持 Feeding
     public override void OnEnterState()
     {
-        Debug.Log("Entering feeding State");
+        //Debug.Log("Entering feeding State");
         base.OnEnterState();
 
         if (_zombieStateMachine == null) return;
@@ -76,8 +77,8 @@ public class AIZombieState_Feeding1 : AIZombieState
             _zombieStateMachine.SetTarget(_zombieStateMachine.AudioThreat);
             return AIStateType.Alerted;
         }
-
-        if (_zombieStateMachine.animator.GetCurrentAnimatorStateInfo(_eatingLayerIndex).shortNameHash == _eatingStateHash)
+        int curShortHash = _zombieStateMachine.animator.GetCurrentAnimatorStateInfo(_eatingLayerIndex).shortNameHash;
+        if ( curShortHash == _eatingStateHash || curShortHash == _crawlEatingStateHash)
         {
             _zombieStateMachine.satisfaction = Mathf.Min(_zombieStateMachine.satisfaction + ((Time.deltaTime * _zombieStateMachine.replenishRate) / 100.0f), 1.0f);
             if (GameSceneManager.Instance && GameSceneManager.Instance.bloodParticles && _bloodParticlesMount)
@@ -104,6 +105,9 @@ public class AIZombieState_Feeding1 : AIZombieState
             Quaternion newRot = Quaternion.LookRotation(targetPos - _zombieStateMachine.transform.position);
             _zombieStateMachine.transform.rotation = Quaternion.Slerp(_zombieStateMachine.transform.rotation, newRot, Time.deltaTime * _slerpSpeed);
         }
+
+        Vector3 headToTarget = _zombieStateMachine.targetPosition - _zombieStateMachine.animator.GetBoneTransform(HumanBodyBones.Head).position;
+        _zombieStateMachine.transform.position = Vector3.Lerp(_zombieStateMachine.transform.position, _zombieStateMachine.transform.position + headToTarget, Time.deltaTime);
 
         return AIStateType.Feeding;
     }

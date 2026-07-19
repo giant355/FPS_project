@@ -5,6 +5,7 @@ using UnityEngine;
 public class AIZombieState_Alerted1 : AIZombieState
 {
     [SerializeField][Range(1, 60)] float _maxDuration = 10.0f;
+    [SerializeField][Range(1.0f, 180.0f)] float _slerpSpeed = 45.0f;
     /// <summary>
     /// 面对wayPoint的对准范围角
     /// </summary>
@@ -97,6 +98,16 @@ public class AIZombieState_Alerted1 : AIZombieState
             //与wayPoint夹角小于waypointAngleThreshold，直接巡逻
             if (Mathf.Abs(angle) < _waypointAngleThreshold) { return AIStateType.Patrol; }
             _zombieStateMachine.seeking = (int)Mathf.Sign(angle);
+        }
+
+        // 爬行动画没有左右转身 Root Motion；寻路时由状态本身原地旋转。
+        // seeking 为 -1/1，分别表示左转/右转；速度单位是度/秒。
+        if (!_zombieStateMachine.useRootRotation && _zombieStateMachine.seeking != 0)
+        {
+            _zombieStateMachine.transform.Rotate(
+                Vector3.up,
+                _zombieStateMachine.seeking * _slerpSpeed * Time.deltaTime,
+                Space.World);
         }
 
         return AIStateType.Alerted;

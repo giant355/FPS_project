@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TakeDamage 函数理解图</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --muted: #667085;
+      --line: #d7dde5;
+      --blue: #2563eb;
+      --blue-soft: #eaf1ff;
+      --green: #16825d;
+      --green-soft: #e8f7ef;
+      --amber: #a15c00;
+      --amber-soft: #fff3dc;
+      --red: #b42318;
+      --red-soft: #ffe8e5;
+      --purple: #6d28d9;
+      --purple-soft: #f0e8ff;
+      --code: #101828;
+      --shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    header {
+      background: #172033;
+      color: white;
+      padding: 28px 24px 22px;
+      border-bottom: 1px solid #0f172a;
+    }
+
+    header .wrap,
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      margin: 0;
+      max-width: 880px;
+    }
+
+    main {
+      padding: 22px 18px 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
+      margin: 0;
+      padding: 16px 18px 10px;
+      font-size: 19px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-body {
+      padding: 16px 18px 18px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 13px;
+      background: #fff;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.blue { background: var(--blue); }
+    .dot.green { background: var(--green); }
+    .dot.amber { background: #f59e0b; }
+    .dot.red { background: var(--red); }
+    .dot.purple { background: var(--purple); }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .node {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+
+    .node:hover,
+    .node.active {
+      border-color: var(--blue);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .node-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .node-desc {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .node.start { background: var(--blue-soft); border-color: #b9ccff; }
+    .node.ragdoll { background: var(--red-soft); border-color: #ffc4bd; }
+    .node.hit { background: var(--green-soft); border-color: #abe7cf; }
+    .node.damage { background: var(--amber-soft); border-color: #ffd99b; }
+    .node.state { background: var(--purple-soft); border-color: #d7c4ff; }
+
+    .arrow {
+      text-align: center;
+      color: #98a2b3;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .decision {
+      border: 1px dashed #a9b4c3;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfe;
+    }
+
+    .decision strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .mini-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .details {
+      position: sticky;
+      top: 14px;
+    }
+
+    .details-card {
+      border-left: 5px solid var(--blue);
+      padding-left: 14px;
+    }
+
+    .details-title {
+      font-size: 21px;
+      margin: 0 0 8px;
+    }
+
+    .details-text {
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+
+    pre {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 13px 14px;
+      border-radius: 8px;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 12px 0 0;
+    }
+
+    code {
+      font-family: Consolas, "Cascadia Mono", monospace;
+    }
+
+    .section {
+      margin-top: 18px;
+    }
+
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .rule {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: white;
+    }
+
+    .rule h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+
+    .rule p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #344054;
+    }
+
+    .callout {
+      border-radius: 8px;
+      background: #eef6ff;
+      border: 1px solid #bfdbfe;
+      padding: 12px 14px;
+      color: #184574;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .grid,
+      .split,
+      .rules {
+        grid-template-columns: 1fr;
+      }
+
+      .details {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>TakeDamage 函数可视化理解</h1>
+      <p class="subtitle">这个函数不是单纯扣血。它是一个“受击总调度器”：播放血粒子，更新不同身体部位的伤害，然后决定播放 Hit 动画还是切到 ragdoll。</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="panel">
+        <h2>主流程</h2>
+        <div class="panel-body">
+          <div class="legend">
+            <span class="tag"><span class="dot blue"></span>通用准备</span>
+            <span class="tag"><span class="dot red"></span>Ragdoll 分支</span>
+            <span class="tag"><span class="dot green"></span>Hit 动画分支</span>
+            <span class="tag"><span class="dot amber"></span>伤害计算</span>
+            <span class="tag"><span class="dot purple"></span>状态控制</span>
+          </div>
+
+          <div class="flow">
+            <article class="node start active" data-key="blood">
+              <div class="node-title">1. 播放血粒子</div>
+              <p class="node-desc">把血粒子系统移动到命中点 position，然后 Emit(60)。</p>
+            </article>
+            <div class="arrow">↓</div>
+
+            <article class="node start" data-key="strength">
+              <div class="node-title">2. 计算攻击力度 hitStrength</div>
+              <p class="node-desc">用 force.magnitude 判断这次攻击有没有足够物理冲击力。</p>
+            </article>
+            <div class="arrow">↓</div>
+
+            <article class="node ragdoll" data-key="alreadyRagdoll">
+              <div class="node-title">3. 如果已经是 Ragdoll</div>
+              <p class="node-desc">不再重复倒地流程，只继续施加力、继续累计伤害，然后 return。</p>
+            </article>
+            <div class="arrow">↓</div>
+
+            <article class="node state" data-key="positions">
+              <div class="node-title">4. 计算攻击者和命中点的本地坐标</div>
+              <p class="node-desc">攻击者在僵尸后方时，attackerLocPos.z 会小于 0。</p>
+            </article>
+            <div class="arrow">↓</div>
+
+            <article class="node damage" data-key="bodyDamage">
+              <div class="node-title">5. 根据身体部位更新伤害</div>
+              <p class="node-desc">头部扣 health，上身加 upperBodyDamage，下身加 lowerBodyDamage。</p>
+            </article>
+            <div class="arrow">↓</div>
+
+            <div class="split">
+              <div class="decision">
+                <strong>会强制 ragdoll 的条件</strong>
+                <ul class="mini-list">
+                  <li>冲击力 hitStrength &gt; 1</li>
+                  <li>头部生命 health == 0</li>
+                  <li>打中 Lower Body</li>
+                  <li>不是 Animated 状态</li>
+                  <li>正在 Crawling</li>
+                  <li>Cinematic 正在播放</li>
+                  <li>攻击来自背后</li>
+                </ul>
+              </div>
+              <div class="decision">
+                <strong>不 ragdoll 时</strong>
+                <ul class="mini-list">
+                  <li>计算命中角度</li>
+                  <li>得到 HitType 1 到 6</li>
+                  <li>设置 Animator 参数</li>
+                  <li>播放 Hit 层受击动画</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="arrow">↓</div>
+            <div class="split">
+              <article class="node hit" data-key="hitAnim">
+                <div class="node-title">6A. 不倒地：播放 Hit 动画</div>
+                <p class="node-desc">SetInteger(HitType)，SetTrigger(Hit)，然后 return。</p>
+              </article>
+              <article class="node ragdoll" data-key="doRagdoll">
+                <div class="node-title">6B. 倒地：执行 Ragdoll 切换</div>
+                <p class="node-desc">退出 AI 状态，禁用 NavAgent/Animator/Collider，打开刚体物理。</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel details">
+        <h2>点击左侧节点查看解释</h2>
+        <div class="panel-body">
+          <div class="details-card">
+            <h3 class="details-title" id="detailTitle">1. 播放血粒子</h3>
+            <p class="details-text" id="detailText">函数一开始先处理视觉反馈。只要血粒子系统存在，就把它放到命中点，然后发射粒子。这和伤害逻辑无关，只负责让玩家看到“打中了”。</p>
+            <pre><code id="detailCode">sys.transform.position = position;
+settings.simulationSpace = ParticleSystemSimulationSpace.World;
+sys.Emit(60);</code></pre>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="panel section">
+      <h2>身体部位与结果</h2>
+      <div class="panel-body">
+        <table>
+          <thead>
+            <tr>
+              <th>命中部位</th>
+              <th>伤害变量</th>
+              <th>是否直接杀死</th>
+              <th>是否可能 ragdoll</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Head</code></td>
+              <td><code>_health -= damage</code></td>
+              <td>可以。health 到 0 就死。</td>
+              <td>health 到 0 或攻击力够大时 ragdoll。</td>
+            </tr>
+            <tr>
+              <td><code>Upper Body</code></td>
+              <td><code>_upperBodyDamage += damage</code></td>
+              <td>不直接杀死。</td>
+              <td>通常不倒地，除非其他条件触发。</td>
+            </tr>
+            <tr>
+              <td><code>Lower Body</code></td>
+              <td><code>_lowerBodyDamage += damage</code></td>
+              <td>不直接杀死。</td>
+              <td>总是 ragdoll。课程设计是打腿会击倒。</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout">
+          这套设计里，僵尸的 <code>health</code> 更像“大脑生命”。身体和腿部伤害影响行动能力，但不直接杀死僵尸。
+        </div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>HitType 对照</h2>
+      <div class="panel-body">
+        <div class="rules">
+          <div class="rule">
+            <h3>头部 HitType 1</h3>
+            <p><code>angle &lt; -10</code> 或 <code>hitDirection == -1</code>，播放头部左侧受击。</p>
+          </div>
+          <div class="rule">
+            <h3>头部 HitType 2</h3>
+            <p>角度在中间范围，播放头部正面受击。</p>
+          </div>
+          <div class="rule">
+            <h3>头部 HitType 3</h3>
+            <p><code>angle &gt; 10</code> 或 <code>hitDirection == 1</code>，播放头部右侧受击。</p>
+          </div>
+          <div class="rule">
+            <h3>身体 HitType 4</h3>
+            <p><code>angle &lt; -20</code> 或 <code>hitDirection == -1</code>，播放身体左侧受击。</p>
+          </div>
+          <div class="rule">
+            <h3>身体 HitType 5</h3>
+            <p>角度在中间范围，播放身体正面受击。</p>
+          </div>
+          <div class="rule">
+            <h3>身体 HitType 6</h3>
+            <p><code>angle &gt; 20</code> 或 <code>hitDirection == 1</code>，播放身体右侧受击。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>一句话记忆</h2>
+      <div class="panel-body">
+        <p><strong>已经 ragdoll：</strong>继续受伤、继续被物理力推动，不重复倒地流程。</p>
+        <p><strong>还站着但该倒：</strong>退出 AI 状态，关 Animator 和 NavAgent，打开刚体，切到 ragdoll。</p>
+        <p><strong>还站着且不该倒：</strong>算命中方向，设置 <code>HitType</code>，触发 <code>Hit</code> 动画。</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const details = {
+      blood: {
+        title: "1. 播放血粒子",
+        text: "函数一开始先处理视觉反馈。只要血粒子系统存在，就把它放到命中点，然后发射粒子。这和伤害逻辑无关，只负责让玩家看到“打中了”。",
+        code: "sys.transform.position = position;\nsettings.simulationSpace = ParticleSystemSimulationSpace.World;\nsys.Emit(60);"
+      },
+      strength: {
+        title: "2. 计算 hitStrength",
+        text: "force.magnitude 代表这次攻击的物理冲击强度。大于 1 时，代码认为这次攻击有足够力道，可以触发 ragdoll 或推动已经倒地的身体部位。",
+        code: "float hitStrength = force.magnitude;\nbool shouldRagdoll = (hitStrength > 1.0f);"
+      },
+      alreadyRagdoll: {
+        title: "3. 已经是 Ragdoll 的特殊分支",
+        text: "如果僵尸已经倒地，就不要再次执行完整 ragdoll 流程。这里仍然允许继续扣伤害，并且如果有冲击力，就把力施加到命中的刚体上。",
+        code: "if (_boneControlType == AIBoneControlType.Ragdoll)\n{\n    bodyPart.AddForce(force, ForceMode.Impulse);\n    // 继续根据 Head / Upper Body / Lower Body 累计伤害\n    return;\n}"
+      },
+      positions: {
+        title: "4. 判断攻击者方位",
+        text: "InverseTransformPoint 把世界坐标转换成僵尸自己的本地坐标。攻击者本地 z 小于 0，说明攻击来自僵尸背后，课程规则是背后攻击直接击倒。",
+        code: "Vector3 attackerLocPos = transform.InverseTransformPoint(characterManager.transform.position);\n\nif (attackerLocPos.z < 0)\n    shouldRagdoll = true;"
+      },
+      bodyDamage: {
+        title: "5. 按身体部位分配伤害",
+        text: "头部伤害减少 health；上身和下身伤害分别累计到单独变量。下身命中会强制 ragdoll，因为作者设计打腿会让僵尸失去平衡。",
+        code: "Head        -> _health -= damage\nUpper Body  -> _upperBodyDamage += damage\nLower Body  -> _lowerBodyDamage += damage; shouldRagdoll = true"
+      },
+      hitAnim: {
+        title: "6A. 不 ragdoll：播放受击动画",
+        text: "如果没有触发倒地，就计算命中角度，得到 HitType 1 到 6。然后设置 Animator 的 hit type 和 hit trigger，由 Hit 动画层播放对应反应。",
+        code: "int hitType = ...;\n_animator.SetInteger(_hitTypeHash, hitType);\n_animator.SetTrigger(_hitTriggerHash);\nreturn;"
+      },
+      doRagdoll: {
+        title: "6B. ragdoll：切换控制权",
+        text: "这里把僵尸从 AI/Animator 控制切换到物理控制：退出当前状态，禁用 NavAgent、Animator、主 Collider，再把所有身体刚体 isKinematic 设为 false。",
+        code: "_currentState.OnExitState();\n_navAgent.enabled = false;\n_animator.enabled = false;\n_collider.enabled = false;\n\nforeach (Rigidbody body in _bodyParts)\n    body.isKinematic = false;\n\n_boneControlType = AIBoneControlType.Ragdoll;"
+      }
+    };
+
+    const nodes = document.querySelectorAll(".node");
+    const title = document.getElementById("detailTitle");
+    const text = document.getElementById("detailText");
+    const code = document.getElementById("detailCode");
+
+    nodes.forEach((node) => {
+      node.addEventListener("click", () => {
+        nodes.forEach((n) => n.classList.remove("active"));
+        node.classList.add("active");
+        const item = details[node.dataset.key];
+        title.textContent = item.title;
+        text.textContent = item.text;
+        code.textContent = item.code;
+      });
+    });
+  </script>
+</body>
+</html>

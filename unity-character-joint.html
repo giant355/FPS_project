@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unity Character Joint 参数讲解</title>
+  <style>
+    :root {
+      --bg: #f4f6f1;
+      --ink: #17201d;
+      --muted: #65706c;
+      --paper: #ffffff;
+      --line: #d8ded4;
+      --panel: #edf2ee;
+      --green: #16766f;
+      --green-dark: #0d4f4a;
+      --amber: #d49a2f;
+      --orange: #c76331;
+      --red: #b44747;
+      --blue: #2f66a5;
+      --purple: #6b5a9c;
+      --code: #111c22;
+      --shadow: 0 16px 40px rgba(23, 32, 29, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--green-dark);
+      text-underline-offset: 3px;
+      text-decoration-thickness: 2px;
+    }
+
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 272px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 20px;
+      overflow-y: auto;
+      background: #14201d;
+      color: #f1f6f3;
+    }
+
+    .brand {
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .brand small {
+      display: block;
+      color: #a9bbb5;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 1.35rem;
+      line-height: 1.18;
+    }
+
+    .nav {
+      display: grid;
+      gap: 7px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav a {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 10px;
+      border-radius: 7px;
+      color: #dbe8e3;
+      text-decoration: none;
+    }
+
+    .nav a:hover,
+    .nav a:focus {
+      background: rgba(255, 255, 255, 0.10);
+      color: #ffffff;
+      outline: none;
+    }
+
+    .side-tip {
+      margin-top: 24px;
+      padding: 13px;
+      border-left: 3px solid var(--amber);
+      color: #c9d8d3;
+      font-size: 0.9rem;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      padding: 42px clamp(18px, 5vw, 62px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      color: var(--green-dark);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.18;
+    }
+
+    h1 {
+      max-width: 940px;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+    }
+
+    h2 {
+      font-size: clamp(1.45rem, 2.6vw, 2.35rem);
+    }
+
+    h3 {
+      font-size: 1.08rem;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .lead {
+      max-width: 860px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 1.06rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(330px, 0.9fr);
+      gap: 22px;
+      align-items: stretch;
+      margin-top: 30px;
+    }
+
+    .panel,
+    .table-panel,
+    .code-panel,
+    .quiz-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .joint-lab {
+      overflow: hidden;
+    }
+
+    .lab-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfa;
+    }
+
+    .lab-head strong {
+      font-size: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #e8f2ef;
+      color: var(--green-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .canvas-box {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      min-height: 320px;
+      background:
+        linear-gradient(rgba(20, 32, 29, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20, 32, 29, 0.055) 1px, transparent 1px),
+        #f9fbf6;
+      background-size: 28px 28px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .legend span {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex: 0 0 14px;
+    }
+
+    .mark.axis {
+      background: var(--orange);
+    }
+
+    .mark.swing {
+      background: var(--blue);
+    }
+
+    .mark.limit {
+      background: var(--red);
+    }
+
+    .mark.joint {
+      background: var(--amber);
+    }
+
+    .controls {
+      padding: 18px;
+    }
+
+    .control-group {
+      display: grid;
+      gap: 17px;
+      margin-top: 18px;
+    }
+
+    .control-row label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+      color: #33413e;
+      font-size: 0.94rem;
+      font-weight: 800;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--green);
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    button {
+      min-height: 40px;
+      border: 1px solid #b8c6c0;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover,
+    button:focus {
+      border-color: var(--green);
+      outline: 3px solid rgba(22, 118, 111, 0.16);
+    }
+
+    .active-button {
+      border-color: var(--green);
+      background: var(--green);
+      color: #ffffff;
+    }
+
+    .small-note {
+      margin-top: 11px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .concept {
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .concept b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--green-dark);
+    }
+
+    .concept p {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 22px;
+      align-items: start;
+      margin-top: 24px;
+    }
+
+    .panel {
+      padding: 20px;
+    }
+
+    .panel h3 + p,
+    .panel h3 + ul {
+      margin-top: 12px;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 12px;
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: #35443f;
+    }
+
+    .tick {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e8f2ef;
+      color: var(--green-dark);
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .table-panel {
+      overflow: hidden;
+      margin-top: 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.94rem;
+    }
+
+    th {
+      background: #eaf2ef;
+      color: #25322f;
+      font-size: 0.9rem;
+    }
+
+    td {
+      color: #394844;
+    }
+
+    td:first-child {
+      width: 25%;
+      color: var(--green-dark);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #f3ead1;
+      color: #73511c;
+      font-size: 0.78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .preset {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .preset h3 {
+      color: var(--green-dark);
+    }
+
+    .preset dl {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 12px;
+      margin: 12px 0 0;
+      color: #3b4946;
+      font-size: 0.93rem;
+    }
+
+    .preset dt {
+      font-weight: 900;
+    }
+
+    .code-panel {
+      overflow: hidden;
+      margin-top: 22px;
+      background: var(--code);
+      color: #d9f3ee;
+    }
+
+    .code-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+      color: #a9cac3;
+      font-size: 0.9rem;
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px;
+      overflow-x: auto;
+      font-size: 0.91rem;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: Consolas, "Cascadia Code", monospace;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    summary {
+      padding: 15px 16px;
+      cursor: pointer;
+      color: #263631;
+      font-weight: 900;
+    }
+
+    details p {
+      padding: 0 16px 16px;
+      color: var(--muted);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .source-list {
+      margin: 12px 0 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    .source-list li + li {
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1040px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-grid,
+      .two-col,
+      .concept-grid,
+      .preset-grid,
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      section {
+        padding: 31px 15px;
+      }
+
+      .nav,
+      .button-row,
+      .legend {
+        grid-template-columns: 1fr;
+      }
+
+      th,
+      td {
+        display: block;
+        width: 100%;
+      }
+
+      td:first-child {
+        width: 100%;
+        white-space: normal;
+        border-bottom: 0;
+        padding-bottom: 3px;
+      }
+
+      td:last-child {
+        padding-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <small>Unity Joint Lab</small>
+        <strong>Character Joint 参数讲解</strong>
+      </div>
+      <nav>
+        <ul class="nav">
+          <li><a href="#lab"><span>01</span><span>可视化演示</span></a></li>
+          <li><a href="#model"><span>02</span><span>怎么理解</span></a></li>
+          <li><a href="#inspector"><span>03</span><span>Inspector 参数</span></a></li>
+          <li><a href="#presets"><span>04</span><span>常用设置</span></a></li>
+          <li><a href="#code"><span>05</span><span>C# 示例</span></a></li>
+          <li><a href="#debug"><span>06</span><span>排查</span></a></li>
+        </ul>
+      </nav>
+      <p class="side-tip">一句话：Character Joint 连接两个 Rigidbody，并限制它们之间能怎么旋转。</p>
+    </aside>
+
+    <main>
+      <section id="lab">
+        <div class="inner">
+          <p class="kicker">Interactive</p>
+          <h1>Character Joint 就是“有限制的骨骼关节”</h1>
+          <p class="lead">在 ragdoll 里，前臂、上臂、大腿、小腿、头、脊柱都还是 Rigidbody。Character Joint 负责把它们连起来，并用 Twist / Swing 限制旋转范围。</p>
+
+          <div class="hero-grid">
+            <div class="joint-lab panel" style="padding: 0;">
+              <div class="lab-head">
+                <strong>肘关节示意：Lower Arm 连接 Upper Arm</strong>
+                <span class="pill"><span class="pill-dot"></span><span id="poseLabel">High Twist: 70°</span></span>
+              </div>
+              <div class="canvas-box">
+                <canvas id="jointCanvas" width="960" height="600" aria-label="Character Joint elbow diagram"></canvas>
+              </div>
+              <div class="legend">
+                <span><i class="mark axis"></i>Axis / Twist</span>
+                <span><i class="mark swing"></i>Swing Axis</span>
+                <span><i class="mark limit"></i>Limit 范围</span>
+                <span><i class="mark joint"></i>Anchor</span>
+              </div>
+            </div>
+
+            <div class="panel">
+              <p class="kicker">Controls</p>
+              <h2>调参数看效果</h2>
+              <p class="small-note">这个演示用肘关节做例子：前臂可以向前弯很多，但向后反折要很小。</p>
+
+              <div class="control-group">
+                <div class="control-row">
+                  <label for="lowTwist"><span>Low Twist Limit</span><span id="lowTwistValue">-10°</span></label>
+                  <input id="lowTwist" type="range" min="-80" max="0" value="-10">
+                </div>
+                <div class="control-row">
+                  <label for="highTwist"><span>High Twist Limit</span><span id="highTwistValue">70°</span></label>
+                  <input id="highTwist" type="range" min="0" max="140" value="70">
+                </div>
+                <div class="control-row">
+                  <label for="swingLimit"><span>Swing Limit</span><span id="swingValue">25°</span></label>
+                  <input id="swingLimit" type="range" min="0" max="65" value="25">
+                </div>
+              </div>
+
+              <div class="button-row">
+                <button id="presetElbow" class="active-button" type="button">肘关节</button>
+                <button id="presetKnee" type="button">膝关节</button>
+                <button id="presetNeck" type="button">脖子</button>
+              </div>
+
+              <p class="small-note">如果你截图里 `High Twist Limit = 70`，可以理解为当前 Axis 正方向最多转 70 度。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="model">
+        <div class="inner">
+          <p class="kicker">Mental Model</p>
+          <h2>先别背参数，先记住四件事</h2>
+          <div class="concept-grid">
+            <article class="concept">
+              <b>Connected Body 是“连谁”</b>
+              <p>前臂 joint 的 Connected Body 通常是上臂的 Rigidbody。为空时，joint 连接到世界空间。</p>
+            </article>
+            <article class="concept">
+              <b>Anchor 是“从哪里转”</b>
+              <p>肘关节的 Anchor 应该在肘部，膝关节的 Anchor 应该在膝盖，不应该在骨头中间。</p>
+            </article>
+            <article class="concept">
+              <b>Axis 是“主旋转轴”</b>
+              <p>Low Twist 和 High Twist 都围绕 Axis 限制旋转。Axis 方向错，关节限制也会错。</p>
+            </article>
+            <article class="concept">
+              <b>Swing 是“其他方向摆动”</b>
+              <p>Swing 1 和 Swing 2 控制侧向摆动，通常比 twist 更小，避免 ragdoll 变得太松。</p>
+            </article>
+          </div>
+
+          <div class="two-col">
+            <div class="panel">
+              <h3>你截图里的参数怎么读</h3>
+              <ul class="checklist">
+                <li><span class="tick">1</span><span><strong>Connected Body = None</strong>：这个 joint 当前没有连接到另一个 Rigidbody，所以会连到世界空间。</span></li>
+                <li><span class="tick">2</span><span><strong>Anchor = X 0, Y 1, Z 0</strong>：关节旋转点在当前物体本地坐标的上方。</span></li>
+                <li><span class="tick">3</span><span><strong>Axis = X 1, Y 0, Z 0</strong>：主扭转轴是当前物体的本地 X 轴。</span></li>
+                <li><span class="tick">4</span><span><strong>Auto Configure Connected Anchor</strong> 已勾选：Unity 自动计算连接锚点。</span></li>
+                <li><span class="tick">5</span><span><strong>High Twist Limit = 70</strong>：围绕主轴正方向最多转 70 度。</span></li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h3>Character Joint 和 Hinge Joint 的区别</h3>
+              <p class="small-note">Hinge Joint 更像门轴，主要绕一个轴转。Character Joint 更像人体关节，可以给主轴设置不对称限制，也能限制另外两个摆动方向，所以更适合 ragdoll。</p>
+              <ul class="checklist">
+                <li><span class="tick">A</span><span>肘关节：向前弯很多，向后反折很少。</span></li>
+                <li><span class="tick">B</span><span>膝关节：主要向后弯，反向弯曲应很小。</span></li>
+                <li><span class="tick">C</span><span>头颈：各方向都要限制，否则头会转得很离谱。</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="inspector">
+        <div class="inner">
+          <p class="kicker">Inspector Reference</p>
+          <h2>Inspector 参数速查表</h2>
+          <p class="lead">下面按你截图里的顺序解释。调 ragdoll 时，优先看 `Connected Body`、`Anchor`、`Axis`、`Low/High Twist Limit`、`Swing 1/2 Limit`。</p>
+
+          <div class="table-panel">
+            <table>
+              <thead>
+                <tr>
+                  <th>参数</th>
+                  <th>意思</th>
+                  <th>怎么调</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Edit Angular Limits</td>
+                  <td>在 Scene 视图里显示可拖动的角度限制 gizmo。</td>
+                  <td>用来可视化调限制，比纯填数字直观。</td>
+                </tr>
+                <tr>
+                  <td>Connected Body</td>
+                  <td>连接到哪个 `Rigidbody`。如果不填，就是连接到世界。</td>
+                  <td>ragdoll 骨骼一般都要连到父级或相邻骨骼。</td>
+                </tr>
+                <tr>
+                  <td>Connected Articulation Body</td>
+                  <td>连接到 `ArticulationBody`，偏机器人/机械臂系统。</td>
+                  <td>普通角色 ragdoll 基本不用，保持 None。</td>
+                </tr>
+                <tr>
+                  <td>Anchor</td>
+                  <td>当前物体本地空间里的关节位置。</td>
+                  <td>必须放在真实关节点附近：肘、膝、肩、脖子。</td>
+                </tr>
+                <tr>
+                  <td>Axis</td>
+                  <td>主扭转轴，Scene gizmo 里通常用橙色显示。</td>
+                  <td>Low/High Twist 都围绕它。方向错时，先改这个。</td>
+                </tr>
+                <tr>
+                  <td>Auto Configure Connected Anchor</td>
+                  <td>让 Unity 自动算连接物体上的锚点。</td>
+                  <td>一般先勾选。自动点不准时再关闭并手动调。</td>
+                </tr>
+                <tr>
+                  <td>Connected Anchor</td>
+                  <td>连接物体本地空间里的对应锚点。</td>
+                  <td>手动模式下才重点调，通常让它和 Anchor 对齐到同一个世界位置。</td>
+                </tr>
+                <tr>
+                  <td>Swing Axis</td>
+                  <td>摆动轴，Scene gizmo 里通常用绿色显示。</td>
+                  <td>控制 Swing 1 方向；Swing 2 是与 Axis、Swing Axis 垂直的第三轴。</td>
+                </tr>
+                <tr>
+                  <td>Twist Limit Spring</td>
+                  <td>到达 twist 限制时是否有弹性。</td>
+                  <td>ragdoll 通常先设 0，避免像橡皮筋一样弹。</td>
+                </tr>
+                <tr>
+                  <td>Low Twist Limit</td>
+                  <td>主轴负方向的旋转下限。</td>
+                  <td>肘/膝常用小负值，例如 -5 到 -15。</td>
+                </tr>
+                <tr>
+                  <td>High Twist Limit</td>
+                  <td>主轴正方向的旋转上限。</td>
+                  <td>截图里的 70 表示正方向最多 70 度。</td>
+                </tr>
+                <tr>
+                  <td>Swing Limit Spring</td>
+                  <td>到达 swing 限制时是否有弹性。</td>
+                  <td>新手先保持 0；需要更软的物理效果再调。</td>
+                </tr>
+                <tr>
+                  <td>Swing 1 Limit</td>
+                  <td>围绕 Swing Axis 的对称摆动角度。</td>
+                  <td>比如 30 表示 -30 到 +30。小于 5 度不如直接设 0。</td>
+                </tr>
+                <tr>
+                  <td>Swing 2 Limit</td>
+                  <td>第三个轴的对称摆动角度。</td>
+                  <td>用于控制另一侧方向的摆动，避免四肢乱甩。</td>
+                </tr>
+                <tr>
+                  <td>Enable Projection</td>
+                  <td>关节被拉出约束时，强制拉回。</td>
+                  <td>尸体拉伸、散架时再开。它稳定，但可能有突然修正感。</td>
+                </tr>
+                <tr>
+                  <td>Projection Distance / Angle</td>
+                  <td>超出多少距离或角度后开始 Projection 修正。</td>
+                  <td>默认先不动；拉伸严重时再慢慢收紧。</td>
+                </tr>
+                <tr>
+                  <td>Break Force / Break Torque</td>
+                  <td>超过多少力或扭矩后 joint 断开。</td>
+                  <td>角色 ragdoll 一般保持 Infinity，否则 mesh 会被拉得很怪。</td>
+                </tr>
+                <tr>
+                  <td>Enable Collision</td>
+                  <td>连接的两个刚体是否互相碰撞。</td>
+                  <td>相邻骨骼通常关闭，否则轻微重叠会互相弹开。</td>
+                </tr>
+                <tr>
+                  <td>Enable Preprocessing</td>
+                  <td>Unity 对 joint 做预处理，帮助求解。</td>
+                  <td>默认开。遇到被墙体挤压导致的分离/乱跳时，可以试着关。</td>
+                </tr>
+                <tr>
+                  <td>Mass Scale / Connected Mass Scale</td>
+                  <td>只影响 joint 求解时的有效质量。</td>
+                  <td>两个连接刚体质量差太多会抖，尽量让有效质量接近。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="presets">
+        <div class="inner">
+          <p class="kicker">Practical Values</p>
+          <h2>常用关节设置思路</h2>
+          <p class="lead">这些不是固定答案，因为模型朝向和骨骼轴可能不同。它们是调参方向：先确认 Axis，再根据人体关节给合理角度。</p>
+
+          <div class="preset-grid">
+            <article class="preset">
+              <h3>肘关节</h3>
+              <dl>
+                <dt>Low Twist</dt><dd>-5 到 -15</dd>
+                <dt>High Twist</dt><dd>70 到 120</dd>
+                <dt>Swing</dt><dd>15 到 35</dd>
+              </dl>
+              <p class="small-note">目标：能向前弯，不要向后折。</p>
+            </article>
+            <article class="preset">
+              <h3>膝关节</h3>
+              <dl>
+                <dt>Low Twist</dt><dd>-10 到 0</dd>
+                <dt>High Twist</dt><dd>70 到 130</dd>
+                <dt>Swing</dt><dd>5 到 25</dd>
+              </dl>
+              <p class="small-note">目标：腿倒下时自然弯，但不要像橡皮腿。</p>
+            </article>
+            <article class="preset">
+              <h3>头/脖子</h3>
+              <dl>
+                <dt>Low Twist</dt><dd>-25 到 -45</dd>
+                <dt>High Twist</dt><dd>25 到 45</dd>
+                <dt>Swing</dt><dd>15 到 35</dd>
+              </dl>
+              <p class="small-note">目标：保留摆动，但限制过度仰头和扭头。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="code">
+        <div class="inner">
+          <p class="kicker">C#</p>
+          <h2>用代码设置 Character Joint 的限制</h2>
+          <p class="lead">实际项目里大多数参数会在 Inspector 里调。代码适合做批量修正或运行时切换。</p>
+
+          <div class="code-panel">
+            <div class="code-head">
+              <span>CharacterJointSetup.cs</span>
+              <span>示例：设置 twist / swing limit</span>
+            </div>
+            <pre><code>using UnityEngine;
+
+public class CharacterJointSetup : MonoBehaviour
+{
+    [SerializeField] private CharacterJoint joint;
+    [SerializeField] private Rigidbody connectedBody;
+
+    private void ResetJoint()
+    {
+        joint.connectedBody = connectedBody;
+
+        // Anchor 是当前骨骼本地空间里的关节点。
+        joint.anchor = new Vector3(0f, 1f, 0f);
+
+        // Axis 是主扭转轴。这里使用本地 X 轴。
+        joint.axis = Vector3.right;
+        joint.swingAxis = Vector3.up;
+
+        SoftJointLimit low = joint.lowTwistLimit;
+        low.limit = -10f;
+        low.bounciness = 0f;
+        joint.lowTwistLimit = low;
+
+        SoftJointLimit high = joint.highTwistLimit;
+        high.limit = 90f;
+        high.bounciness = 0f;
+        joint.highTwistLimit = high;
+
+        SoftJointLimit swing1 = joint.swing1Limit;
+        swing1.limit = 25f;
+        joint.swing1Limit = swing1;
+
+        SoftJointLimit swing2 = joint.swing2Limit;
+        swing2.limit = 20f;
+        joint.swing2Limit = swing2;
+
+        joint.enableCollision = false;
+        joint.enableProjection = true;
+    }
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="debug">
+        <div class="inner">
+          <p class="kicker">Debug</p>
+          <h2>调 Character Joint 时最常见的问题</h2>
+          <div class="faq-grid">
+            <details open>
+              <summary>关节弯曲方向反了</summary>
+              <p>先看 Axis。Low/High Twist 都围绕 Axis，Axis 朝向错了，限制会像装反。打开 Scene gizmo 看橙色箭头最直观。</p>
+            </details>
+            <details>
+              <summary>尸体一直抖</summary>
+              <p>检查相邻骨骼是否互相碰撞、质量差距是否过大、角度限制是否太小。Unity 建议小角度限制如果只有几度，直接锁到 0 通常更稳定。</p>
+            </details>
+            <details>
+              <summary>骨骼被拉长或分离</summary>
+              <p>可能是 joint solver 满足不了约束，例如 ragdoll 出生在墙里或受力太大。可以开启 Projection，并提高 Physics 的 Default Solver Iterations。</p>
+            </details>
+            <details>
+              <summary>Enable Collision 要不要开</summary>
+              <p>相邻骨骼通常不要开。手臂 collider 和身体 collider 有轻微重叠很常见，打开后会互相推开，导致抖动。</p>
+            </details>
+          </div>
+
+          <div class="panel" style="margin-top: 22px;">
+            <h3>官方参考</h3>
+            <ul class="source-list">
+              <li><a href="https://docs.unity3d.com/2022.3/Documentation/Manual/class-CharacterJoint.html">Unity Manual: Character Joint component reference</a></li>
+              <li><a href="https://docs.unity3d.com/2022.3/Documentation/Manual/RagdollStability.html">Unity Manual: Joint and Ragdoll stability</a></li>
+            </ul>
+            <p class="small-note">页面内容按 Unity 2022.3 LTS 组织。不同版本 Inspector 文案可能略有变化，但核心概念一致。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("jointCanvas");
+    const ctx = canvas.getContext("2d");
+    const lowTwist = document.getElementById("lowTwist");
+    const highTwist = document.getElementById("highTwist");
+    const swingLimit = document.getElementById("swingLimit");
+    const lowTwistValue = document.getElementById("lowTwistValue");
+    const highTwistValue = document.getElementById("highTwistValue");
+    const swingValue = document.getElementById("swingValue");
+    const poseLabel = document.getElementById("poseLabel");
+    const presetElbow = document.getElementById("presetElbow");
+    const presetKnee = document.getElementById("presetKnee");
+    const presetNeck = document.getElementById("presetNeck");
+    const presetButtons = [presetElbow, presetKnee, presetNeck];
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.max(320, Math.floor(rect.width * ratio));
+      canvas.height = Math.max(260, Math.floor(rect.height * ratio));
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      draw();
+    }
+
+    function x(v) {
+      return v * canvas.clientWidth / 960;
+    }
+
+    function y(v) {
+      return v * canvas.clientHeight / 600;
+    }
+
+    function polar(cx, cy, len, deg) {
+      const rad = deg * Math.PI / 180;
+      return [cx + Math.cos(rad) * len, cy + Math.sin(rad) * len];
+    }
+
+    function drawArrow(x1, y1, x2, y2, color, label) {
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 5;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(x(x1), y(y1));
+      ctx.lineTo(x(x2), y(y2));
+      ctx.stroke();
+      const size = 14;
+      const hx = x(x2);
+      const hy = y(y2);
+      ctx.beginPath();
+      ctx.moveTo(hx, hy);
+      ctx.lineTo(hx - Math.cos(angle - 0.45) * size, hy - Math.sin(angle - 0.45) * size);
+      ctx.lineTo(hx - Math.cos(angle + 0.45) * size, hy - Math.sin(angle + 0.45) * size);
+      ctx.closePath();
+      ctx.fill();
+      ctx.font = "800 16px Microsoft YaHei, sans-serif";
+      ctx.fillText(label, x(x2 + 12), y(y2 - 8));
+      ctx.restore();
+    }
+
+    function drawArc(cx, cy, radius, startDeg, endDeg, color, width) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.beginPath();
+      ctx.arc(x(cx), y(cy), x(radius) - x(0), startDeg * Math.PI / 180, endDeg * Math.PI / 180);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawLimb(ax, ay, bx, by, color, width, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(x(ax), y(ay));
+      ctx.lineTo(x(bx), y(by));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      const low = Number(lowTwist.value);
+      const high = Number(highTwist.value);
+      const swing = Number(swingLimit.value);
+      lowTwistValue.textContent = `${low}°`;
+      highTwistValue.textContent = `${high}°`;
+      swingValue.textContent = `${swing}°`;
+      poseLabel.textContent = `High Twist: ${high}°`;
+
+      ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+      const anchor = [480, 300];
+      const upperStart = [480, 300];
+      const upperEnd = [690, 300];
+      const baseDeg = 180;
+      const lowEnd = polar(anchor[0], anchor[1], 190, baseDeg - low);
+      const highEnd = polar(anchor[0], anchor[1], 190, baseDeg - high);
+      const currentEnd = polar(anchor[0], anchor[1], 190, baseDeg - Math.min(high, 65));
+
+      drawArc(anchor[0], anchor[1], 116, baseDeg, baseDeg - high, "#b44747", 9);
+      drawArc(anchor[0], anchor[1], 142, baseDeg, baseDeg - low, "#6b5a9c", 8);
+      drawArc(anchor[0], anchor[1], 170, -swing, swing, "#2f66a5", 5);
+
+      drawLimb(upperStart[0], upperStart[1], upperEnd[0], upperEnd[1], "#16766f", 36, 0.72);
+      drawLimb(anchor[0], anchor[1], currentEnd[0], currentEnd[1], "#16766f", 30, 0.95);
+      drawLimb(anchor[0], anchor[1], lowEnd[0], lowEnd[1], "#6b5a9c", 6, 0.7);
+      drawLimb(anchor[0], anchor[1], highEnd[0], highEnd[1], "#b44747", 6, 0.75);
+
+      ctx.save();
+      ctx.fillStyle = "#d49a2f";
+      ctx.strokeStyle = "#765418";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(x(anchor[0]), y(anchor[1]), 17, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      drawArrow(480, 300, 480, 145, "#c76331", "Axis / Twist");
+      drawArrow(480, 300, 635, 210, "#2f66a5", "Swing Axis");
+
+      ctx.save();
+      ctx.fillStyle = "#17201d";
+      ctx.font = "900 19px Microsoft YaHei, sans-serif";
+      ctx.fillText("Anchor", x(500), y(330));
+      ctx.font = "800 15px Microsoft YaHei, sans-serif";
+      ctx.fillStyle = "#55635f";
+      ctx.fillText(`Low Twist ${low}°`, x(92), y(132));
+      ctx.fillText(`High Twist ${high}°`, x(92), y(160));
+      ctx.fillText(`Swing ±${swing}°`, x(92), y(188));
+      ctx.fillStyle = "#0d4f4a";
+      ctx.fillText("Connected Body: Upper Arm Rigidbody", x(540), y(356));
+      ctx.fillText("Current Body: Lower Arm Rigidbody", x(220), y(470));
+      ctx.restore();
+    }
+
+    function setPreset(button, values) {
+      presetButtons.forEach((item) => item.classList.remove("active-button"));
+      button.classList.add("active-button");
+      lowTwist.value = values.low;
+      highTwist.value = values.high;
+      swingLimit.value = values.swing;
+      draw();
+    }
+
+    [lowTwist, highTwist, swingLimit].forEach((input) => input.addEventListener("input", draw));
+    presetElbow.addEventListener("click", () => setPreset(presetElbow, { low: -10, high: 70, swing: 25 }));
+    presetKnee.addEventListener("click", () => setPreset(presetKnee, { low: -5, high: 110, swing: 14 }));
+    presetNeck.addEventListener("click", () => setPreset(presetNeck, { low: -35, high: 35, swing: 25 }));
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+  </script>
+</body>
+</html>

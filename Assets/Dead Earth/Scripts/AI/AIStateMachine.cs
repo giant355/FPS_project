@@ -76,7 +76,7 @@ public abstract class AIStateMachine : MonoBehaviour
     public Animator animator { get { return _animator; } }
     public NavMeshAgent navAgent { get { return _navAgent; }}
 
-    private Dictionary<AIStateType, AIState> _states = new Dictionary<AIStateType, AIState>();
+    protected Dictionary<AIStateType, AIState> _states = new Dictionary<AIStateType, AIState>();
     public Vector3 sensorPosition
     {
         get
@@ -117,7 +117,9 @@ public abstract class AIStateMachine : MonoBehaviour
                 return -1;
         }
     }
-
+    /// <summary>
+    /// 代表cinematic层开始播放特殊动画
+    /// </summary>
     public bool cinematicEnabled
     {
         get { return _cinematicEnabled; }

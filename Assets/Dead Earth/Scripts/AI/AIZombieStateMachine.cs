@@ -128,9 +128,9 @@ public class AIZombieStateMachine :AIStateMachine
         {
             _crawling = isCrawling;
 
-            _animator.SetBool(_crawlHash, _crawling);
             _animator.SetInteger(_lowerBodyDamageHash, _lowerBodyDamage);
             _animator.SetInteger(_upperBodyDamageHash, _upperBodyDamage);
+            _animator.SetBool(_crawlHash, _crawling);
         }
     }
     private void StartReanimation()
@@ -242,18 +242,18 @@ public class AIZombieStateMachine :AIStateMachine
             int hitType = 0;
             if (bodyPart.gameObject.CompareTag("Head"))
             {
-                if (angle < -30 || hitDirection == -1) hitType = 1;
+                if (angle < -20 || hitDirection == -1) hitType = 1;
                 else
-                if (angle > 30 || hitDirection == 1)   hitType = 3;
+                if (angle > 20 || hitDirection == 1)   hitType = 3;
                 else
                                                        hitType = 2;
             }
             else
             if (bodyPart.gameObject.CompareTag("Upper Body"))
             {
-                if (angle < -30 || hitDirection == -1) hitType = 4;
+                if (angle < -20 || hitDirection == -1) hitType = 4;
                 else
-                if (angle > 30 || hitDirection == 1)   hitType = 6;
+                if (angle > 20 || hitDirection == 1)   hitType = 6;
                 else
                                                        hitType = 5;
             }
@@ -382,32 +382,33 @@ public class AIZombieStateMachine :AIStateMachine
 
         if (Time.time <= _ragdollEndTime + _mecanimTransitionTime)
         {
+            print("SUCCESS");
             Vector3 animatedToRagdoll = _ragdollHipPosition - _rootBone.position;
             Vector3 newRootPosition = transform.position + animatedToRagdoll;
 
             //从角色目标位置上方 0.25 米往下打一条射线，找地面
             RaycastHit[] hits = Physics.RaycastAll(newRootPosition + Vector3.up * 0.25f,Vector3.down,10.0f,_geometryLayers);
 
-            newRootPosition.y = float.MinValue;
+            newRootPosition.y = -10000;
             //如果射线打到地板、箱子、台阶，就选择最高的那个表面
             foreach (RaycastHit hit in hits)
             {
                 newRootPosition.y = Mathf.Max(newRootPosition.y, hit.point.y);
             }
 
-            if (newRootPosition.y > float.MinValue)
+            NavMeshHit navMeshHit;
+            if (NavMesh.SamplePosition(newRootPosition, out navMeshHit, 3.0f, NavMesh.AllAreas))
             {
-                NavMeshHit navMeshHit;
-                if (NavMesh.SamplePosition(newRootPosition, out navMeshHit, 2.0f, NavMesh.AllAreas))
-                {
-                    transform.position = navMeshHit.position;
-                }
-                else
-                {
-                    transform.position = newRootPosition;
-                }
+                Vector3 correctedPosition = navMeshHit.position + Vector3.up * _navAgent.baseOffset;
+                print("_navAgent.baseOffset" + _navAgent.baseOffset);
+                transform.position = correctedPosition;
             }
-
+            else
+            {
+                newRootPosition.y = 0.01f + _navAgent.baseOffset;
+                transform.position = newRootPosition;
+            }
+            
             Vector3 ragdollDirection = _ragdollHeadPosition - _ragdollFeetPosition;
             ragdollDirection.y = 0.0f;
 
@@ -425,46 +426,45 @@ public class AIZombieStateMachine :AIStateMachine
                 transform.rotation *= Quaternion.AngleAxis(angle, Vector3.up);
             }
         }
-        else
+       
+        float blendAmount = Mathf.Clamp01((Time.time - _ragdollEndTime - _mecanimTransitionTime) / _reanimationBlendTime);
+
+        foreach (BodyPartSnapshot snapshot in _bodyPartSnapShots)
         {
-            float blendAmount = Mathf.Clamp01((Time.time - _ragdollEndTime - _mecanimTransitionTime) / _reanimationBlendTime);
-
-            foreach (BodyPartSnapshot snapshot in _bodyPartSnapShots)
+            if (snapshot.transform == _rootBone)
             {
-                if (snapshot.transform == _rootBone)
-                {
-                    snapshot.transform.position = Vector3.Lerp(snapshot.position, snapshot.transform.position, blendAmount);
-                    snapshot.transform.rotation = Quaternion.Slerp(snapshot.rotation, snapshot.transform.rotation, blendAmount);
-                }
-                else
-                {
-                    snapshot.transform.localRotation = Quaternion.Slerp(
-                        snapshot.localRotation,
-                        snapshot.transform.localRotation,
-                        blendAmount
-                    );
-                }
+                snapshot.transform.position = Vector3.Lerp(snapshot.position, snapshot.transform.position, blendAmount);
+                snapshot.transform.rotation = Quaternion.Slerp(snapshot.rotation, snapshot.transform.rotation, blendAmount);
             }
-
-            if (blendAmount >= 1.0f)
+            else
             {
-                _boneControlType = AIBoneControlType.Animated;
-
-                if (_navAgent != null)
-                    _navAgent.enabled = true;
-
-                if (_collider != null)
-                    _collider.enabled = true;
-
-                AIZombieState alertedState = GetComponent<AIZombieState_Alerted1>();
-                if (alertedState != null)
-                {
-                    _currentState = alertedState;
-                    _currentStateType = AIStateType.Alerted;
-                    _currentState.OnEnterState();
-                }
+                snapshot.transform.localRotation = Quaternion.Slerp(
+                    snapshot.localRotation,
+                    snapshot.transform.localRotation,
+                    blendAmount
+                );
             }
         }
+
+        if (blendAmount >= 1.0f)
+        {
+            _boneControlType = AIBoneControlType.Animated;
+
+            if (_navAgent != null)
+                _navAgent.enabled = true;
+
+            if (_collider != null)
+                _collider.enabled = true;
+
+            AIZombieState alertedState = GetComponent<AIZombieState_Alerted1>();
+            if (alertedState != null)
+            {
+                _currentState = alertedState;
+                _currentStateType = AIStateType.Alerted;
+                _currentState.OnEnterState();
+            }
+        }
+       
     }
 }
 

@@ -97,7 +97,7 @@ public class AIZombieState_Patrol1 : AIZombieState
             _zombieStateMachine.navAgent.pathStatus == NavMeshPathStatus.PathInvalid)&&_repathTimer<0)
         {
             _repathTimer = 0.2f;
-            print(_repathTimer);
+            //print(_repathTimer);
             _zombieStateMachine.navAgent.SetDestination(_zombieStateMachine.GetWaypointPosition(true));
         }
         return AIStateType.Patrol;

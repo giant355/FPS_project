@@ -1,0 +1,114 @@
+{"kind":"deck","id":"pr/mrwcxj","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master","placeholders":[{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"标题幻灯片","placeholders":[{"name":"subtitle","type":"subtitle","textPreview":"单击此处编辑母版副标题样式"},{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout2.xml","name":"标题和内容","type":"obj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout3.xml","name":"节标题","type":"secHead","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout4.xml","name":"两栏内容","type":"twoObj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"kso bc2","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout5.xml","name":"比较","type":"twoTxTwoObj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"kso bc2","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout6.xml","name":"仅标题","type":"titleOnly","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout7.xml","name":"空白","type":"blank","placeholders":[{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout8.xml","name":"内容与标题","type":"objTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout9.xml","name":"图片与标题","type":"picTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"picture","type":"picture","textPreview":"单击图标添加图片"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout10.xml","name":"标题和竖排文字","type":"vertTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout11.xml","name":"垂直排列标题与\n文本","type":"vertTitleAndTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster2.xml","name":"","type":"master","placeholders":[{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout12.xml","name":"标题幻灯片","placeholders":[{"name":"subtitle","type":"subtitle","textPreview":"单击此处编辑母版副标题样式"},{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout13.xml","name":"标题和内容","type":"obj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout14.xml","name":"节标题","type":"secHead","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout15.xml","name":"两栏内容","type":"twoObj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"kso bc2","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout16.xml","name":"比较","type":"twoTxTwoObj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"kso bc2","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout17.xml","name":"仅标题","type":"titleOnly","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout18.xml","name":"空白","type":"blank","placeholders":[{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout19.xml","name":"内容与标题","type":"objTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"kso bc1","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout20.xml","name":"图片与标题","type":"picTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"picture","type":"picture","textPreview":"单击图标添加图片"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout21.xml","name":"标题和竖排文字","type":"vertTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout22.xml","name":"垂直排列标题与\n文本","type":"vertTitleAndTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 第二级"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"slide","id":"sl/2x4nap4r","slide":1,"title":"作品名称：水泥小港宝诞生记","textShapes":2}
+{"kind":"textbox","id":"sh/cvixczed","slide":1,"name":"副标题 1","placeholder":"subtitle","text":"作品名称：水泥小港宝诞生记\n姓名：________","textPreview":"作品名称：水泥小港宝诞生记 | 姓名：________","textChars":25,"textLines":2,"bbox":[296.17,348.67,521.83,136.17]}
+{"kind":"textbox","id":"sh/5gbq1ory","slide":1,"name":"标题 2","placeholder":"title","text":"原 画 规 律\n课程答辩","textPreview":"原 画 规 律 | 课程答辩","textChars":12,"textLines":2,"bbox":[298.57,201.2,521.83,140.17]}
+{"kind":"shape","id":"sh/nyd0z610","slide":1,"name":"Freeform 117","bbox":[616,52.67,24.5,55.33]}
+{"kind":"shape","id":"sh/cj6tovah","slide":1,"name":"Freeform 118","bbox":[660.33,52.67,24.67,55.33]}
+{"kind":"shape","id":"sh/54zidony","slide":1,"name":"Freeform 119","bbox":[704.83,52.67,24.5,55.33]}
+{"kind":"shape","id":"sh/u9knih4b","slide":1,"name":"Freeform 129","bbox":[838,52.67,24.5,55.33]}
+{"kind":"shape","id":"sh/judg7ads","slide":1,"name":"Freeform 130","bbox":[793.5,52.67,24.67,55.33]}
+{"kind":"shape","id":"sh/udg7adsj","slide":1,"name":"Freeform 139","bbox":[753.22,16.2,16.22,14.85]}
+{"kind":"shape","id":"sh/54zidony","slide":1,"name":"Freeform 140","bbox":[735.42,12.17,51.82,96.5]}
+{"kind":"image","id":"im/judg7ads","slide":1,"name":"图片 7167","bbox":[646.67,542.57,207.51,155.45]}
+{"kind":"image","id":"im/c7u54zid","slide":1,"name":"图片 20","bbox":[406.31,553.89,187.94,140.96]}
+{"kind":"image","id":"im/1orytsvu","slide":1,"name":"图片 22","bbox":[385.51,545.45,238.52,150.74]}
+{"kind":"image","id":"im/u18jqh0f","slide":1,"name":"图片 28","bbox":[641.34,540.56,238.52,157.78]}
+{"kind":"image","id":"im/jm1cfa9w","slide":1,"name":"图片 25","bbox":[73.6,543.8,298.76,149.34]}
+{"kind":"image","id":"im/cvixczed","slide":1,"name":"图片 29","bbox":[73.6,538.6,298.76,159.43]}
+{"kind":"notes","id":"nt/2x4nap4r","slide":1,"text":""}
+{"kind":"slide","id":"sl/pg3ex0nu","slide":2,"title":"作品信息：","textShapes":3}
+{"kind":"textbox","id":"sh/36hcrmhk","slide":2,"name":"KSO_Shape","text":"\n\n\n\n\n作品信息：\n  1、3D 动画短片《水泥小港宝诞生记》，时长约 5 分 44 秒。\n  2、以“小港宝”角色串联水泥生产、城市建设与环保意识。\n  3、答辩围绕思维、知识、能力、素质四个版块展开。","textPreview":"|  |  |  |  | 作品信息： |   1、3D 动画短片《水泥小港宝诞生记》，时长约 5 分 44 秒。 |   2、以“小港宝”角色串联水泥生产、城市建设与环保意识。 |   3、答辩围绕思维、知识、能力、素质四个版块展开。","textChars":103,"textLines":9,"bbox":[64.2,118.07,842,529]}
+{"kind":"textbox","id":"sh/5o7qpg3e","slide":2,"name":"Rectangle 14","text":"  原画规律课程期末答辩PPT","textPreview":"原画规律课程期末答辩PPT","textChars":15,"textLines":1,"bbox":[96.67,42.5,821.83,46.5]}
+{"kind":"textbox","id":"sh/ylc7u54z","slide":2,"name":"文本框 4","text":"答辩结构：\n1、思维设计：如何把抽象材料知识转化为角色故事。\n2、强化基础：如何用运动与表情规律提升角色表现。\n3、工程实践：如何通过知识图谱梳理制作流程与成果。\n4、服务社会：作品对科普传播和环保意识的意义。","textPreview":"答辩结构： | 1、思维设计：如何把抽象材料知识转化为角色故事。 | 2、强化基础：如何用运动与表情规律提升角色表现。 | 3、工程实践：如何通过知识图谱梳理制作流程与成果。 | 4、服务社会：作品对科普传播和环保意识的意义。","textChars":105,"textLines":5,"bbox":[71.73,125.6,805.93,310.07]}
+{"kind":"notes","id":"nt/pg3ex0nu","slide":2,"text":""}
+{"kind":"slide","id":"sl/s72x4nap","slide":3,"title":"原画规律课程期末答辩PPT","textShapes":7}
+{"kind":"shape","id":"sh/o7qpg3ex","slide":3,"name":"矩形 16","bbox":[47.27,216.93,861.27,427.6]}
+{"kind":"textbox","id":"sh/o7qpg3ex","slide":3,"name":"Rectangle 14","text":"  原画规律课程期末答辩PPT","textPreview":"原画规律课程期末答辩PPT","textChars":15,"textLines":1,"bbox":[96.67,42.5,821.83,46.5]}
+{"kind":"shape","id":"sh/6dcbulwv","slide":3,"name":"圆角矩形 3","bbox":[686.56,36.82,229.75,61.04]}
+{"kind":"textbox","id":"sh/dsji5sne","slide":3,"name":"矩形 2","text":"必答问题","textPreview":"必答问题","textChars":4,"textLines":1,"bbox":[685.73,12.27,244.47,87.13]}
+{"kind":"shape","id":"sh/dsji5sne","slide":3,"name":"圆角矩形 2","bbox":[41.53,140.8,284.6,63]}
+{"kind":"textbox","id":"sh/vy90je9c","slide":3,"name":"文本框 4","text":"思维版块：思维设计","textPreview":"思维版块：思维设计","textChars":9,"textLines":1,"bbox":[47.27,148.2,277.8,40.73]}
+{"kind":"textbox","id":"sh/oj2t83it","slide":3,"name":"矩形 15","text":"\n\n我的选题从观众问题出发：水泥从哪里来、为什么重要、怎样和城市及自然相连？\n我把“水泥”拟人化为小港宝，用儿童视角讲清材料诞生过程；再把剧情拆成角色登场、原料加工、工程应用、环保收束四段，让知识点跟随故事自然出现。","textPreview":"|  | 我的选题从观众问题出发：水泥从哪里来、为什么重要、怎样和城市及自然相连？ | 我把“水泥”拟人化为小港宝，用儿童视角讲清材料诞生过程；再把剧情拆成角色登场、原料加工、工程应用、环保收束四段，让知识点跟随故事自然出现。","textChars":108,"textLines":4,"bbox":[61.67,148.2,760.13,288.2]}
+{"kind":"textbox","id":"sh/d4vmtwra","slide":3,"name":"文本框 6","text":"图文证实：\n1、角色化降低理解门槛，小港宝承担讲解与情感连接。\n2、镜头从城市、工厂再回到自然，形成“材料-建设-环境”的完整逻辑。\n3、字幕、动作和表情同步强调关键步骤。","textPreview":"图文证实： | 1、角色化降低理解门槛，小港宝承担讲解与情感连接。 | 2、镜头从城市、工厂再回到自然，形成“材料-建设-环境”的完整逻辑。 | 3、字幕、动作和表情同步强调关键步骤。","textChars":86,"textLines":4,"bbox":[64.2,465.87,528,168.33]}
+{"kind":"textbox","id":"sh/psfil0rq","slide":3,"text":"角色化讲解","textPreview":"角色化讲解","textChars":5,"textLines":1,"bbox":[600,552,145,24]}
+{"kind":"textbox","id":"sh/epkzupwb","slide":3,"text":"城市与材料连接","textPreview":"城市与材料连接","textChars":7,"textLines":1,"bbox":[756,552,145,24]}
+{"kind":"image","id":"im/e9cvixcz","slide":3,"name":"图片 7","bbox":[833.87,110.4,106.8,160.2]}
+{"kind":"image","id":"im/lwval87e","slide":3,"name":"","bbox":[600,466,145,82]}
+{"kind":"image","id":"im/wb2hwfyx","slide":3,"name":"","bbox":[756,466,145,82]}
+{"kind":"notes","id":"nt/s72x4nap","slide":3,"text":""}
+{"kind":"slide","id":"sl/val87ed8","slide":4,"title":"修改人物运动和表情时，我重点使用预备动作、缓入缓出、挤压与拉伸、跟随与重叠动作。","textShapes":7}
+{"kind":"shape","id":"sh/qh0fepkz","slide":4,"name":"矩形 16","bbox":[47.27,216.93,861.27,427.6]}
+{"kind":"textbox","id":"sh/a1gvy90j","slide":4,"name":"矩形 15","text":"\n\n修改人物运动和表情时，我重点使用预备动作、缓入缓出、挤压与拉伸、跟随与重叠动作。\n小港宝的转头、张口、弹跳和手势不只服务“说话”，还要配合字幕节奏；人物表情从静态展示调整为眼神、嘴型、身体朝向一起表达。","textPreview":"|  | 修改人物运动和表情时，我重点使用预备动作、缓入缓出、挤压与拉伸、跟随与重叠动作。 | 小港宝的转头、张口、弹跳和手势不只服务“说话”，还要配合字幕节奏；人物表情从静态展示调整为眼神、嘴型、身体朝向一起表达。","textChars":103,"textLines":4,"bbox":[61.67,148.2,760.13,288.2]}
+{"kind":"textbox","id":"sh/qtcj6tov","slide":4,"name":"Rectangle 14","text":"  原画规律课程期末答辩PPT","textPreview":"原画规律课程期末答辩PPT","textChars":15,"textLines":1,"bbox":[96.67,42.5,821.83,46.5]}
+{"kind":"shape","id":"sh/87ed8bat","slide":4,"name":"圆角矩形 3","bbox":[686.56,36.82,229.75,61.04]}
+{"kind":"textbox","id":"sh/fepkzupw","slide":4,"name":"矩形 2","text":"必答问题","textPreview":"必答问题","textChars":4,"textLines":1,"bbox":[685.73,12.27,244.47,87.13]}
+{"kind":"shape","id":"sh/jqh0fepk","slide":4,"name":"圆角矩形 11","bbox":[41.53,140.8,284.6,63]}
+{"kind":"textbox","id":"sh/8bat47y1","slide":4,"name":"文本框 10","text":"知识版块：强化基础","textPreview":"知识版块：强化基础","textChars":9,"textLines":1,"bbox":[47.27,148.2,277.8,40.73]}
+{"kind":"shape","id":"sh/je9cvixc","slide":4,"name":"矩形 15","bbox":[64.2,408.93,760.13,246.87]}
+{"kind":"textbox","id":"sh/h4byhgn2","slide":4,"text":"登场动作更明确","textPreview":"登场动作更明确","textChars":7,"textLines":1,"bbox":[86,560,220,26]}
+{"kind":"textbox","id":"sh/sji5snel","slide":4,"text":"互动表情更自然","textPreview":"互动表情更自然","textChars":7,"textLines":1,"bbox":[330,560,220,26]}
+{"kind":"textbox","id":"sh/2lszqtcj","slide":4,"text":"情绪收束更完整","textPreview":"情绪收束更完整","textChars":7,"textLines":1,"bbox":[574,560,220,26]}
+{"kind":"image","id":"im/ahoza1gv","slide":4,"name":"图片 7","bbox":[833.87,110.4,106.8,160.2]}
+{"kind":"image","id":"im/l87ed8ba","slide":4,"name":"","bbox":[86,430,220,124]}
+{"kind":"image","id":"im/sneloj2t","slide":4,"name":"","bbox":[330,430,220,124]}
+{"kind":"image","id":"im/3ex0nuxc","slide":4,"name":"","bbox":[574,430,220,124]}
+{"kind":"notes","id":"nt/val87ed8","slide":4,"text":""}
+{"kind":"slide","id":"sl/mlkjm1cf","slide":5,"title":"我把课程知识整理成“叙事目标、角色动作、镜头节奏、画面反馈”四层：先确定每段要表达的知识，再检查画面是否可视化。","textShapes":8}
+{"kind":"shape","id":"sh/gn29gr2p","slide":5,"name":"矩形 16","bbox":[41.53,210.07,861.27,445.73]}
+{"kind":"textbox","id":"sh/4fu18jqh","slide":5,"name":"矩形 15","text":"\n\n我把课程知识整理成“叙事目标、角色动作、镜头节奏、画面反馈”四层：先确定每段要表达的知识，再检查画面是否可视化。\n效率提升：先用分镜锁定四段结构；迭代次数：围绕角色、流程、应用、环保逐步完善；课程成果：完成 5 分 44 秒动画短片；能力拓展：能把抽象工艺流程转化为可观看的角色叙事。","textPreview":"|  | 我把课程知识整理成“叙事目标、角色动作、镜头节奏、画面反馈”四层：先确定每段要表达的知识，再检查画面是否可视化。 | 效率提升：先用分镜锁定四段结构；迭代次数：围绕角色、流程、应用、环保逐步完善；课程成果：完成 5 分 44 秒动画短片；能力拓展：能把抽象工艺流程...","textChars":144,"textLines":4,"bbox":[61.67,148.2,760.13,221.87]}
+{"kind":"textbox","id":"sh/ovahoza1","slide":5,"name":"Rectangle 14","text":"  原画规律课程期末答辩PPT","textPreview":"原画规律课程期末答辩PPT","textChars":15,"textLines":1,"bbox":[96.67,42.5,821.83,46.5]}
+{"kind":"shape","id":"sh/6hcrmhk3","slide":5,"name":"圆角矩形 3","bbox":[686.56,36.82,229.75,61.04]}
+{"kind":"textbox","id":"sh/hcrmhk3q","slide":5,"name":"矩形 2","text":"必答问题","textPreview":"必答问题","textChars":4,"textLines":1,"bbox":[685.73,12.27,244.47,87.13]}
+{"kind":"shape","id":"sh/5wjudg7a","slide":5,"name":"圆角矩形 11","bbox":[41.53,140.8,284.6,63]}
+{"kind":"textbox","id":"sh/y90je9cv","slide":5,"name":"文本框 10","text":"能力版块：工程实践","textPreview":"能力版块：工程实践","textChars":9,"textLines":1,"bbox":[47.27,148.2,277.8,40.73]}
+{"kind":"shape","id":"sh/dg7adsji","slide":5,"name":"矩形 15","bbox":[64.2,408.93,760.13,246.87]}
+{"kind":"textbox","id":"sh/mtwra5gb","slide":5,"text":"原料","textPreview":"原料","textChars":2,"textLines":1,"bbox":[86,532,170,24]}
+{"kind":"textbox","id":"sh/0nuxc3yl","slide":5,"text":"加工","textPreview":"加工","textChars":2,"textLines":1,"bbox":[276,532,170,24]}
+{"kind":"textbox","id":"sh/p8nqxs72","slide":5,"text":"应用","textPreview":"应用","textChars":2,"textLines":1,"bbox":[466,532,170,24]}
+{"kind":"textbox","id":"sh/ih4byhgn","slide":5,"text":"环保","textPreview":"环保","textChars":2,"textLines":1,"bbox":[656,532,170,24]}
+{"kind":"image","id":"im/mp0bi9s3","slide":5,"name":"图片 7","bbox":[833.87,110.4,106.8,160.2]}
+{"kind":"image","id":"im/tsvu9kni","slide":5,"name":"","bbox":[86,430,170,96]}
+{"kind":"image","id":"im/47y1kre1","slide":5,"name":"","bbox":[276,430,170,96]}
+{"kind":"image","id":"im/bm58z25k","slide":5,"name":"","bbox":[466,430,170,96]}
+{"kind":"image","id":"im/m1cfa9w3","slide":5,"name":"","bbox":[656,430,170,96]}
+{"kind":"notes","id":"nt/mlkjm1cf","slide":5,"text":""}
+{"kind":"slide","id":"sl/58z25kb6","slide":6,"title":"作品的意义在于把水泥生产、城市建设和环保意识放进同一条故事线。","textShapes":7}
+{"kind":"shape","id":"sh/6tovahoz","slide":6,"name":"矩形 16","bbox":[41.53,210.07,861.27,445.73]}
+{"kind":"textbox","id":"sh/al87ed8b","slide":6,"name":"矩形 15","text":"\n作品的意义在于把水泥生产、城市建设和环保意识放进同一条故事线。\n小港宝既代表工程建设，也承担科普角色：它让观众看到材料科学与日常生活的连接，并引导大家理解绿色生产、节约资源、人与自然和谐相处的重要性。","textPreview":"| 作品的意义在于把水泥生产、城市建设和环保意识放进同一条故事线。 | 小港宝既代表工程建设，也承担科普角色：它让观众看到材料科学与日常生活的连接，并引导大家理解绿色生产、节约资源、人与自然和谐相处的重要性。","textChars":101,"textLines":3,"bbox":[61.67,193.73,812.53,221.87]}
+{"kind":"textbox","id":"sh/ylc7u54z","slide":6,"name":"Rectangle 14","text":"  原画规律课程期末答辩PPT","textPreview":"原画规律课程期末答辩PPT","textChars":15,"textLines":1,"bbox":[96.67,42.5,821.83,46.5]}
+{"kind":"shape","id":"sh/g3ex0nux","slide":6,"name":"圆角矩形 3","bbox":[686.56,36.82,229.75,61.04]}
+{"kind":"textbox","id":"sh/z61032ls","slide":6,"name":"矩形 2","text":"必答问题","textPreview":"必答问题","textChars":4,"textLines":1,"bbox":[685.73,12.27,244.47,87.13]}
+{"kind":"shape","id":"sh/z25kb6xk","slide":6,"name":"圆角矩形 11","bbox":[41.53,140.8,284.6,63]}
+{"kind":"textbox","id":"sh/onyd0z61","slide":6,"name":"文本框 10","text":"素质版块：服务社会","textPreview":"素质版块：服务社会","textChars":9,"textLines":1,"bbox":[47.27,148.2,277.8,40.73]}
+{"kind":"shape","id":"sh/r65wjudg","slide":6,"name":"矩形 15","bbox":[64.2,408.93,760.13,246.87]}
+{"kind":"textbox","id":"sh/5o7qpg3e","slide":6,"name":"矩形 4","text":"手写部分待补","textPreview":"手写部分待补","textChars":6,"textLines":1,"bbox":[66.05,298.13,148.64,48.47]}
+{"kind":"textbox","id":"sh/a9w3m94f","slide":6,"text":"环保意识","textPreview":"环保意识","textChars":4,"textLines":1,"bbox":[236,576,260,26]}
+{"kind":"textbox","id":"sh/hwfyxobm","slide":6,"text":"服务城市建设","textPreview":"服务城市建设","textChars":6,"textLines":1,"bbox":[526,576,260,26]}
+{"kind":"image","id":"im/loj2t83i","slide":6,"name":"图片 7","bbox":[833.87,110.4,106.8,160.2]}
+{"kind":"image","id":"im/bulwval8","slide":6,"name":"","bbox":[236,424,260,146]}
+{"kind":"image","id":"im/i9s36hcr","slide":6,"name":"","bbox":[526,424,260,146]}
+{"kind":"notes","id":"nt/58z25kb6","slide":6,"text":""}

@@ -13,6 +13,7 @@ public class CinematicEnabler : AIStateMachineLink
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (_stateMachine)
             _stateMachine.cinematicEnabled = OnExit;
     }
 }

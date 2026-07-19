@@ -1259,15 +1259,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.12
+      value: 6.27
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.28
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.39
+      value: 4.25
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1304,6 +1304,10 @@ PrefabInstance:
     - target: {fileID: 400018, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.138
+      objectReference: {fileID: 0}
+    - target: {fileID: 400026, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.21
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: e8cf23c9cf069e7448576b6ddcf6785a, type: 3}
       propertyPath: m_Enabled
@@ -3050,7 +3054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec82a6e0d21a2bf409771079420c505b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bloodParticles: {fileID: 6412267581060585244}
+  _bloodParticles: {fileID: 1571727474}
 --- !u!1 &579727323
 GameObject:
   m_ObjectHideFlags: 0
@@ -6674,7 +6678,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 34.044918, y: 0.7539509, z: 52.107517}
+  m_Size: {x: 34.044918, y: 0.7539509, z: 53.43}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &643050143
 GameObject:
@@ -7130,7 +7134,7 @@ Transform:
   m_GameObject: {fileID: 813725585}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.54, y: -0.01, z: 21.21}
+  m_LocalPosition: {x: -23.81, y: -0.01, z: 17.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7581,7 +7585,7 @@ Transform:
   m_GameObject: {fileID: 1152085047}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -18.05, y: 0.904, z: 32.61}
+  m_LocalPosition: {x: -24.37, y: 0.904, z: 18.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8199,7 +8203,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: 0.07
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!4 &1348606740 stripped
@@ -8275,6 +8279,7 @@ MonoBehaviour:
   _currentWaypoint: -1
   _currentStateType: 1
   _rootBone: {fileID: 2142885379}
+  _rootBoneAlignment: 2
   _targetTrigger: {fileID: 307651389}
   _sensorTrigger: {fileID: 1196006586}
   _fov: 180
@@ -8288,9 +8293,15 @@ MonoBehaviour:
   _upperBodyDamage: 0
   _upperBodyThreshold: 30
   _limpThreshold: 30
-  _crawlThreshold: 90
+  _crawlThreshold: 80
   _replenishRate: 1.5
   _depletionRate: 0.0015
+  _reanimationBlendTime: 1.5
+  _reanimationWaitTime: 3
+  _mecanimTransitionTime: 0
+  _geometryLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &1348606746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8318,7 +8329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _turnOnSpotThreshold: 100
   _slerpSpeed: 5
-  _speed: 0.73
+  _speed: 0.97
 --- !u!114 &1348606750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8332,6 +8343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxDuration: 10
+  _slerpSpeed: 45
   _waypointAngleThreshold: 30
   _threatAngleThreshold: 10
 --- !u!114 &1348606752
@@ -8346,7 +8358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa398bd2d30265b4383b26ec6356f8d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 1.6
+  _speed: 1.73
   _slerpSpeed: 5
   _repathDistanceMultiplier: 0.0035
   _repathVisualMinDuration: 0.05
@@ -8716,7 +8728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!199 &1571727473
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -8980,7 +8992,7 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.22012573, g: 0.054685287, b: 0.054685287, a: 1}
+      minColor: {r: 0.46540874, g: 0, b: 0, a: 1}
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
@@ -9423,7 +9435,7 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 21.78
+    angle: 19.06
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0
@@ -9623,12 +9635,12 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
   EmissionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10.34
+      scalar: 237.4
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -13523,7 +13535,7 @@ Transform:
   m_GameObject: {fileID: 1571727472}
   serializedVersion: 2
   m_LocalRotation: {x: -0.9996605, y: -0, z: -0, w: 0.026058836}
-  m_LocalPosition: {x: 1.6106691, y: 0.4737594, z: 22.497103}
+  m_LocalPosition: {x: -8.17, y: 2.636, z: 5.966}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -58590,7 +58602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!198 &6412267581060585244
 ParticleSystem:
   m_ObjectHideFlags: 0
