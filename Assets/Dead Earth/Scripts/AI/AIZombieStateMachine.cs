@@ -51,6 +51,9 @@ public class AIZombieStateMachine :AIStateMachine
     private Vector3 _ragdollFeetPosition;
     private Vector3 _ragdollHeadPosition;
 
+    private int _upperBodyLayerIndex = -1;
+    private int _lowerBodyLayerIndex = -1;
+
     private int _speedHash = Animator.StringToHash("Speed");
     private int _seekingHash = Animator.StringToHash("Seeking");
     private int _feedingHash = Animator.StringToHash("Feeding");
@@ -92,7 +95,10 @@ public class AIZombieStateMachine :AIStateMachine
     {
         base.Start();
 
-        if(_rootBone != null)
+        _upperBodyLayerIndex = animator.GetLayerIndex("Upper Body");
+        _lowerBodyLayerIndex = animator.GetLayerIndex("Lower Body");
+
+        if (_rootBone != null)
         {
             Transform[] transforms = _rootBone.GetComponentsInChildren<Transform>();
             foreach(Transform trans in transforms)
@@ -131,6 +137,21 @@ public class AIZombieStateMachine :AIStateMachine
             _animator.SetInteger(_lowerBodyDamageHash, _lowerBodyDamage);
             _animator.SetInteger(_upperBodyDamageHash, _upperBodyDamage);
             _animator.SetBool(_crawlHash, _crawling);
+
+            if (_upperBodyLayerIndex != -1)
+            {
+                // 爬行时不能覆盖基础爬行动画
+                bool upperBodyDamaged = _upperBodyDamage > _upperBodyThreshold && _lowerBodyDamage < _crawlThreshold;
+
+                animator.SetLayerWeight(_upperBodyLayerIndex, upperBodyDamaged ? 1f : 0f);
+            }
+
+            if (_lowerBodyLayerIndex != -1)
+            {
+                bool shouldLimp = _lowerBodyDamage > _limpThreshold && _lowerBodyDamage < _crawlThreshold;
+
+                animator.SetLayerWeight(_lowerBodyLayerIndex, shouldLimp ? 1f : 0f);
+            }
         }
     }
     private void StartReanimation()
@@ -181,11 +202,11 @@ public class AIZombieStateMachine :AIStateMachine
                 }
                 else if(bodyPart.CompareTag("Upper Body"))
                 {
-                    _upperBodyDamage += damage;
+                    _upperBodyDamage = Mathf.Clamp(_upperBodyDamage + damage, 0, 100);
                 }
                 else if(bodyPart.CompareTag("Lower Body"))
                 {
-                    _lowerBodyDamage += damage;
+                    _lowerBodyDamage = Mathf.Clamp(_lowerBodyDamage + damage, 0, 100);
                 }
 
                 UpdateAnimatorDamage();
