@@ -365,10 +365,7 @@ public class FPSController : MonoBehaviour
             return;
         }
 
-        _footstepAudioSource.PlayOneShot(
-            _heavyLandingClip,
-            _heavyLandingVolume
-        );
+        _footstepAudioSource.PlayOneShot(_heavyLandingClip,_heavyLandingVolume);
     }
 
     private void UpdateCursorState()

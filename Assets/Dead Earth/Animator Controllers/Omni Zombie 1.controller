@@ -349,8 +349,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 1
-  _rootRotation: 1
+  _rootPosition: 10
+  _rootRotation: 10
 --- !u!1101 &-7743186339144343571
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -546,8 +546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 100
-  _rootRotation: 100
+  _rootPosition: 1000
+  _rootRotation: 1000
 --- !u!1102 &-6707797140082544681
 AnimatorState:
   serializedVersion: 6
@@ -670,7 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!1101 &-6605052049792864416
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -768,8 +768,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 100
-  _rootRotation: 100
+  _rootPosition: 1000
+  _rootRotation: 1000
 --- !u!1101 &-6191862035170014943
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1204,6 +1204,31 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1101 &-4471906665789961424
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Crawling
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 2964300919664855541}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &-4415634695156331165
 AnimatorState:
   serializedVersion: 6
@@ -1320,7 +1345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!1101 &-4131772518162936257
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1545,7 +1570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!1101 &-2975280006859037478
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2588,7 +2613,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!1101 &869036595557039050
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2708,8 +2733,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 100
-  _rootRotation: 100
+  _rootPosition: 1000
+  _rootRotation: 1000
 --- !u!1101 &1131411577520707505
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3185,7 +3210,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1799639968124611208}
-    m_Position: {x: 370, y: 120, z: 0}
+    m_Position: {x: 300, y: 110, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -3377,7 +3402,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!1101 &2812193762823260658
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3451,6 +3476,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rootPosition: 1
   _rootRotation: 1
+--- !u!1102 &2964300919664855541
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Empty
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &2964921586905112309
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3598,8 +3649,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 100
-  _rootRotation: 100
+  _rootPosition: 1000
+  _rootRotation: 1000
 --- !u!1102 &3308954877615125792
 AnimatorState:
   serializedVersion: 6
@@ -3643,8 +3694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 1
-  _rootRotation: 1
+  _rootPosition: 10
+  _rootRotation: 10
 --- !u!1101 &3577703479620957866
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3775,7 +3826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 1
+  _rootPosition: 10
   _rootRotation: 0
 --- !u!114 &4007318755256980809
 MonoBehaviour:
@@ -3790,7 +3841,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!1102 &4097520310436088089
 AnimatorState:
   serializedVersion: 6
@@ -3983,7 +4034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 1
+  _rootPosition: 10
   _rootRotation: 0
 --- !u!114 &4963485757252704984
 MonoBehaviour:
@@ -4387,7 +4438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!114 &6250442267739464544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4469,7 +4520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPosition: 0
-  _rootRotation: -10
+  _rootRotation: -100
 --- !u!114 &6775527302080830285
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4568,8 +4619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 100
-  _rootRotation: 100
+  _rootPosition: 1000
+  _rootRotation: 1000
 --- !u!1101 &6937763899878962705
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -4935,7 +4986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 1
+  _rootPosition: 10
   _rootRotation: 0
 --- !u!114 &8130841692017148482
 MonoBehaviour:
@@ -4949,8 +5000,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 100
-  _rootRotation: 100
+  _rootPosition: 1000
+  _rootRotation: 1000
 --- !u!114 &8243703483133344735
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4963,8 +5014,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162fbe515715a5c45829676bfb8a6bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootPosition: 1
-  _rootRotation: 1
+  _rootPosition: 10
+  _rootRotation: 10
 --- !u!114 &8322280628649465430
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5162,12 +5213,16 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -7916221280711894361}
     m_Position: {x: 800, y: 200, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 2964300919664855541}
+    m_Position: {x: 30, y: 340, z: 0}
   m_ChildStateMachines: []
-  m_AnyStateTransitions: []
+  m_AnyStateTransitions:
+  - {fileID: -4471906665789961424}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_AnyStatePosition: {x: 50, y: 190, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 1060, y: 130, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}

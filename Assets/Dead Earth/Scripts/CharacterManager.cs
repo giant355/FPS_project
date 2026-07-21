@@ -5,21 +5,27 @@ using UnityEngine;
 /// </summary>
 public class CharacterManager : MonoBehaviour
 {
-    [SerializeField] private CapsuleCollider meleeTrigger = null;
-    [SerializeField] private CameraBloodEffect cameraBloodEffect = null;
+    [SerializeField] private CapsuleCollider _meleeTrigger = null;
+    [SerializeField] private CameraBloodEffect _cameraBloodEffect = null;
     [SerializeField] private Camera _camera = null;
-    [SerializeField] private float health = 100f;
+    [SerializeField] private float _health = 100f;
+    [SerializeField] private AISoundEmitter _soundEmitter = null;
 
-    private Collider playerCollider = null;
-    private FPSController fpsController = null;
+    [SerializeField] private float _walkAudioRadius = 1.2f;
+    [SerializeField] private float _runAudioRadius = 7;
+    [SerializeField] private float _landingAudioRadius = 12;
+    [SerializeField] private float _bloodRadiusScale = 6.0f;
+
+    private Collider _playerCollider = null;
+    private FPSController _fpsController = null;
     private CharacterController _characterController = null;
-    private GameSceneManager _gameSceneManager = null;
+    private GameSceneManager _gameSceneManager = null;  
     private int _aiBodyPartLayer = -1;
 
     void Start()
     {
-        playerCollider = GetComponent<Collider>();
-        fpsController = GetComponent<FPSController>();
+        _playerCollider = GetComponent<Collider>();
+        _fpsController = GetComponent<FPSController>();
         _characterController = GetComponent<CharacterController>();
         _gameSceneManager = GameSceneManager.Instance;
 
@@ -30,20 +36,20 @@ public class CharacterManager : MonoBehaviour
             PlayerInfo info = new PlayerInfo();
             info.camera = _camera;
             info.characterManager = this;
-            info.collider = playerCollider;
-            info.meleeTrigger = meleeTrigger;
+            info.collider = _playerCollider;
+            info.meleeTrigger = _meleeTrigger;
 
-            _gameSceneManager.RegisterPlayerInfo(playerCollider.GetInstanceID(), info);
+            _gameSceneManager.RegisterPlayerInfo(_playerCollider.GetInstanceID(), info);
         }
     }
     public void TakeDamage(float amount)
     {
-        health = Mathf.Max(health - amount, 0f);
+        _health = Mathf.Max(_health - amount, 0f);
 
-        if (cameraBloodEffect != null)
+        if (_cameraBloodEffect != null)
         {
-            cameraBloodEffect.MinBloodAmount = 1f - health/100f;
-            cameraBloodEffect.BloodAmount = Mathf.Min(cameraBloodEffect.MinBloodAmount + 0.3f, 1f);
+            _cameraBloodEffect.MinBloodAmount = 1f - _health/100f;
+            _cameraBloodEffect.BloodAmount = Mathf.Min(_cameraBloodEffect.MinBloodAmount + 0.3f, 1f);
         }
     }
     public void DoDamage(int hitDirection = 0)
@@ -75,6 +81,18 @@ public class CharacterManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             DoDamage();
+        }
+
+        if (_fpsController || _soundEmitter != null)
+        {
+            float newRadius = Mathf.Max(_walkAudioRadius, (100.0f - _health) / _bloodRadiusScale);
+            switch (_fpsController.movementStatus)
+            {
+                case PlayerMoveStatus.Landing: newRadius = Mathf.Max(newRadius, _landingAudioRadius); break;
+                case PlayerMoveStatus.Running: newRadius = Mathf.Max(newRadius, _runAudioRadius); break;
+            }
+
+            _soundEmitter.SetRadius(newRadius);
         }
     }
 }

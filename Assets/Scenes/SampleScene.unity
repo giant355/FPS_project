@@ -1756,6 +1756,73 @@ CapsuleCollider:
   m_Height: 0.4579366
   m_Direction: 1
   m_Center: {x: 0, y: 0.2289683, z: 0}
+--- !u!1 &265371624
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 265371627}
+  - component: {fileID: 265371626}
+  - component: {fileID: 265371625}
+  m_Layer: 13
+  m_Name: Sound Emitter
+  m_TagString: AI Sound Emitter
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &265371625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265371624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b66a17bc3068de54cbfbb26745ef3fe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _decayRate: 1
+--- !u!135 &265371626
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265371624}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.2
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &265371627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265371624}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1152085048}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &266202975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7592,6 +7659,7 @@ Transform:
   - {fileID: 1261682430}
   - {fileID: 1659835037}
   - {fileID: 747285355}
+  - {fileID: 265371627}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!143 &1152085049
@@ -7700,10 +7768,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee785e04ed2d70c468cf861c34e9f1fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meleeTrigger: {fileID: 747285356}
-  cameraBloodEffect: {fileID: 1261682432}
+  _meleeTrigger: {fileID: 747285356}
+  _cameraBloodEffect: {fileID: 1261682432}
   _camera: {fileID: 1261682431}
-  health: 100
+  _health: 100
+  _soundEmitter: {fileID: 265371625}
+  _walkAudioRadius: 1.2
+  _runAudioRadius: 7
+  _landingAudioRadius: 12
+  _bloodRadiusScale: 6
 --- !u!1 &1158111677
 GameObject:
   m_ObjectHideFlags: 0
