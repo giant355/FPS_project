@@ -10,6 +10,7 @@ public class MeleeZoneTrigger : MonoBehaviour
         if (machine)
         {
             machine.inMeleeRange = true;
+            print("4444:"+machine.inMeleeRange);
         }
     }
 

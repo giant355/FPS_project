@@ -9,6 +9,10 @@ using UnityEngine.AI;
 public class AIZombieState_Pursuit1 : AIZombieState
 {
     [SerializeField][Range(0, 10)] private float _speed = 1.0f;
+    [Header("Fast Pursuit")]
+    [SerializeField][Range(0, 10)] private float _fastSpeed = 2.5f;
+    [SerializeField][Min(0.0f)] private float _fastSpeedDistance = 5.0f;
+    [SerializeField][Range(0.0f, 180.0f)] private float _fastSpeedAngle = 30.0f;
     [SerializeField] private float _slerpSpeed = 5.0f;
 
     // --- 可见玩家的重寻路参数 ---
@@ -39,6 +43,9 @@ public class AIZombieState_Pursuit1 : AIZombieState
     private Vector3 _lastVisualRepathPosition;
     // 是否已经记录过上一次视觉玩家寻路位置；首次追到玩家时需要立即建立记录。
     private bool _hasVisualRepathPosition;
+    // Pursuit 之外的状态沿用 Prefab 上配置的 NavMeshAgent 速度。
+    private float _normalNavAgentSpeed;
+    private bool _hasNormalNavAgentSpeed;
 
     // 必须重写的方法
     public override AIStateType GetStateType() { return AIStateType.Pursuit; }
@@ -59,6 +66,12 @@ public class AIZombieState_Pursuit1 : AIZombieState
         _zombieStateMachine.feeding = false;
         _zombieStateMachine.attackType = 0;
 
+        if (_zombieStateMachine.navAgent != null)
+        {
+            _normalNavAgentSpeed = _zombieStateMachine.navAgent.speed;
+            _hasNormalNavAgentSpeed = true;
+        }
+
         // 僵尸只会追击有限时间，之后会放弃
         _timer = 0.0f;
         _repathTimer = 0.0f;
@@ -71,6 +84,15 @@ public class AIZombieState_Pursuit1 : AIZombieState
         _zombieStateMachine.navAgent.SetDestination(_zombieStateMachine.targetPosition);
         _zombieStateMachine.navAgent.isStopped = false;
 
+    }
+
+    public override void OnExitState()
+    {
+        if (_zombieStateMachine != null && _zombieStateMachine.navAgent != null && _hasNormalNavAgentSpeed)
+            _zombieStateMachine.navAgent.speed = _normalNavAgentSpeed;
+
+        _hasNormalNavAgentSpeed = false;
+        base.OnExitState();
     }
 
     // ---------------------------------------------------------------------
@@ -98,6 +120,8 @@ public class AIZombieState_Pursuit1 : AIZombieState
 
         if (_timer > _maxDuration)
             return AIStateType.Patrol;
+
+        UpdatePursuitSpeed();
 
         // 如果正在追击玩家并且进入了近战触发范围，则攻击
         if (_zombieStateMachine.targetType == AITargetType.Visual_Player && _zombieStateMachine.inMeleeRange)
@@ -265,6 +289,40 @@ public class AIZombieState_Pursuit1 : AIZombieState
 
         // 默认
         return AIStateType.Pursuit;
+    }
+
+    /// <summary>
+    /// 玩家在僵尸前方、且距离足够近时，使用更快的动画移动速度。
+    /// 只在当前追击目标和可见威胁都确认为玩家时生效，避免追最后目击点或声音时误加速。
+    /// </summary>
+    private void UpdatePursuitSpeed()
+    {
+        bool shouldUseFastSpeed = false;
+        bool isChasingVisiblePlayer =
+            _zombieStateMachine.targetType == AITargetType.Visual_Player &&
+            _zombieStateMachine.VisualThreat.AITargetType == AITargetType.Visual_Player;
+
+        if (isChasingVisiblePlayer)
+        {
+            Vector3 toPlayer = _zombieStateMachine.VisualThreat.position - _zombieStateMachine.transform.position;
+            toPlayer.y = 0.0f;
+
+            float maxDistanceSqr = _fastSpeedDistance * _fastSpeedDistance;
+            if (toPlayer.sqrMagnitude > Mathf.Epsilon && toPlayer.sqrMagnitude <= maxDistanceSqr)
+            {
+                Vector3 forward = _zombieStateMachine.transform.forward;
+                forward.y = 0.0f;
+
+                float angleToPlayer = Vector3.Angle(forward, toPlayer);
+                if (angleToPlayer <= _fastSpeedAngle)
+                    shouldUseFastSpeed = true;
+            }
+        }
+
+        _zombieStateMachine.speed = shouldUseFastSpeed ? _fastSpeed : _speed;
+
+        if (_zombieStateMachine.navAgent != null && _hasNormalNavAgentSpeed)
+            _zombieStateMachine.navAgent.speed = shouldUseFastSpeed ? _fastSpeed : _normalNavAgentSpeed;
     }
 
     /// <summary>

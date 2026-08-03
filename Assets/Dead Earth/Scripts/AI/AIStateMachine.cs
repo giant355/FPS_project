@@ -50,7 +50,7 @@ public abstract class AIStateMachine : MonoBehaviour
     protected int _rootPositionRefCount = 0;
     protected int _rootRotationRefCount = 0;
 
-    [SerializeField][Range(0, 10)] public float _stoppingDistance;
+    [SerializeField][Range(0, 10)] public float _stoppingDistance = 0.95f;
     [SerializeField] protected AIWayPointNetwork _waypointNetwork = null;
     [SerializeField] protected bool _randomPatrol = false;
     [SerializeField] protected int _currentWaypoint = -1;
@@ -135,19 +135,7 @@ public abstract class AIStateMachine : MonoBehaviour
         _navAgent = GetComponent<NavMeshAgent>();
         _aiBodyPartLayer = LayerMask.NameToLayer("AI Body Part");
 
-        if(GameSceneManager.Instance != null)
-        {
-            if(_collider)GameSceneManager.Instance.RegisterAIStateMachine(_collider.GetInstanceID(),this);
-            if(_sensorTrigger)GameSceneManager.Instance.RegisterAIStateMachine(_sensorTrigger.GetInstanceID(),this);
-            // -------------------------------------------------------------------------
-            // BUG修复：原代码只注册了Collider和SensorTrigger的ID，但ColliderIsVisible中
-            // 通过hit.rigidbody.GetInstanceID()查询。Collider和Rigidbody是不同的Component，
-            // 其GetInstanceID()不同，导致本僵尸的身体部件永远查不到匹配，无法过滤自身遮挡。
-            // 修复：额外用根Transform的ID注册，查询时用hit.transform.root.GetInstanceID()。
-            // 同一僵尸层级下的所有组件共享同一个root Transform，可正确匹配。
-            // -------------------------------------------------------------------------
-            GameSceneManager.Instance.RegisterAIStateMachine(transform.root.GetInstanceID(), this);
-        }
+       
         if(_rootBone != null)
         {
             Rigidbody[] bodies = _rootBone.GetComponentsInChildren<Rigidbody>();
@@ -162,7 +150,21 @@ public abstract class AIStateMachine : MonoBehaviour
     }
     protected virtual void Start()
     {
-        if(_sensorTrigger!=null)
+        if (GameSceneManager.Instance != null)
+        {
+            if (_collider) GameSceneManager.Instance.RegisterAIStateMachine(_collider.GetInstanceID(), this);
+            if (_sensorTrigger) GameSceneManager.Instance.RegisterAIStateMachine(_sensorTrigger.GetInstanceID(), this);
+            // -------------------------------------------------------------------------
+            // BUG修复：原代码只注册了Collider和SensorTrigger的ID，但ColliderIsVisible中
+            // 通过hit.rigidbody.GetInstanceID()查询。Collider和Rigidbody是不同的Component，
+            // 其GetInstanceID()不同，导致本僵尸的身体部件永远查不到匹配，无法过滤自身遮挡。
+            // 修复：额外用根Transform的ID注册，查询时用hit.transform.root.GetInstanceID()。
+            // 同一僵尸层级下的所有组件共享同一个root Transform，可正确匹配。
+            // -------------------------------------------------------------------------
+            GameSceneManager.Instance.RegisterAIStateMachine(transform.root.GetInstanceID(), this);
+        }
+
+        if (_sensorTrigger!=null)
         {
             AISensor script=_sensorTrigger.GetComponent<AISensor>();
             if (script!=null)
@@ -374,5 +376,16 @@ public abstract class AIStateMachine : MonoBehaviour
     }
 
     public virtual void TakeDamage(Vector3 position, Vector3 force, int damage, Rigidbody bodyPart, CharacterManager characterManager, int hitDirection = 0) { }
-    
+
+    public void SetStateOverride(AIStateType state)
+    {
+        if (state == _currentStateType || !_states.TryGetValue(state, out AIState newState)) return;
+
+        if (_currentState != null)
+            _currentState.OnExitState();
+
+        _currentState = newState;
+        _currentStateType = state;
+        _currentState.OnEnterState();
+    }
 }

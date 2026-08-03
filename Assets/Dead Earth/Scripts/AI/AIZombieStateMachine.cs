@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public enum AIBoneControlType { Animated , Ragdoll , RagdollToAnim}
+public enum AIScreamPosition{ Entity, Player}
 public class BodyPartSnapshot
 {
     public Transform transform = null;
@@ -36,6 +37,11 @@ public class AIZombieStateMachine :AIStateMachine
 
     [SerializeField] private LayerMask _geometryLayers = -1;
 
+    [SerializeField][Range(0, 1)] private float _screamChance = 1.0f;
+    [SerializeField] private float _screamRadius = 20.0f;
+    [SerializeField] private AIScreamPosition _screamPosition = AIScreamPosition.Entity;
+    [SerializeField] private AISoundEmitter _screamPrefab = null;
+
     private IEnumerator _reanimationCoroutine = null;
 
     private int _seeking = 0;
@@ -43,6 +49,8 @@ public class AIZombieStateMachine :AIStateMachine
     private float _speed = 0;
     private bool _feeding = false;
     private bool _crawling = false;
+    private float _isScreaming = 0;
+    private float _screamTimer = 10;
 
     private AIBoneControlType _boneControlType = AIBoneControlType.Animated;
     private List<BodyPartSnapshot> _bodyPartSnapShots = new List<BodyPartSnapshot>();
@@ -65,6 +73,9 @@ public class AIZombieStateMachine :AIStateMachine
     private int _upperBodyDamageHash = Animator.StringToHash("Upper Body Damage");
     private int _reanimateFromBackHash = Animator.StringToHash("Reanimate From Back");
     private int _reanimateFromFrontHash = Animator.StringToHash("Reanimate From Front");
+    private int _stateHash = Animator.StringToHash("State");
+    private int _screamHash = Animator.StringToHash("Scream");
+    private int _screamingHash = Animator.StringToHash("Screaming");
     public float fov { get { return _fov; } }
     public float hearing { get { return _hearing; } }
     public float sight { get { return _sight; } }
@@ -91,6 +102,29 @@ public class AIZombieStateMachine :AIStateMachine
     {
         get { return (_lowerBodyDamage >= _crawlThreshold); }
     }
+    public bool isScreaming
+    {
+        get { return _isScreaming > 0.1f; }
+    }
+    public float screamChance
+    {
+        get { return _screamChance; }
+    }
+    public bool Scream() 
+    {
+        if (isScreaming) return true;
+        if (!animator || !_screamPrefab || cinematicEnabled || _screamTimer < 60) { return false; }
+
+        _screamTimer = 0;
+
+        _animator.SetTrigger(_screamHash);
+        Vector3 spawnPos = _screamPosition == AIScreamPosition.Entity ? transform.position : VisualThreat.position;
+        AISoundEmitter screamEmitter = Instantiate( _screamPrefab, spawnPos, Quaternion.identity ) as AISoundEmitter;
+        
+        if( screamEmitter != null ) 
+            screamEmitter.SetRadius( _screamRadius );
+        return true;
+    }
     protected override void Start()
     {
         base.Start();
@@ -114,6 +148,9 @@ public class AIZombieStateMachine :AIStateMachine
     protected override void Update()
     {
         base.Update();
+
+        _screamTimer += Time.deltaTime;
+
         //print("VisualThreat:"+VisualThreat.AITargetType);
         if (_animator != null)
         {
@@ -121,6 +158,9 @@ public class AIZombieStateMachine :AIStateMachine
             _animator.SetBool(_feedingHash, _feeding);
             _animator.SetInteger(_seekingHash, _seeking);
             _animator.SetInteger(_attackHash, _attackType);
+            _animator.SetInteger(_stateHash, (int)_currentStateType);
+            //½©Ê¬ÔÚ¼â½ÐÂð£¿
+            _isScreaming = _cinematicEnabled?0.0f:_animator.GetFloat(_screamingHash);
         }
 
         _satisfaction = Mathf.Max(0,_satisfaction -  depletionRate * Time.deltaTime * Mathf.Pow(_speed,3));
@@ -272,9 +312,9 @@ public class AIZombieStateMachine :AIStateMachine
             else
             if (bodyPart.gameObject.CompareTag("Upper Body"))
             {
-                if (angle < -20 || hitDirection == -1) hitType = 4;
+                if (angle < -15 || hitDirection == -1) hitType = 4;
                 else
-                if (angle > 20 || hitDirection == 1)   hitType = 6;
+                if (angle > 15 || hitDirection == 1)   hitType = 6;
                 else
                                                        hitType = 5;
             }

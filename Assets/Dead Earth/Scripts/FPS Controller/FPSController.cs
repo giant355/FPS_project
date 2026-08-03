@@ -41,16 +41,14 @@ public class FPSController : MonoBehaviour
     [SerializeField] private float _runHeadBobMultiplier = 1.35f;
     [SerializeField] private float _crouchHeadBobMultiplier = 0.65f;
 
-    [Header("FootstepsAudio")]
-    [SerializeField] private AudioSource _footstepAudioSource;
-    [SerializeField] private AudioClip[] _footstepClips;
+    [Header("Footsteps Audio")]
+    [SerializeField] private AudioCollection _footsteps;
     [Range(0f, 1f)]
-    [SerializeField] private float _footstepVolume = 0.7f;
-    [SerializeField] private Vector2 _footstepPitchRange = new Vector2(0.95f, 1.05f);
+    [SerializeField] private float _crouchAttenuation = 0.2f;
 
-    [Header("Landing Audio")]
-    [SerializeField] private AudioClip _heavyLandingClip;
-    [SerializeField] private float _heavyLandingVolume = 1f;
+    //[Header("Landing Audio")]
+    //[SerializeField] private AudioClip _heavyLandingClip;
+    //[SerializeField] private float _heavyLandingVolume = 1f;
 
     [Header("Flashlight")]
     [SerializeField] private GameObject _flashlight;
@@ -81,21 +79,45 @@ public class FPSController : MonoBehaviour
     private Vector3 _headBobOffset;
     private Vector3 _currentCameraBasePosition;
 
+    // 当前实际速度倍率：1 = 正常，0 = 停住
+    private float _dragMultiplier = 1f;
+    // 阻力恢复时允许达到的最大倍率：低生命值时会小于 1
+    private float _dragMultiplierLimit = 1f;
+    // 撞到僵尸的瞬间的减速比例
+    [SerializeField, Range(0f, 1f)] private float _npcStickiness = 0.5f;
+
     //记录上一次播放的是哪一个音效
     private int _lastFootstepIndex;
 
     public PlayerMoveStatus movementStatus => _movementStatus;
     public float walkSpeed => _walkSpeed;
     public float runSpeed => _runSpeed;
+    public event System.Action<float> HeavyLanded;
+
+    public CharacterController characterController
+    {
+        get { return _characterController; }
+    }
+    public float dragMultiplierLimit
+    {
+        get { return _dragMultiplierLimit; }
+        set
+        {
+            _dragMultiplierLimit = Mathf.Clamp(value, 0f, 1f);
+        }
+    }
+
+    public float dragMultiplier
+    {
+        get { return _dragMultiplier; }
+        set
+        {
+            _dragMultiplier = Mathf.Min(value, _dragMultiplierLimit);
+        }
+    }
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-
-        if (_footstepAudioSource == null)
-        {
-            _footstepAudioSource =
-                GetComponentInChildren<AudioSource>();
-        }
 
         _groundMask = LayerMask.GetMask("Default");
 
@@ -137,6 +159,9 @@ public class FPSController : MonoBehaviour
         UpdateMovementStatus();
         UpdateHeadBob();
         UpdateFlashlight();
+
+        //每秒让 _dragMultiplier 增加约 1，但最高只恢复到 _dragMultiplierLimit
+        _dragMultiplier = Mathf.Min(_dragMultiplier + Time.deltaTime, _dragMultiplierLimit);
     }
     private void ReadInput()
     {
@@ -188,7 +213,7 @@ public class FPSController : MonoBehaviour
             desiredMove = Vector3.ProjectOnPlane(desiredMove, groundNormal).normalized * normalizedInput.magnitude;
         }
 
-        Vector3 groundVelocity = desiredMove * currentSpeed;
+        Vector3 groundVelocity = desiredMove * currentSpeed * _dragMultiplier;
 
         // 只有在地面上且没有蹲下才能跳跃
         if (isGrounded && !_isCrouching && Input.GetButtonDown("Jump"))
@@ -285,21 +310,16 @@ public class FPSController : MonoBehaviour
     private void UpdateFootsteps()
     {
         int footstepIndex = Mathf.FloorToInt(_headBobPhase / Mathf.PI);
-
-        if (footstepIndex == _lastFootstepIndex)
-            return;
+        if (footstepIndex == _lastFootstepIndex) return;
 
         _lastFootstepIndex = footstepIndex;
+        if (_footsteps == null) return;
 
-        if (_isCrouching)
-            return;
+        AudioClip soundToPlay = _isCrouching ? _footsteps[1] : _footsteps[0];
+        if (soundToPlay == null) return;
 
-        if (_footstepAudioSource == null || _footstepClips == null || _footstepClips.Length == 0)
-            return;
-
-        AudioClip clip = _footstepClips[Random.Range(0, _footstepClips.Length)];
-        _footstepAudioSource.pitch = Random.Range(_footstepPitchRange.x, _footstepPitchRange.y);
-        _footstepAudioSource.PlayOneShot(clip, _footstepVolume);
+        float volume = _isCrouching ? _footsteps.volume * _crouchAttenuation : _footsteps.volume;
+        AudioManager.Instance.PlayOneShotSound(_footsteps.audioGroup, soundToPlay, transform.position, volume, _footsteps.spatialBlend, _footsteps.priority);
     }
 
     private void UpdateCrouch()
@@ -360,13 +380,32 @@ public class FPSController : MonoBehaviour
     {
         Debug.Log($"重落地，落地速度：{landingSpeed:F2} m/s");
 
-        if(_heavyLandingClip == null || _footstepAudioSource == null)
-        {
-            return;
-        }
+        // Notify AI independently of the audio setup so this event is never lost to frame order.
+        if (HeavyLanded != null)
+            HeavyLanded(landingSpeed);
 
-        _footstepAudioSource.PlayOneShot(_heavyLandingClip,_heavyLandingVolume);
+        if (_footsteps == null)
+            return;
+
+        AudioClip soundToPlay = _footsteps[0];
+        if (soundToPlay == null)
+            return;
+
+        AudioManager.Instance.PlayOneShotSound(
+            _footsteps.audioGroup,
+            soundToPlay,
+            transform.position,
+            _footsteps.volume * 1.3f,
+            _footsteps.spatialBlend,
+            _footsteps.priority
+        );
     }
+    public void DoStickyiness()
+    {
+            dragMultiplier = 1f - _npcStickiness;
+    }
+        
+    
 
     private void UpdateCursorState()
     {

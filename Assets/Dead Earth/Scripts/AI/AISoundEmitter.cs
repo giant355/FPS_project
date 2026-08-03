@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AISoundEmitter : MonoBehaviour
@@ -18,8 +19,13 @@ public class AISoundEmitter : MonoBehaviour
     private float _interpolator = 0f;
     //进度增长速度；后面会根据 decayRate 算出来
     private float _interpolatorSpeed = 0f;
-    private void Start()
+    private void Awake()
     {
+        //Bug修复：
+        //AIzombieStateMachine的Instantiate() 创建 AI Sound Emitter；
+        //Scream() 马上调用 screamEmitter.SetRadius(_screamRadius)，例如设为 20；
+        //但新物体的 Start() 还没执行；
+        //下一帧前 Unity 执行 AISoundEmitter.Start()，它又把半径初始化为 Sphere Collider 预制体上的默认值，例如 0.5；
         _collider = GetComponent<SphereCollider>();
         if (!_collider) return;
 

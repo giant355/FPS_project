@@ -14,8 +14,11 @@ public class AIZombieState_Alerted1 : AIZombieState
     /// 面对威胁的对准范围角
     /// </summary>
     [SerializeField] float _threatAngleThreshold = 10.0f;
+    [SerializeField] float _directionChangeTime = 1.5f;
 
     float _timer=0;
+    float _directionChangeTimer = 0.0f;
+    float _screamChance = 0.0f;
     public override AIStateType GetStateType()
     {
 		return AIStateType.Alerted;
@@ -35,17 +38,30 @@ public class AIZombieState_Alerted1 : AIZombieState
         _zombieStateMachine.attackType = 0;
 
         _timer = _maxDuration;
+        _directionChangeTimer = 0.0f;
+        _screamChance = _zombieStateMachine.screamChance - Random.value;
     }
 
     public override AIStateType OnUpdate()
     {
         _timer -= Time.deltaTime;
+        _directionChangeTimer += Time.deltaTime;
         //如果_timer<0,重新patrol
         if (_timer <= 0.0f) { print("333"); return AIStateType.Patrol; }
         //看到玩家，直接pursuit
         if (_zombieStateMachine.VisualThreat.AITargetType == AITargetType.Visual_Player)
         {
             _zombieStateMachine.SetTarget(_zombieStateMachine.VisualThreat);
+
+            if(_screamChance > 0)
+            { 
+                if ( _zombieStateMachine.Scream() )
+                {
+                    _screamChance = float.MinValue;
+                    return AIStateType.Alerted;
+                }
+            }
+
             return AIStateType.Pursuit;
         }
         //没看到玩家，但听到声音，继续Alerted，重置时间
@@ -62,7 +78,8 @@ public class AIZombieState_Alerted1 : AIZombieState
         }
         //食物最低优先级
         if (_zombieStateMachine.AudioThreat.AITargetType == AITargetType.None &&
-            _zombieStateMachine.VisualThreat.AITargetType == AITargetType.Visual_Food)
+            _zombieStateMachine.VisualThreat.AITargetType == AITargetType.Visual_Food&&
+            _zombieStateMachine.targetType == AITargetType.None)
         {
             _zombieStateMachine.SetTarget(_zombieStateMachine.VisualThreat);
             return AIStateType.Pursuit;
@@ -80,14 +97,19 @@ public class AIZombieState_Alerted1 : AIZombieState
                 return AIStateType.Pursuit;
             }
             //智力水平较高，更加可能按照正确方向转身
-            if (Random.value < _zombieStateMachine.intelligence)
+            if (_directionChangeTimer > _directionChangeTime)
             {
-                _zombieStateMachine.seeking = (int)Mathf.Sign(angle);
-            }
-            //智力水平低，更可能随机转身
-            else
-            {
-                _zombieStateMachine.seeking = (int)Mathf.Sign(Random.Range(-1.0f, 1.0f));
+                if (Random.value < _zombieStateMachine.intelligence)
+                {
+                    _zombieStateMachine.seeking = (int)Mathf.Sign(angle);
+                }
+                //智力水平低，更可能随机转身
+                else
+                {
+                    _zombieStateMachine.seeking = (int)Mathf.Sign(Random.Range(-1.0f, 1.0f));
+                }
+
+                _directionChangeTimer = 0.0f;
             }
         }
         else
@@ -97,11 +119,21 @@ public class AIZombieState_Alerted1 : AIZombieState
                                             _zombieStateMachine.navAgent.steeringTarget - _zombieStateMachine.transform.position);
             //与wayPoint夹角小于waypointAngleThreshold，直接巡逻
             if (Mathf.Abs(angle) < _waypointAngleThreshold) { return AIStateType.Patrol; }
-            _zombieStateMachine.seeking = (int)Mathf.Sign(angle);
+            if (_directionChangeTimer > _directionChangeTime)
+            {
+                _zombieStateMachine.seeking = (int)Mathf.Sign(angle);
+                _directionChangeTimer = 0.0f;
+            }
         }
 
         // 爬行动画没有左右转身 Root Motion；寻路时由状态本身原地旋转。
         // seeking 为 -1/1，分别表示左转/右转；速度单位是度/秒。
+        else if (_directionChangeTimer > _directionChangeTime)
+        {
+            _zombieStateMachine.seeking = (int)Mathf.Sign(Random.Range(-1.0f, 1.0f));
+            _directionChangeTimer = 0.0f;
+        }
+
         if (!_zombieStateMachine.useRootRotation && _zombieStateMachine.seeking != 0)
         {
             _zombieStateMachine.transform.Rotate(
