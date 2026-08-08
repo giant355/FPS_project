@@ -23,6 +23,7 @@ public class AudioPoolItem
 public class AudioManager : MonoBehaviour
 {
     private static AudioManager _instance;
+    private List<LayeredAudioSource> _layeredAudios = new List<LayeredAudioSource>();
 
     [SerializeField] AudioMixer _mixer = null;
     [SerializeField] int _maxSounds = 10;
@@ -99,6 +100,14 @@ public class AudioManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         _listenerPos = FindAnyObjectByType<AudioListener>().transform;
+    }
+
+    void Update()
+    {
+        foreach (LayeredAudioSource layeredAudio in _layeredAudios)
+        {
+            if (layeredAudio != null) layeredAudio.Update();
+        }
     }
 
     public float GetTrackVolume(string track)
@@ -261,9 +270,55 @@ public class AudioManager : MonoBehaviour
         return 0;
     }
 
-    public IEnumerator PlayOneShotSound(string track, AudioClip clip, Vector3 position, float volume, float spatialBlend, float duration, int priority = 128)
+    public IEnumerator PlayOneShotSoundDelayed(string track, AudioClip clip, Vector3 position, float volume, float spatialBlend, float duration, int priority = 128)
     {
         yield return new WaitForSeconds(duration);
         PlayOneShotSound(track, clip, position, volume, spatialBlend, priority);
+    }
+
+    public ILayeredAudioSource RegisterLayeredAudioSource(AudioSource source, int layers)
+    {
+        if (source == null || layers <= 0) return null;
+
+        //已经被注册过的AudioSource直接返回对应的LayeredAudioSource
+        foreach (LayeredAudioSource layeredAudioSource in _layeredAudios)
+        {
+            if (layeredAudioSource != null && layeredAudioSource.audioSource == source) return layeredAudioSource;
+        }
+
+        LayeredAudioSource newLayeredAudio = new LayeredAudioSource(source, layers);
+        _layeredAudios.Add(newLayeredAudio);
+
+        return newLayeredAudio;
+    }
+
+    /// <summary>
+    /// 注销只是让 AudioManager 停止管理它，不会主动销毁 NPC 的 AudioSource
+    /// </summary>
+    /// <param name="source"></param>
+    public void UnregisterLayeredAudioSource(ILayeredAudioSource source)
+    {
+        LayeredAudioSource layeredAudioSource = source as LayeredAudioSource;
+        if (layeredAudioSource != null) _layeredAudios.Remove(layeredAudioSource);
+    }
+
+    /// <summary>
+    /// 通过AudioSource注销 LayeredAudioSource，注销只是让 AudioManager 停止管理它，不会主动销毁 NPC 的 AudioSource
+    /// </summary>
+    /// <param name="source"></param>
+    public void UnregisterLayeredAudioSource(AudioSource source)
+    {
+        if (source == null) return;
+
+        for (int i = 0; i < _layeredAudios.Count; i++)
+        {
+            LayeredAudioSource layeredAudioSource = _layeredAudios[i];
+
+            if (layeredAudioSource != null && layeredAudioSource.audioSource == source)
+            {
+                _layeredAudios.RemoveAt(i);
+                return;
+            }
+        }
     }
 }

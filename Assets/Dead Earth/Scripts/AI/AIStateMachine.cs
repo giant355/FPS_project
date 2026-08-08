@@ -62,7 +62,8 @@ public abstract class AIStateMachine : MonoBehaviour
     
     protected List<Rigidbody> _bodyParts = new List<Rigidbody>();
     protected int _aiBodyPartLayer = -1;
-    protected bool _cinematicEnabled = false;
+    //对应的动画层是否激�?
+    protected Dictionary<string,bool> _animLayersActive = new Dictionary<string, bool>();
     /// <summary>
     /// 是否到达
     /// </summary>
@@ -95,7 +96,7 @@ public abstract class AIStateMachine : MonoBehaviour
         }
     }
     /// <summary>
-    /// 当前_target的类型
+    /// 当前_target的类�?
     /// </summary>
 	public AITargetType		targetType 	   { get { return _target.AITargetType; }}
     public Vector3 targetPosition { get { return _target.position; } }
@@ -104,7 +105,7 @@ public abstract class AIStateMachine : MonoBehaviour
     public bool useRootRotation { get { return _rootRotationRefCount > 0; }}
     public bool isTargetReached { get { return _isTargetReached; } }
     /// <summary>
-    /// 近战范围内
+    /// 近战范围�?
     /// </summary>
     public bool inMeleeRange { get; set; }
     public int targetColliderID
@@ -117,15 +118,21 @@ public abstract class AIStateMachine : MonoBehaviour
                 return -1;
         }
     }
-    /// <summary>
-    /// 代表cinematic层开始播放特殊动画
-    /// </summary>
-    public bool cinematicEnabled
+
+    public void SetLayerActive(string layerName, bool active)
     {
-        get { return _cinematicEnabled; }
-        set { _cinematicEnabled = value;}
+        _animLayersActive[layerName] = active;
     }
 
+    public bool IsLayerActive(string layerName)
+    {
+        bool result;
+        if (_animLayersActive.TryGetValue(layerName, out result))
+        {
+            return result;
+        }
+        return false;
+    }
     // Start is called before the first frame update
     protected virtual void Awake()
     {
@@ -155,11 +162,11 @@ public abstract class AIStateMachine : MonoBehaviour
             if (_collider) GameSceneManager.Instance.RegisterAIStateMachine(_collider.GetInstanceID(), this);
             if (_sensorTrigger) GameSceneManager.Instance.RegisterAIStateMachine(_sensorTrigger.GetInstanceID(), this);
             // -------------------------------------------------------------------------
-            // BUG修复：原代码只注册了Collider和SensorTrigger的ID，但ColliderIsVisible中
-            // 通过hit.rigidbody.GetInstanceID()查询。Collider和Rigidbody是不同的Component，
-            // 其GetInstanceID()不同，导致本僵尸的身体部件永远查不到匹配，无法过滤自身遮挡。
-            // 修复：额外用根Transform的ID注册，查询时用hit.transform.root.GetInstanceID()。
-            // 同一僵尸层级下的所有组件共享同一个root Transform，可正确匹配。
+            // BUG修复：原代码只注册了Collider和SensorTrigger的ID，但ColliderIsVisible�?
+            // 通过hit.rigidbody.GetInstanceID()查询。Collider和Rigidbody是不同的Component�?
+            // 其GetInstanceID()不同，导致本僵尸的身体部件永远查不到匹配，无法过滤自身遮挡�?
+            // 修复：额外用根Transform的ID注册，查询时用hit.transform.root.GetInstanceID()�?
+            // 同一僵尸层级下的所有组件共享同一个root Transform，可正确匹配�?
             // -------------------------------------------------------------------------
             GameSceneManager.Instance.RegisterAIStateMachine(transform.root.GetInstanceID(), this);
         }
@@ -257,7 +264,7 @@ public abstract class AIStateMachine : MonoBehaviour
     {
         if (_currentState == null) return;
 
-        // 可视化 desiredVelocity（黄线）和 steeringTarget（蓝点）
+        // 可视�?desiredVelocity（黄线）�?steeringTarget（蓝点）
         if (_navAgent)
         {
             Debug.DrawRay(transform.position, _navAgent.desiredVelocity, Color.yellow);

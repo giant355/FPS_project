@@ -113,7 +113,7 @@ public class AIZombieStateMachine :AIStateMachine
     public bool Scream() 
     {
         if (isScreaming) return true;
-        if (!animator || !_screamPrefab || cinematicEnabled || _screamTimer < 60) { return false; }
+        if (!animator || !_screamPrefab || IsLayerActive("Cinematic") || _screamTimer < 60) { return false; }
 
         _screamTimer = 0;
 
@@ -160,7 +160,7 @@ public class AIZombieStateMachine :AIStateMachine
             _animator.SetInteger(_attackHash, _attackType);
             _animator.SetInteger(_stateHash, (int)_currentStateType);
             //僵尸在尖叫吗？
-            _isScreaming = _cinematicEnabled?0.0f:_animator.GetFloat(_screamingHash);
+            _isScreaming = IsLayerActive("Cinematic") ? 0.0f:_animator.GetFloat(_screamingHash);
         }
 
         _satisfaction = Mathf.Max(0,_satisfaction -  depletionRate * Time.deltaTime * Mathf.Pow(_speed,3));
@@ -192,6 +192,18 @@ public class AIZombieStateMachine :AIStateMachine
 
                 animator.SetLayerWeight(_lowerBodyLayerIndex, shouldLimp ? 1f : 0f);
             }
+
+            if (_lowerBodyDamage > _limpThreshold && _lowerBodyDamage < _crawlThreshold) 
+                //表示当Lower Body层在播放特殊动画
+                SetLayerActive("Lower Body", true);
+            else
+                SetLayerActive("Lower Body", false);
+
+            if(_upperBodyDamage > _upperBodyThreshold && _lowerBodyDamage < _crawlThreshold)
+                //表示当Upper Body层在播放特殊动画
+                SetLayerActive("Upper Body", true);
+            else
+                SetLayerActive("Upper Body", false);
         }
     }
     private void StartReanimation()
@@ -287,7 +299,7 @@ public class AIZombieStateMachine :AIStateMachine
 
         }
 
-        if(_boneControlType != AIBoneControlType.Animated || isCrawling || cinematicEnabled || attackerLocPos.z<0)
+        if(_boneControlType != AIBoneControlType.Animated || isCrawling || IsLayerActive("Cinematic") || attackerLocPos.z<0)
         {
             shouldRagdoll = true;
         }
@@ -443,7 +455,7 @@ public class AIZombieStateMachine :AIStateMachine
 
         if (Time.time <= _ragdollEndTime + _mecanimTransitionTime)
         {
-            print("SUCCESS");
+            //print("SUCCESS");
             Vector3 animatedToRagdoll = _ragdollHipPosition - _rootBone.position;
             Vector3 newRootPosition = transform.position + animatedToRagdoll;
 
@@ -499,11 +511,7 @@ public class AIZombieStateMachine :AIStateMachine
             }
             else
             {
-                snapshot.transform.localRotation = Quaternion.Slerp(
-                    snapshot.localRotation,
-                    snapshot.transform.localRotation,
-                    blendAmount
-                );
+                snapshot.transform.localRotation = Quaternion.Slerp(snapshot.localRotation, snapshot.transform.localRotation, blendAmount);
             }
         }
 

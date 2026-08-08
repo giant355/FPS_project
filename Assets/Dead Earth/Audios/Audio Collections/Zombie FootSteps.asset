@@ -13,16 +13,24 @@ MonoBehaviour:
   m_Name: Zombie FootSteps
   m_EditorClassIdentifier: 
   _audioGroup: Zombies
-  _volume: 0.176
+  _volume: 0.247
   _spatialBlend: 1
   _priority: 128
   _audioClipBanks:
   - Clips:
-    - {fileID: 8300000, guid: 2f7ff3e6a7770744ca2fac10b687fdfc, type: 3}
-    - {fileID: 8300000, guid: 3e0bb478cd383a047a012ab08278a3be, type: 3}
-    - {fileID: 8300000, guid: 1c2420f5697db9e4c93225364b611c54, type: 3}
-    - {fileID: 8300000, guid: 461bc7eb02bf344499944cb869d756ed, type: 3}
-    - {fileID: 8300000, guid: ce0bf7bfea5cdba48be7d1cca6ec922a, type: 3}
+    - {fileID: 8300000, guid: be16aef6736fab2448c0528fbcaa4a1d, type: 3}
+    - {fileID: 8300000, guid: 1710820f85b1374478142ae69f188263, type: 3}
+    - {fileID: 8300000, guid: eb96b4b59d21bdb4e8f6b87dfac6dc96, type: 3}
+    - {fileID: 8300000, guid: 23f7c45744e61c54898953b58872c42c, type: 3}
+    - {fileID: 8300000, guid: bf5b29a6731e91e46a85d5a179d79647, type: 3}
+    - {fileID: 8300000, guid: 8cfface1f93a42b4a8684e070f689443, type: 3}
+    - {fileID: 8300000, guid: 66e2821abda673845ab6a4a9bb2a5f91, type: 3}
+    - {fileID: 8300000, guid: ae812cf0378b80c48a2f7a13a8b4e2f5, type: 3}
+    - {fileID: 8300000, guid: 1096054c06d5c3b40a7a3cd32168a6ff, type: 3}
+    - {fileID: 8300000, guid: 493c7b9ecf7aceb4d8bf54b58715d05c, type: 3}
+    - {fileID: 8300000, guid: d0db5c06ab7f1074fae5a7a63fbcc651, type: 3}
   - Clips:
-    - {fileID: 8300000, guid: 69c0d5675679cb643809aae4c957d552, type: 3}
-    - {fileID: 8300000, guid: 4ce6d6b580631b94eb15fbb3158e3456, type: 3}
+    - {fileID: 8300000, guid: d7e8a901c5bb2224b89ea51fc1115f0d, type: 3}
+    - {fileID: 8300000, guid: cb21ae4da14205643aa7e2f029360bd0, type: 3}
+    - {fileID: 8300000, guid: 7cab3db51160d4c4593cf6a111a813e0, type: 3}
+    - {fileID: 8300000, guid: 741508790174e1b429a094ea819fce9d, type: 3}
