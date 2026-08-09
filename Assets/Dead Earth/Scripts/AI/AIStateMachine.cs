@@ -62,11 +62,9 @@ public abstract class AIStateMachine : MonoBehaviour
     
     protected List<Rigidbody> _bodyParts = new List<Rigidbody>();
     protected int _aiBodyPartLayer = -1;
-    //å¯¹åº”çš„åŠ¨ç”»å±‚æ˜¯å¦æ¿€æ´?
+    //µ±Ç°²ãÊÇ·ñÔÚ²¥·ÅÌØÊâ¶¯»­
     protected Dictionary<string,bool> _animLayersActive = new Dictionary<string, bool>();
-    /// <summary>
-    /// æ˜¯å¦åˆ°è¾¾
-    /// </summary>
+    protected ILayeredAudioSource _layeredAudioSource = null;
     protected bool _isTargetReached = false;
 
     protected Animator _animator = null;
@@ -96,7 +94,7 @@ public abstract class AIStateMachine : MonoBehaviour
         }
     }
     /// <summary>
-    /// å½“å‰_targetçš„ç±»åž?
+    /// ¶ÁÈ¡µ±Ç°Ä¿±êÀàÐÍ
     /// </summary>
 	public AITargetType		targetType 	   { get { return _target.AITargetType; }}
     public Vector3 targetPosition { get { return _target.position; } }
@@ -105,7 +103,7 @@ public abstract class AIStateMachine : MonoBehaviour
     public bool useRootRotation { get { return _rootRotationRefCount > 0; }}
     public bool isTargetReached { get { return _isTargetReached; } }
     /// <summary>
-    /// è¿‘æˆ˜èŒƒå›´å†?
+    /// ½üÕ½·¶Î§ÄÚ
     /// </summary>
     public bool inMeleeRange { get; set; }
     public int targetColliderID
@@ -122,6 +120,9 @@ public abstract class AIStateMachine : MonoBehaviour
     public void SetLayerActive(string layerName, bool active)
     {
         _animLayersActive[layerName] = active;
+
+        if (!active && _layeredAudioSource != null)
+            _layeredAudioSource.Stop(_animator.GetLayerIndex(layerName));
     }
 
     public bool IsLayerActive(string layerName)
@@ -133,6 +134,31 @@ public abstract class AIStateMachine : MonoBehaviour
         }
         return false;
     }
+
+    /// <summary>
+    /// ±¾ÖÊÊÇÈÃÒ»¸öÒôÆµ²ãÓÐ×Ê¸ñ²ÎÓë¾ºÕù£¬¶ø²»ÊÇÕæµÄ²¥·Å
+    /// </summary>
+    public bool PlayAudio(AudioCollection clipPool, int bank, int layer, bool looping = true)
+    {
+        if (_layeredAudioSource == null) return false;
+
+        return _layeredAudioSource.Play(clipPool, bank, layer, looping);
+    }
+
+    /// <summary>
+    /// ±¾ÖÊÊÇÈÃÒ»¸öÒôÆµ²ãÃ»ÓÐ×Ê¸ñ²ÎÓë¾ºÕù
+    /// </summary>
+    public void StopAudio(int layer)
+    {
+        if (_layeredAudioSource != null)
+            _layeredAudioSource.Stop(layer);
+    }
+
+    public void MuteAudio(bool mute)
+    {
+        if (_layeredAudioSource != null)
+            _layeredAudioSource.Mute(mute);
+    }
     // Start is called before the first frame update
     protected virtual void Awake()
     {
@@ -141,9 +167,9 @@ public abstract class AIStateMachine : MonoBehaviour
         _collider = GetComponent<Collider>();
         _navAgent = GetComponent<NavMeshAgent>();
         _aiBodyPartLayer = LayerMask.NameToLayer("AI Body Part");
+        AudioSource audioSource = GetComponent<AudioSource>();
 
-       
-        if(_rootBone != null)
+        if (_rootBone != null)
         {
             Rigidbody[] bodies = _rootBone.GetComponentsInChildren<Rigidbody>();
             foreach(Rigidbody bodyPart in bodies)
@@ -154,6 +180,12 @@ public abstract class AIStateMachine : MonoBehaviour
                 }
             }
         }
+
+        //×¢²á·Ö²ãÒôÆµÔ´
+        if (_animator && audioSource && AudioManager.Instance)
+        {
+            _layeredAudioSource = AudioManager.Instance.RegisterLayeredAudioSource(audioSource, _animator.layerCount);
+        }
     }
     protected virtual void Start()
     {
@@ -162,11 +194,11 @@ public abstract class AIStateMachine : MonoBehaviour
             if (_collider) GameSceneManager.Instance.RegisterAIStateMachine(_collider.GetInstanceID(), this);
             if (_sensorTrigger) GameSceneManager.Instance.RegisterAIStateMachine(_sensorTrigger.GetInstanceID(), this);
             // -------------------------------------------------------------------------
-            // BUGä¿®å¤ï¼šåŽŸä»£ç åªæ³¨å†Œäº†Colliderå’ŒSensorTriggerçš„IDï¼Œä½†ColliderIsVisibleä¸?
-            // é€šè¿‡hit.rigidbody.GetInstanceID()æŸ¥è¯¢ã€‚Colliderå’ŒRigidbodyæ˜¯ä¸åŒçš„Componentï¼?
-            // å…¶GetInstanceID()ä¸åŒï¼Œå¯¼è‡´æœ¬åƒµå°¸çš„èº«ä½“éƒ¨ä»¶æ°¸è¿œæŸ¥ä¸åˆ°åŒ¹é…ï¼Œæ— æ³•è¿‡æ»¤è‡ªèº«é®æŒ¡ã€?
-            // ä¿®å¤ï¼šé¢å¤–ç”¨æ ¹Transformçš„IDæ³¨å†Œï¼ŒæŸ¥è¯¢æ—¶ç”¨hit.transform.root.GetInstanceID()ã€?
-            // åŒä¸€åƒµå°¸å±‚çº§ä¸‹çš„æ‰€æœ‰ç»„ä»¶å…±äº«åŒä¸€ä¸ªroot Transformï¼Œå¯æ­£ç¡®åŒ¹é…ã€?
+            // BUGÐÞ¸´£ºÔ­´úÂëÖ»×¢²áÁËColliderºÍSensorTriggerµÄID£¬µ«ColliderIsVisibleÖÐ
+            // Í¨¹ýhit.rigidbody.GetInstanceID()²éÑ¯¡£ColliderºÍRigidbodyÊÇ²»Í¬µÄComponent£¬
+            // ÆäGetInstanceID()²»Í¬£¬µ¼ÖÂ±¾½©Ê¬µÄÉíÌå²¿¼þÓÀÔ¶²é²»µ½Æ¥Åä£¬ÎÞ·¨¹ýÂË×ÔÉíÕÚµ²¡£
+            // ÐÞ¸´£º¶îÍâÓÃ¸ùTransformµÄID×¢²á£¬²éÑ¯Ê±ÓÃhit.transform.root.GetInstanceID()¡£
+            // Í¬Ò»½©Ê¬²ã¼¶ÏÂµÄËùÓÐ×é¼þ¹²ÏíÍ¬Ò»¸öroot Transform£¬¿ÉÕýÈ·Æ¥Åä¡£
             // -------------------------------------------------------------------------
             GameSceneManager.Instance.RegisterAIStateMachine(transform.root.GetInstanceID(), this);
         }
@@ -236,9 +268,7 @@ public abstract class AIStateMachine : MonoBehaviour
             _targetTrigger.enabled = true;
         }
     }
-    /// <summary>
-    /// æ¸…ç©º_target
-    /// </summary>
+   
     public void ClearTarget()
     {
         _target.Clear();
@@ -264,7 +294,6 @@ public abstract class AIStateMachine : MonoBehaviour
     {
         if (_currentState == null) return;
 
-        // å¯è§†åŒ?desiredVelocityï¼ˆé»„çº¿ï¼‰å’?steeringTargetï¼ˆè“ç‚¹ï¼‰
         if (_navAgent)
         {
             Debug.DrawRay(transform.position, _navAgent.desiredVelocity, Color.yellow);
@@ -289,14 +318,9 @@ public abstract class AIStateMachine : MonoBehaviour
             _currentStateType = newStateType;
         }
     }
-    /// <summary>
-    /// èŽ·å–ä¸‹ä¸€ä¸ªwayPointçš„transformï¼Œå¹¶è®¾ç½®_target=ä¸‹ä¸€ä¸ªwaypoint
-    /// </summary>
-    /// <param name="increment">æ˜¯å¦å¢žåŠ wayPointç´¢å¼•</param>
-    /// <returns></returns>
+   
     public Vector3 GetWaypointPosition(bool increment)
     {
-        //print("åˆ‡æ¢ç›®æ ‡");
         if (_currentWaypoint == -1)
         {
             if (_randomPatrol)
@@ -317,7 +341,7 @@ public abstract class AIStateMachine : MonoBehaviour
         return Vector3.zero;
     }
     /// <summary>
-    /// è®¾ç½®ä¸‹ä¸€ä¸ª_currentWaypoint
+    /// ÉèÖÃÏÂÒ»¸ö_currentWaypoint
     /// </summary>
     private void NextWaypoint()
     {
@@ -394,5 +418,11 @@ public abstract class AIStateMachine : MonoBehaviour
         _currentState = newState;
         _currentStateType = state;
         _currentState.OnEnterState();
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (_layeredAudioSource != null && AudioManager.Instance)
+            AudioManager.Instance.UnregisterLayeredAudioSource(_layeredAudioSource);
     }
 }

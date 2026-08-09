@@ -34,18 +34,8 @@ public class AudioManager : MonoBehaviour
     ulong _idGiver = 0;
     Transform _listenerPos = null;
 
-    public static AudioManager Instance
-    {
-        get 
-        {
-            if (_instance == null)
-            {
-                GameObject audioManager = new GameObject("AudioManager");
-                _instance = audioManager.AddComponent<AudioManager>();
-            }
-            return _instance; 
-        }
-    }
+    public static AudioManager Instance => _instance;
+
     private void Awake()
     {
         if(_instance == null)
@@ -56,7 +46,11 @@ public class AudioManager : MonoBehaviour
         else if(_instance != this)
             Destroy(gameObject);
 
-        if (!_mixer) return;
+        if (!_mixer)
+        {
+            Debug.LogError("没有指定AudioMixer，AudioManager无法工作");
+            return;
+        }
         //FindMatchingGroups:路径名包含这个字符串
         AudioMixerGroup[] groups = _mixer.FindMatchingGroups(string.Empty);
 

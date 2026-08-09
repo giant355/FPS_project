@@ -109,6 +109,7 @@ public class LayeredAudioSource : ILayeredAudioSource
         layer.Time = layer.Duration;
         //为什么不设置mute？因为 Stop() 是“停止播放任务”，而 Mute() 是“静音播放任务”，
         //两者的语义不同。Stop() 只是让图层不再循环播放，Time 会被推进到 Duration，表示该图层的播放任务已经完成。
+        //之后time>duration,被update清空，因为collection==null，被跳过
     }
 
     /// <summary>
