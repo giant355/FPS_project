@@ -18,6 +18,10 @@ public class CharacterManager : MonoBehaviour
     [SerializeField] private float _bloodRadiusScale = 6.0f;
 
     [SerializeField] private CameraRecoil _cameraRecoil = null;
+    [SerializeField] private AudioCollection _damageSounds = null;//攻击接触玩家时的撞击、撕咬声
+    [SerializeField] private AudioCollection _painSounds = null;//玩家发出的痛叫声
+    [SerializeField] private float _painSoundOffset = 0.35f;//让痛叫稍晚于撞击声播放
+    private float _nextPainSoundTime = 0f;//限制痛叫频率，避免连续攻击造成大量声音重叠
 
     private Collider _playerCollider = null;
     private FPSController _fpsController = null;
@@ -58,9 +62,25 @@ public class CharacterManager : MonoBehaviour
     {
         _heavyLandingAttractionUntil = Time.time + _heavyLandingAttractionHoldTime;
     }
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, bool doDamageSound = true, bool doPainSound = true)
     {
         _health = Mathf.Max(_health - amount, 0f);
+
+        if (doDamageSound && _damageSounds != null && AudioManager.Instance != null) 
+            AudioManager.Instance.PlayOneShotSound(_damageSounds.audioGroup, _damageSounds.audioClip, transform.position, 
+                                                   _damageSounds.volume, _damageSounds.spatialBlend, _damageSounds.priority);
+
+        if (doPainSound && _painSounds != null && AudioManager.Instance != null && Time.time >= _nextPainSoundTime)
+        {
+            AudioClip painClip = _painSounds.audioClip;
+
+            if (painClip != null)
+            {
+                _nextPainSoundTime = Time.time + painClip.length;
+                StartCoroutine(AudioManager.Instance.PlayOneShotSoundDelayed(_painSounds.audioGroup, painClip, transform.position, _painSounds.volume,
+                                                                             _painSounds.spatialBlend, _painSoundOffset, _painSounds.priority));
+            }
+        }
 
         if (_fpsController != null)
         {
@@ -93,7 +113,11 @@ public class CharacterManager : MonoBehaviour
             AIStateMachine stateMachine = _gameSceneManager.GetAIStateMachine(hit.transform.root.GetInstanceID());
             if (stateMachine)
             {
-                stateMachine.TakeDamage(hit.point, ray.direction * 1.0f, 15, hit.rigidbody, this, 0);
+                float critChance = 20f;
+                bool isRagDollHit = Random.Range(0f, 100f) < critChance;
+
+                //弱武器也有概率直接击倒僵尸
+                stateMachine.TakeDamage(hit.point, ray.direction * (1.0f + (isRagDollHit?1:0)), 15, hit.rigidbody, this, 0);
             }
         }
 

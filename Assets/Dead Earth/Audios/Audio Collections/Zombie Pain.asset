@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f575709ea14cc04a9870ef5e253be7c, type: 3}
+  m_Name: Zombie Pain
+  m_EditorClassIdentifier: 
+  _audioGroup: Zombies
+  _volume: 0.343
+  _spatialBlend: 1
+  _priority: 128
+  _audioClipBanks:
+  - Clips:
+    - {fileID: 8300000, guid: 351c20ec8e03de847823c20acf9088b4, type: 3}
+    - {fileID: 8300000, guid: e7d05afa2bab149408467e8bcca9a2fd, type: 3}
+    - {fileID: 8300000, guid: 100f09652b5064c45a3835f27975cd3a, type: 3}
+    - {fileID: 8300000, guid: 94e0694a8729f9c47aef362d7d7b213f, type: 3}

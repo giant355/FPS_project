@@ -216,6 +216,7 @@ public class LayeredAudioSource : ILayeredAudioSource
         //更新当前最高有效图层索引
         _activeLayer = newActiveLayer;
 
+        //为了在不需要更新图层或改变图层时进行mute
         if (_activeLayer != -1 && _audioSource != null)
         {
             AudioLayer activeAudioLayer = _audioLayers[_activeLayer];

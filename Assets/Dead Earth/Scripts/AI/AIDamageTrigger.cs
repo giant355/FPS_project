@@ -8,10 +8,15 @@ public class AIDamageTrigger : MonoBehaviour
     [SerializeField][Range(1, 100)] int _bloodParticlesBurstAmount = 50;
     [SerializeField] float _damageAmount = 0.1f;
 
+    [SerializeField] bool _doDamageSound = true;
+    [SerializeField] bool _doPainSound = true;
+
     AIStateMachine _stateMachine = null;
     Animator _animator = null;
     int _parameterHash = -1;
     float _nextBloodTime = 0.0f;
+
+    bool _firstContact = false;//记录攻击是否刚接触玩家，防止 OnTriggerStay 每个物理帧都播放撞击声。
 
     void Start()
     {
@@ -21,6 +26,12 @@ public class AIDamageTrigger : MonoBehaviour
             _animator = _stateMachine.animator;
 
         _parameterHash = Animator.StringToHash(_parameter);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (_animator == null) return;
+        if (other.CompareTag("Player") && _animator.GetFloat(_parameterHash) > 0.9f) _firstContact = true;
     }
 
     void OnTriggerStay(Collider other)
@@ -38,8 +49,12 @@ public class AIDamageTrigger : MonoBehaviour
             return;
 
         CharacterManager characterManager = other.GetComponent<CharacterManager>();
+
         if (characterManager != null)
-            characterManager.TakeDamage(_damageAmount);
+        {
+            characterManager.TakeDamage(_damageAmount, _doDamageSound && _firstContact, _doPainSound);
+            _firstContact = false;
+        }
 
         if (Time.time < _nextBloodTime)
             return;

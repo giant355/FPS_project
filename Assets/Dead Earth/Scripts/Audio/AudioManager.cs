@@ -44,7 +44,11 @@ public class AudioManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else if(_instance != this)
+        {
             Destroy(gameObject);
+            //destory不会立即销毁，Awake会被调用两次，所以这里直接return
+            return;
+        }
 
         if (!_mixer)
         {
@@ -80,7 +84,11 @@ public class AudioManager : MonoBehaviour
 		
 		}
     }
-
+    private void OnDestroy()
+    {
+        if (_instance == this)
+            _instance = null;
+    }
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;

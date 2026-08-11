@@ -43,6 +43,10 @@ Desktop.ini
 crashlytics-build.properties
 
 # Local large scenery source assets (do not commit)
+Assets/**/Model/
+Assets/**/Model.meta
+Assets/**/Models/
+Assets/**/Models.meta
 Assets/Dead Earth/Models/Scenery/
 Assets/Dead Earth/Models/Scenery.meta
 Assets/StudioNewPunch/

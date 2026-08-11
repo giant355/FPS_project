@@ -9743,7 +9743,7 @@ Transform:
   m_GameObject: {fileID: 1152085047}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -18.91, y: 0.904, z: 9.52}
+  m_LocalPosition: {x: -4.3, y: 0.5, z: 9.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9863,6 +9863,9 @@ MonoBehaviour:
   _heavyLandingAttractionHoldTime: 0.1
   _bloodRadiusScale: 6
   _cameraRecoil: {fileID: 1119681455}
+  _damageSounds: {fileID: 11400000, guid: 5fe292e45bb23b94187c4cd7b642cd7c, type: 2}
+  _painSounds: {fileID: 11400000, guid: 5b68e03870aaf15499a0528b6206f2f2, type: 2}
+  _painSoundOffset: 0.35
 --- !u!1 &1166118394
 GameObject:
   m_ObjectHideFlags: 0
@@ -10023,6 +10026,79 @@ Transform:
   - {fileID: 452261161}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1224365889
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 100072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_Name
+      value: HospitalNew
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400072, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 24f65ce5f6a70024983f1beba0c8e840, type: 3}
 --- !u!1 &1261682429
 GameObject:
   m_ObjectHideFlags: 0
@@ -10147,11 +10223,11 @@ MonoBehaviour:
   _chromaticAberration: 0.00121
   _noiseIntensity: 0.0186
   _scanlineIntensity: 0.1055
-  _crtScanlineIntensity: 0.5
+  _crtScanlineIntensity: 0.395
   _crtScanlineDensity: 475
   _crtScanlineThickness: 0.01
   _crtScanlineScrollSpeed: 0.35
-  _crtRedBlueShift: 0.0038
+  _crtRedBlueShift: 0
   _hallucinationWaveIntensity: 0
   _hallucinationWaveFrequency: 0.25
   _hallucinationWaveSpeed: 0
@@ -10378,12 +10454,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5349085130099997609, guid: 6d87a14d22a91af4fb2957864ac3cfd6, type: 3}
       propertyPath: _lowerBodyDamage
-      value: 35
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5349085130099997609, guid: 6d87a14d22a91af4fb2957864ac3cfd6, type: 3}
       propertyPath: _waypointNetwork
       value: 
       objectReference: {fileID: 1648304568}
+    - target: {fileID: 5349085130099997609, guid: 6d87a14d22a91af4fb2957864ac3cfd6, type: 3}
+      propertyPath: _reanimationWaitTime
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6013345012921837097, guid: 6d87a14d22a91af4fb2957864ac3cfd6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -10435,6 +10515,10 @@ PrefabInstance:
     - target: {fileID: 6013345012922006457, guid: 6d87a14d22a91af4fb2957864ac3cfd6, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6379866556625181313, guid: 6d87a14d22a91af4fb2957864ac3cfd6, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6379866556625181313, guid: 6d87a14d22a91af4fb2957864ac3cfd6, type: 3}
       propertyPath: OutputAudioMixerGroup
@@ -96399,3 +96483,4 @@ SceneRoots:
   - {fileID: 782819513}
   - {fileID: 1119502481}
   - {fileID: 133843520}
+  - {fileID: 1224365889}
