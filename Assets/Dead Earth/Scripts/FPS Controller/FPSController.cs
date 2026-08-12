@@ -52,6 +52,12 @@ public class FPSController : MonoBehaviour
 
     [Header("Flashlight")]
     [SerializeField] private GameObject _flashlight;
+    //开局是否开启手电筒
+    [SerializeField] private bool _flashlightOnAtStart = true;
+
+    [Header("Stamina")]
+    [SerializeField] private float _staminaDepletion = 5f;
+    [SerializeField] private float _staminaRecovery = 10f;
 
     private CharacterController _characterController;
 
@@ -75,9 +81,14 @@ public class FPSController : MonoBehaviour
 
     private PlayerMoveStatus _movementStatus = PlayerMoveStatus.NotMoving;
 
+    private float _stamina = 100f;
+    //冻结移动
+    private bool _freezeMovement;
+
     private float _headBobPhase;
     private Vector3 _headBobOffset;
     private Vector3 _currentCameraBasePosition;
+
 
     // 当前实际速度倍率：1 = 正常，0 = 停住
     private float _dragMultiplier = 1f;
@@ -92,6 +103,13 @@ public class FPSController : MonoBehaviour
     public PlayerMoveStatus movementStatus => _movementStatus;
     public float walkSpeed => _walkSpeed;
     public float runSpeed => _runSpeed;
+    public float stamina => _stamina;
+    public bool freezeMovement
+    {
+        get { return _freezeMovement; }
+        set { _freezeMovement = value; }
+    }
+
     public event System.Action<float> HeavyLanded;
 
     public CharacterController characterController
@@ -142,7 +160,7 @@ public class FPSController : MonoBehaviour
         LockCursor();
 
         if (_flashlight != null)
-            _flashlight.SetActive(false);
+            _flashlight.SetActive(_flashlightOnAtStart);
     }
     private void Update()
     {
@@ -157,6 +175,7 @@ public class FPSController : MonoBehaviour
         }
         UpdateMovement();
         UpdateMovementStatus();
+        UpdateStamina();
         UpdateHeadBob();
         UpdateFlashlight();
 
@@ -204,7 +223,9 @@ public class FPSController : MonoBehaviour
         Vector2 normalizedInput = Vector2.ClampMagnitude(_inputVector, 1f);
 
         _isWalking = !Input.GetKey(KeyCode.LeftShift);
-        float currentSpeed = _isCrouching ? _crouchSpeed : _isWalking ? _walkSpeed : _runSpeed;
+
+        float staminaFactor = _stamina / 100f;
+        float currentSpeed = _isCrouching ? _crouchSpeed : _isWalking ? _walkSpeed : Mathf.Lerp(_walkSpeed, _runSpeed, staminaFactor);
 
         Vector3 desiredMove = transform.right * normalizedInput.x + transform.forward * normalizedInput.y;
 
@@ -212,8 +233,8 @@ public class FPSController : MonoBehaviour
         {
             desiredMove = Vector3.ProjectOnPlane(desiredMove, groundNormal).normalized * normalizedInput.magnitude;
         }
-
-        Vector3 groundVelocity = desiredMove * currentSpeed * _dragMultiplier;
+        
+        Vector3 groundVelocity = _freezeMovement ? Vector3.zero : desiredMove * currentSpeed * _dragMultiplier;
 
         // 只有在地面上且没有蹲下才能跳跃
         if (isGrounded && !_isCrouching && Input.GetButtonDown("Jump"))
@@ -277,6 +298,14 @@ public class FPSController : MonoBehaviour
         _previouslyGrounded = isGrounded;
     }
 
+    private void UpdateStamina()
+    {
+        // 奔跑时消耗体力，其他状态恢复体力
+        if (_movementStatus == PlayerMoveStatus.Running)
+            _stamina = Mathf.Max(_stamina - _staminaDepletion * Time.deltaTime, 0f);
+        else
+            _stamina = Mathf.Min(_stamina + _staminaRecovery * Time.deltaTime, 100f);
+    }
     private void UpdateHeadBob()
     {
         Vector3 horizontalVelocity = _characterController.velocity;

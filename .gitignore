@@ -55,3 +55,91 @@ Assets/Zombie Slaughter/
 Assets/Zombie Slaughter.meta
 Assets/The Backrooms Music Vol. 1/
 Assets/The Backrooms Music Vol. 1.meta
+
+# Local audio assets (do not upload)
+Assets/**/Audio/
+Assets/**/Audio.meta
+Assets/**/Audios/
+Assets/**/Audios.meta
+Assets/**/Sound/
+Assets/**/Sound.meta
+Assets/**/Sounds/
+Assets/**/Sounds.meta
+*.wav
+*.wav.meta
+*.mp3
+*.mp3.meta
+*.ogg
+*.ogg.meta
+*.flac
+*.flac.meta
+*.aif
+*.aif.meta
+*.aiff
+*.aiff.meta
+*.m4a
+*.m4a.meta
+*.wma
+*.wma.meta
+
+# Local 3D model assets (do not upload)
+*.fbx
+*.fbx.meta
+*.obj
+*.obj.meta
+*.blend
+*.blend.meta
+*.3ds
+*.3ds.meta
+*.dae
+*.dae.meta
+*.dxf
+*.dxf.meta
+*.max
+*.max.meta
+*.ma
+*.ma.meta
+*.mb
+*.mb.meta
+*.gltf
+*.gltf.meta
+*.glb
+*.glb.meta
+*.stl
+*.stl.meta
+Assets/Dead Earth/Prefabs/Hospital/
+Assets/Dead Earth/Prefabs/Hospital.meta
+
+# Local image and UI art assets (do not upload)
+Assets/UI/
+Assets/UI.meta
+*.png
+*.png.meta
+*.jpg
+*.jpg.meta
+*.jpeg
+*.jpeg.meta
+*.tga
+*.tga.meta
+*.bmp
+*.bmp.meta
+*.gif
+*.gif.meta
+*.tif
+*.tif.meta
+*.tiff
+*.tiff.meta
+*.psd
+*.psd.meta
+*.exr
+*.exr.meta
+*.hdr
+*.hdr.meta
+*.webp
+*.webp.meta
+
+# Local study notes (do not upload)
+/Study Notes/
+/学习文档/
+/*学习*.md
+/csharp-*.html

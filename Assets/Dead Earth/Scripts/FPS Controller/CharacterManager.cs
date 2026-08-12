@@ -21,6 +21,7 @@ public class CharacterManager : MonoBehaviour
     [SerializeField] private AudioCollection _damageSounds = null;//攻击接触玩家时的撞击、撕咬声
     [SerializeField] private AudioCollection _painSounds = null;//玩家发出的痛叫声
     [SerializeField] private float _painSoundOffset = 0.35f;//让痛叫稍晚于撞击声播放
+    [SerializeField] private PlayerHUD _playerHUD = null;
     private float _nextPainSoundTime = 0f;//限制痛叫频率，避免连续攻击造成大量声音重叠
 
     private Collider _playerCollider = null;
@@ -29,6 +30,9 @@ public class CharacterManager : MonoBehaviour
     private GameSceneManager _gameSceneManager = null;  
     private int _aiBodyPartLayer = -1;
     private float _heavyLandingAttractionUntil;
+
+    public float health => _health;
+    public float stamina => _fpsController != null ? _fpsController.stamina : 0f;
 
     void Start()
     {
@@ -52,6 +56,10 @@ public class CharacterManager : MonoBehaviour
 
             _gameSceneManager.RegisterPlayerInfo(_playerCollider.GetInstanceID(), info);
         }
+
+        // 游戏开始时让黑幕在两秒内消失
+        if (_playerHUD != null)
+            _playerHUD.Fade(3f, ScreenFadeType.FadeIn);
     }
     private void OnDestroy()
     {
@@ -151,6 +159,9 @@ public class CharacterManager : MonoBehaviour
         {
             _fpsController.dragMultiplierLimit = Mathf.Max(_health / 100f, 0.4f);
         }
+
+        if (_playerHUD != null)
+            _playerHUD.UpdateHUD(this);
     }
 }
 
