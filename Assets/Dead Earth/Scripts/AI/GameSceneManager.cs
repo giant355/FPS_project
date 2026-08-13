@@ -9,6 +9,8 @@ public class PlayerInfo
     public Camera camera = null;
     public CapsuleCollider meleeTrigger = null;
 }
+
+[DefaultExecutionOrder(-100)]
 public class GameSceneManager : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _bloodParticles = null;

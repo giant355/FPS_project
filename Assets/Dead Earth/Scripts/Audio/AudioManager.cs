@@ -20,6 +20,8 @@ public class AudioPoolItem
     public IEnumerator Coroutine = null;
     public ulong ID = 0;
 }
+
+[DefaultExecutionOrder(-100)]
 public class AudioManager : MonoBehaviour
 {
     private static AudioManager _instance;
