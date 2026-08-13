@@ -37,7 +37,7 @@ public class GameSceneManager : MonoBehaviour
     }
     private Dictionary<int,AIStateMachine> _stateMachines = new Dictionary<int,AIStateMachine>();
     private Dictionary<int, PlayerInfo> _playerInfos = new Dictionary<int, PlayerInfo>();
-
+    private Dictionary<int, InteractiveItem> _interactiveItems = new Dictionary<int, InteractiveItem>();
 
     public void RegisterAIStateMachine(int key,AIStateMachine stateMachine)
     {
@@ -70,5 +70,17 @@ public class GameSceneManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void RegisterInteractiveItem(int key, InteractiveItem interactiveItem)
+    {
+        if (!_interactiveItems.ContainsKey(key))
+            _interactiveItems[key] = interactiveItem;
+    }
+
+    public InteractiveItem GetInteractiveItem(int key)
+    {
+        _interactiveItems.TryGetValue(key, out InteractiveItem item);
+        return item;
     }
 }

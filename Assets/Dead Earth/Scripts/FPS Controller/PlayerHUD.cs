@@ -8,6 +8,9 @@ public enum ScreenFadeType { FadeIn, FadeOut }
 public class PlayerHUD : MonoBehaviour
 {
     [SerializeField] private GameObject _crosshair = null;
+    [SerializeField] private Sprite _normalCrosshairSprite = null;
+    [SerializeField] private Sprite _targetCrosshairSprite = null;
+
     [SerializeField] private Text _healthText = null;
     [SerializeField] private Text _staminaText = null;
     [SerializeField] private Text _interactionText = null;//显示交互提示
@@ -17,9 +20,13 @@ public class PlayerHUD : MonoBehaviour
 
     private float _currentFadeLevel = 1f;
     private IEnumerator _fadeCoroutine;
+    private Image _crosshairImage = null;
 
     private void Start()
     {
+        if (_crosshair != null)
+            _crosshairImage = _crosshair.GetComponent<Image>();
+
         if (_screenFade != null)
         {
             _screenFade.gameObject.SetActive(true);
@@ -111,5 +118,12 @@ public class PlayerHUD : MonoBehaviour
         color.a = _currentFadeLevel;
         _screenFade.color = color;
         _fadeCoroutine = null;
+    }
+
+    public void SetCrosshairTarget(bool hasTarget)
+    {
+        if (_crosshairImage == null) return;
+
+        _crosshairImage.sprite = hasTarget ? _targetCrosshairSprite : _normalCrosshairSprite;
     }
 }

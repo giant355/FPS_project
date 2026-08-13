@@ -29,6 +29,7 @@ public class CharacterManager : MonoBehaviour
     private CharacterController _characterController = null;
     private GameSceneManager _gameSceneManager = null;  
     private int _aiBodyPartLayer = -1;
+    private int _interactiveMask = -1;
     private float _heavyLandingAttractionUntil;
 
     public float health => _health;
@@ -45,6 +46,7 @@ public class CharacterManager : MonoBehaviour
             _fpsController.HeavyLanded += HandleHeavyLanding;
 
         _aiBodyPartLayer = LayerMask.NameToLayer("AI Body Part");
+        _interactiveMask = LayerMask.GetMask("Interactive");
 
         if (_gameSceneManager != null)
         {
@@ -133,6 +135,50 @@ public class CharacterManager : MonoBehaviour
 
     void Update()
     {
+        Ray ray = _camera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f));
+
+        // 向上或向下看时稍微增加交互距离，方便拾取脚边物品，水平=>dot=0，向上=>dot>0，向下=>dot<0
+        float rayLength = Mathf.Lerp(1f, 1.8f, Mathf.Abs(Vector3.Dot(_camera.transform.forward, Vector3.up)));
+        // 检测准星指向的交互物品
+        RaycastHit[] interactiveHits = Physics.RaycastAll(ray, rayLength, _interactiveMask);
+
+        int highestPriority = int.MinValue;
+        InteractiveItem priorityObject = null;
+
+        foreach (RaycastHit hit in interactiveHits)
+        {
+            InteractiveItem interactiveObject = _gameSceneManager.GetInteractiveItem(hit.collider.GetInstanceID());
+
+            if (interactiveObject != null && interactiveObject.priority > highestPriority)
+            {
+                priorityObject = interactiveObject;
+                highestPriority = interactiveObject.priority;
+            }
+        }
+
+        bool hasCrosshairTarget = priorityObject != null;
+
+        //这里的 _ 不是普通的自定义变量名，而是 C# 在这个上下文中的特殊语法，叫 discard（弃元）
+        bool isAimingAtZombie = Physics.Raycast(ray, out _, 1000f, 1 << _aiBodyPartLayer);
+        hasCrosshairTarget = hasCrosshairTarget || isAimingAtZombie;
+
+        if (priorityObject != null)
+        {
+            if (_playerHUD != null)
+                _playerHUD.SetInteractionText(priorityObject.GetText());
+
+            if (Input.GetButtonDown("Use"))
+                priorityObject.Activate(this);
+        }
+        else
+        {
+            if (_playerHUD != null)
+                _playerHUD.SetInteractionText(null);
+        }
+
+        if (_playerHUD != null)
+            _playerHUD.SetCrosshairTarget(hasCrosshairTarget);
+
         if (Input.GetMouseButtonDown(0))
         {
             DoDamage();
