@@ -159,7 +159,7 @@ public class CharacterManager : MonoBehaviour
         bool hasCrosshairTarget = priorityObject != null;
 
         //这里的 _ 不是普通的自定义变量名，而是 C# 在这个上下文中的特殊语法，叫 discard（弃元）
-        bool isAimingAtZombie = Physics.Raycast(ray, out _, 1000f, 1 << _aiBodyPartLayer);
+        bool isAimingAtZombie = Physics.Raycast(ray, out _, 8f, 1 << _aiBodyPartLayer);
         hasCrosshairTarget = hasCrosshairTarget || isAimingAtZombie;
 
         if (priorityObject != null)
