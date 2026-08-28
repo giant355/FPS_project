@@ -52,6 +52,7 @@ public class ApplicationManager : MonoBehaviour
         return result;
     }
 
+
     public bool SetGameState(string key, string value)
     {
         if (key == null || value == null) return false;

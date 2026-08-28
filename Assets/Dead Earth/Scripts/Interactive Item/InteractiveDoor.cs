@@ -55,6 +55,9 @@ public class InteractiveDoor : InteractiveItem
     [Tooltip("自动关门的随机延迟范围：X 是最短时间，Y 是最长时间")]
     [SerializeField] protected Vector2 _autoCloseDelay = new Vector2(5.0f, 5.0f);
 
+    [Tooltip("是否禁止玩家手动操作，只允许触发器或程序控制")]
+    [SerializeField] protected bool _disableManualActivation = false;
+
     [Tooltip("门打开时，交互碰撞器沿门洞前后方向扩大的倍数")]
     [SerializeField] protected float _colliderLengthOpenScale = 3.0f;
 
@@ -91,9 +94,15 @@ public class InteractiveDoor : InteractiveItem
 
 
     [Header("门板设置")]
-
     [Tooltip("需要由这个控制器移动或旋转的所有子门板")]
     [SerializeField] protected List<InteractiveDoorInfo> _doors = new List<InteractiveDoorInfo>();
+
+    [Header("声音设置")]
+    [Tooltip("包含开门、关门、锁定和自动关门声音的 AudioCollection")]
+    [SerializeField] protected AudioCollection _doorSounds = null;
+
+    [Tooltip("记录每个声音中门动画开始和结束时间")]
+    [SerializeField] protected AudioPunchInPunchOutDatabase _audioPunchInPunchOutDatabase = null;
 
     // 当前正在执行的开门或关门协程。
     protected IEnumerator _coroutine = null;
@@ -118,6 +127,9 @@ public class InteractiveDoor : InteractiveItem
     // 当前开关门动画的标准化进度，范围通常是 0～1。
     protected float _normalizedTime = 0.0f;
 
+    // 记录上一次播放的声音 ID
+    protected ulong _oneShotSoundID = 0;
+
     public override string GetText()
     {
         //门关闭？
@@ -125,6 +137,8 @@ public class InteractiveDoor : InteractiveItem
         //│   ├── 缺少状态或物品 → "Door: It's locked"
         //│   └── 条件满足      → "Door: Press 'Use' to open"
         //└── 否               → "Door: Press 'Use' to close"
+        if (_disableManualActivation) return null;
+
         bool haveInventoryItems = HaveRequiredInvItems();
         bool haveRequiredStates = true;
 
@@ -147,6 +161,8 @@ public class InteractiveDoor : InteractiveItem
     {
         return true;
     }
+
+    private void PlayLockedSound() { if (_doorSounds == null || AudioManager.Instance == null) return; AudioClip clip = _doorSounds[2]; if (clip == null) return; _oneShotSoundID = AudioManager.Instance.PlayOneShotSound(_doorSounds.audioGroup, clip, transform.position, _doorSounds.volume, _doorSounds.spatialBlend, _doorSounds.priority); }
 
     protected override void Start()
     {
@@ -230,12 +246,13 @@ public class InteractiveDoor : InteractiveItem
 
     public override void Activate(CharacterManager characterManager)
     {
+        if (_disableManualActivation) return;
+
         bool haveRequiredStates = true;
         if (_requiredStates.Count > 0)
         {
             if (ApplicationManager.Instance == null) haveRequiredStates = false;
-
-            haveRequiredStates = ApplicationManager.Instance.AreStatesSet(_requiredStates);
+            else haveRequiredStates = ApplicationManager.Instance.AreStatesSet(_requiredStates);
         }
 
         if (haveRequiredStates && HaveRequiredInvItems())
@@ -244,14 +261,19 @@ public class InteractiveDoor : InteractiveItem
             _coroutine = Activate(_plane.GetSide(characterManager.transform.position));
             StartCoroutine(_coroutine);
         }
+        else PlayLockedSound();
     }
 
     private IEnumerator Activate(bool frontSide, bool autoClosing = false, float delay = 0.0f)
     {
+        AudioClip clip = null;
+
         yield return new WaitForSeconds(delay);
 
+        //1 是没有配置声音时的备用动画时间。一旦选到了声音，duration 会被声音时间覆盖
         float duration = 1.5f;
         float time = 0.0f;
+        float startAnimTime = 0.0f;
 
         // 单向门始终使用同一个开启方向。
         if (!_isTwoWay) frontSide = true;
@@ -268,6 +290,48 @@ public class InteractiveDoor : InteractiveItem
                 frontSide = _openedFrontside;
 
             _openedFrontside = frontSide;
+
+            // 播放开门声音
+            // 先停止上一次播放的声音，避免声音叠加
+            // 先获取开门声音的长度，作为动画时间
+            // 如果有配置 AudioPunchInPunchOutDatabase，则使用数据库中记录的时间作为动画时间
+            if (_doorSounds != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopSound(_oneShotSoundID);
+                clip = _doorSounds[0];
+
+                if (clip != null)
+                {
+                    duration = clip.length;
+
+                    if (_audioPunchInPunchOutDatabase != null)
+                    {
+                        AudioPunchInPunchOutInfo info = _audioPunchInPunchOutDatabase.GetClipInfo(clip);
+
+                        if (info != null)
+                        {
+                            startAnimTime = Mathf.Clamp(info.StartTime, 0.0f, clip.length);
+
+                            //正常配置
+                            if (info.EndTime > startAnimTime) duration = Mathf.Min(info.EndTime, clip.length) - startAnimTime;
+                            //非正常配置
+                            else duration = clip.length - startAnimTime;
+                        }
+                    }
+
+                    duration = Mathf.Max(0.01f, duration);
+
+                    float playbackOffset = 0.0f;
+
+                    if (_normalizedTime > 0.0f)
+                    {
+                        playbackOffset = startAnimTime + duration * _normalizedTime;
+                        startAnimTime = 0.0f;
+                    }
+
+                    _oneShotSoundID = AudioManager.Instance.PlayOneShotSound(_doorSounds.audioGroup, clip, transform.position, _doorSounds.volume, _doorSounds.spatialBlend, _doorSounds.priority, playbackOffset);
+                }
+            }
 
             float offset = 0.0f;
             switch (_localForwardAxis)
@@ -294,6 +358,8 @@ public class InteractiveDoor : InteractiveItem
             if (_offsetCollider) _boxCollider.center = _openColliderCenter;
             _boxCollider.size = _openColliderSize;
 
+            if (startAnimTime > 0.0f) yield return new WaitForSeconds(startAnimTime);
+
             time = duration * _normalizedTime;
 
             while (time <= duration)
@@ -303,7 +369,6 @@ public class InteractiveDoor : InteractiveItem
                     if (door != null && door.Transform != null)
                     {
                         _normalizedTime = time / duration;
-
                         door.Transform.position = Vector3.Lerp(door.ClosedPosition, door.OpenPosition, _normalizedTime);
                         door.Transform.localRotation = door.ClosedRotation * Quaternion.Euler(frontSide ? door.Rotation * _normalizedTime : -door.Rotation * _normalizedTime);
                     }
@@ -311,7 +376,6 @@ public class InteractiveDoor : InteractiveItem
                 yield return null;
                 time += Time.deltaTime;
             }
-
 
             if (_contentsMount != null)
             {
@@ -342,8 +406,7 @@ public class InteractiveDoor : InteractiveItem
                 {
                     // 始终使用完整的开门旋转作为插值起点。若直接缓存当前的半开旋转，
                     // 中途切换为关门时会对半开角度再次插值，从而产生明显跳变。
-                    Quaternion rotationToOpen = Quaternion.Euler(
-                        _openedFrontside ? door.Rotation : -door.Rotation);
+                    Quaternion rotationToOpen = Quaternion.Euler(_openedFrontside ? door.Rotation : -door.Rotation);
                     door.OpenRotation = door.ClosedRotation * rotationToOpen;
                 }
             }
@@ -356,6 +419,44 @@ public class InteractiveDoor : InteractiveItem
                     col.enabled = false;
                 }
             }
+
+            if (_doorSounds != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopSound(_oneShotSoundID);
+                clip = _doorSounds[autoClosing ? 3 : 1];
+
+                if (clip != null)
+                {
+                    duration = clip.length;
+
+                    if (_audioPunchInPunchOutDatabase != null)
+                    {
+                        AudioPunchInPunchOutInfo info = _audioPunchInPunchOutDatabase.GetClipInfo(clip);
+
+                        if (info != null)
+                        {
+                            startAnimTime = Mathf.Clamp(info.StartTime, 0.0f, clip.length);
+
+                            if (info.EndTime > startAnimTime) duration = Mathf.Min(info.EndTime, clip.length) - startAnimTime;
+                            else duration = clip.length - startAnimTime;
+                        }
+                    }
+
+                    duration = Mathf.Max(0.01f, duration);
+
+                    float playbackOffset = 0.0f;
+
+                    if (_normalizedTime > 0.0f)
+                    {
+                        playbackOffset = startAnimTime + duration * _normalizedTime;
+                        startAnimTime = 0.0f;
+                    }
+
+                    _oneShotSoundID = AudioManager.Instance.PlayOneShotSound(_doorSounds.audioGroup, clip, transform.position, _doorSounds.volume, _doorSounds.spatialBlend, _doorSounds.priority, playbackOffset);
+                }
+            }
+
+            if (startAnimTime > 0.0f) yield return new WaitForSeconds(startAnimTime);
 
             time = duration * _normalizedTime;
 
@@ -411,6 +512,7 @@ public class InteractiveDoor : InteractiveItem
             _coroutine = Activate(_plane.GetSide(other.transform.position));
             StartCoroutine(_coroutine);
         }
+        else PlayLockedSound();
 
     }
 }

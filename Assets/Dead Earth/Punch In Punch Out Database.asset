@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3f44af50a3b4c1418d05b3a380d8b05, type: 3}
+  m_Name: Punch In Punch Out Database
+  m_EditorClassIdentifier: 
+  _dataList:
+  - Clip: {fileID: 8300000, guid: 64b341dbf0ff0584e8fe1b193e386c06, type: 3}
+    StartTime: 0
+    EndTime: 0.45
+  - Clip: {fileID: 8300000, guid: 200a86a006c328b49af343d2e638b5c0, type: 3}
+    StartTime: 0
+    EndTime: 3.1
+  - Clip: {fileID: 8300000, guid: eac496aafc5c0ad4fb7b7c28d3e02790, type: 3}
+    StartTime: 0.5
+    EndTime: 0
+  - Clip: {fileID: 8300000, guid: d8cbb1158181827458aa020932bd09a2, type: 3}
+    StartTime: 1.5
+    EndTime: 0
+  - Clip: {fileID: 8300000, guid: 1b1c4538f53cab14f8483cb685bb2153, type: 3}
+    StartTime: 1
+    EndTime: 0
+  - Clip: {fileID: 8300000, guid: eac10b7e2b1f4564b926dd882f30648f, type: 3}
+    StartTime: 0
+    EndTime: 0.5
+  - Clip: {fileID: 8300000, guid: 249e10b30a7d2f24fa0596ce06bd6fd9, type: 3}
+    StartTime: 0.35
+    EndTime: 0
+  - Clip: {fileID: 8300000, guid: 089d5edac3573704b976797dc9a5cf79, type: 3}
+    StartTime: 0
+    EndTime: 0.45

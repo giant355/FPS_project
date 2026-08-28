@@ -191,7 +191,7 @@ public class AudioManager : MonoBehaviour
     /// <param name="spatialBlend"></param>
     /// <param name="unimportance"></param>
     /// <returns></returns>
-    protected ulong ConfigurePoolObject(int poolIndex, string track, AudioClip clip, Vector3 position, float volume, float spatialBlend, float unimportance)
+    protected ulong ConfigurePoolObject(int poolIndex, string track, AudioClip clip, Vector3 position, float volume, float spatialBlend, float unimportance, float startTime)
     {
         if (poolIndex < 0 || poolIndex >= _pool.Count) return 0;
 
@@ -204,7 +204,7 @@ public class AudioManager : MonoBehaviour
         }
 
         _idGiver++;
-
+        
         poolItem.AudioSource.clip = clip;
         poolItem.AudioSource.volume = volume;
         poolItem.AudioSource.spatialBlend = spatialBlend;
@@ -216,9 +216,13 @@ public class AudioManager : MonoBehaviour
         poolItem.ID = _idGiver;
         poolItem.GameObject.SetActive(true);
 
+        // 设置播放偏移量
+        float playbackOffset = Mathf.Clamp(startTime, 0.0f, Mathf.Max(0.0f, clip.length - 0.01f));
+        poolItem.AudioSource.time = playbackOffset;
+
         poolItem.AudioSource.Play();
 
-        poolItem.Coroutine = StopSoundDelayed(_idGiver, poolItem.AudioSource.clip.length);
+        poolItem.Coroutine = StopSoundDelayed(_idGiver, Mathf.Max(0.01f, clip.length - playbackOffset));
         StartCoroutine(poolItem.Coroutine);
 
         _activePool[_idGiver] = poolItem;
@@ -242,7 +246,26 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public ulong PlayOneShotSound(string track, AudioClip clip, Vector3 position, float volume, float spatialBlend, int priority = 128)
+    public void StopSound(ulong id)
+    {
+        if (id == 0 || !_activePool.TryGetValue(id, out AudioPoolItem activeSound)) return;
+
+        if (activeSound.Coroutine != null)
+        {
+            StopCoroutine(activeSound.Coroutine);
+            activeSound.Coroutine = null;
+        }
+
+        activeSound.AudioSource.Stop();
+        activeSound.AudioSource.clip = null;
+        activeSound.GameObject.SetActive(false);
+        activeSound.Playing = false;
+        activeSound.Unimportance = float.MaxValue;
+        activeSound.ID = 0;
+        _activePool.Remove(id);
+    }
+
+    public ulong PlayOneShotSound(string track, AudioClip clip, Vector3 position, float volume, float spatialBlend, int priority = 128, float startTime = 0.0f)
     {
         if (!_tracks.ContainsKey(track) || clip == null || volume < 0.01f) return 0;
 
@@ -257,7 +280,7 @@ public class AudioManager : MonoBehaviour
 
             //如果空闲，直接配置并让其播放
             if (!poolItem.Playing)
-                return ConfigurePoolObject(i, track, clip, position, volume, spatialBlend, unimportance);
+                return ConfigurePoolObject(i, track, clip, position, volume, spatialBlend, unimportance, startTime);
             else
             //选出当前最不重要的那个物体（池满的情况下）
             if (poolItem.Unimportance > leastImportanceValue)
@@ -269,7 +292,7 @@ public class AudioManager : MonoBehaviour
 
         //当前最不重要的物体比候选者还要不重要，直接挤占
         if (leastImportanceValue > unimportance)
-            return ConfigurePoolObject(leastImportantIndex, track, clip, position, volume, spatialBlend, unimportance);
+            return ConfigurePoolObject(leastImportantIndex, track, clip, position, volume, spatialBlend, unimportance, startTime);
 
         return 0;
     }
