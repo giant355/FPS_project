@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 691bb86e24317ab44b9f6dd8df61043d, type: 3}
+  m_Name: Can of Baked Beans
+  m_EditorClassIdentifier: 
+  _singleton: 0
+  _pickupText: Press 'Use' to Pickup
+  _inventoryName: A Can of Baked Beans
+  _inventoryImage: {fileID: 21300000, guid: 2cf059371cf307b42857d2aa772c9e47, type: 3}
+  _inventoryAction: 1
+  _InventoryActionText: 
+  _replacementItem: {fileID: 11400000, guid: 1f1f4e058ace5254b8946251f15d3b03, type: 2}
+  _collectableItem: {fileID: 3140168951138845361, guid: b052b268562f5c04ba5edd740791ebd6, type: 3}
+  _invDescription: 'This hearty meal provides a 50% stamina boost.
+
+    
+
+    Warning:
+    Can result in temporary Flatulence. See a doctor if symtoms persist.
+
+'
+  _category: 2
+  _audio: {fileID: 11400000, guid: b03a48ca628362a49be16cd1320b29c5, type: 2}
+  _boostAmount: 50
+  _recipient: {fileID: 11400000, guid: f93107adbcf53a7489ea662b77f5ef43, type: 2}

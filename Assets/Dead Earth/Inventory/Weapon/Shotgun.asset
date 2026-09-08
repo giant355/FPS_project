@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 223c98db28262d24988ecb57cac9d26e, type: 3}
+  m_Name: Shotgun
+  m_EditorClassIdentifier: 
+  _singleton: 0
+  _pickupText: Press 'Use' to Pickup
+  _inventoryName: Shotgun
+  _inventoryImage: {fileID: 21300000, guid: 2d8f2d5bceb8d044c9ab3c54e0424467, type: 3}
+  _inventoryAction: 2
+  _InventoryActionText: 
+  _replacementItem: {fileID: 0}
+  _collectableItem: {fileID: 3531005917986414681, guid: f6a1877e12373b94d9edb33a4030a232, type: 3}
+  _invDescription: 'What the Shotgun lacks in range and accuracy it more than makes
+    up for in pure destructive power. This makes it ideal for close range combat.
+
+    
+
+    Can
+    chamber six cartridges simultaneously allowing for mutliple kills before requiring
+    a reload.
+
+'
+  _category: 5
+  _audio: {fileID: 11400000, guid: 4cd793aa393e9954ba49ff4f7d8d7356, type: 2}
+  _weaponType: 2
+  _weaponFeedType: 2
+  _ammo: {fileID: 11400000, guid: 490e1938ef0cdf14ead27a91c5fcd589, type: 2}
+  _ammoCapacity: 6
+  _reloadType: 1
+  _range: 15
+  _accuracy: 0.2
+  _autoFire: 0
+  _dualMode: 1
+  _rayRadius: 0.9
+  _headDamage: 150
+  _bodyDamage: 40
+  _damageAttenuation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.02972761
+      outSlope: -0.02972761
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.36497697
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -0.7455692
+      outSlope: -0.7455692
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.046082973
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _force: 100
+  _forceAttenuation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.99610513
+      outSlope: -0.99610513
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.11981567
+    - serializedVersion: 3
+      time: 0.5
+      value: 0
+      inSlope: -3.331742
+      outSlope: 0
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.048847914
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.046082973
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _weaponAnim: -1

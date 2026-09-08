@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 223c98db28262d24988ecb57cac9d26e, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  _singleton: 0
+  _pickupText: Press 'Use' to Pickup
+  _inventoryName: Berreta 9mm
+  _inventoryImage: {fileID: 21300000, guid: 6a09bd4b05e8fe1488988a08027afb94, type: 3}
+  _inventoryAction: 2
+  _InventoryActionText: 
+  _replacementItem: {fileID: 0}
+  _collectableItem: {fileID: 2280186810946880051, guid: f887da36a820c064d962cbd438e964a7, type: 3}
+  _invDescription: "The Berreta 9mm semi-automatic pistol is the official sidearm
+    of the U.S Military and was first introduced in 1985. \r\n\r\nIt has an effective
+    range of 50 meters and is fed by a single detachable magazine capable of carrying
+    15 rounds\r\n"
+  _category: 5
+  _audio: {fileID: 11400000, guid: 72d0897e09de9e041b4e0c05793f35a7, type: 2}
+  _weaponType: 1
+  _weaponFeedType: 2
+  _ammo: {fileID: 11400000, guid: 78d8db9fe19e19742a2bc193a9dee506, type: 2}
+  _ammoCapacity: 0
+  _reloadType: 2
+  _range: 50
+  _accuracy: 0.6
+  _autoFire: 0
+  _dualMode: 1
+  _rayRadius: 0
+  _headDamage: 100
+  _bodyDamage: 40
+  _damageAttenuation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.02972761
+      outSlope: -0.02972761
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.36497697
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -0.86694205
+      outSlope: -0.86694205
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.039631307
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _force: 0
+  _forceAttenuation:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _weaponAnim: -1

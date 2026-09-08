@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 512d024721d562e4d8c09348ff686436, type: 3}
+  m_Name: Open Can of Baked Beans
+  m_EditorClassIdentifier: 
+  _singleton: 0
+  _pickupText: Press 'Use' to Pickup
+  _inventoryName: 'Empty Can of Baked Beans '
+  _inventoryImage: {fileID: 21300000, guid: 28ff65da6b4617d42864c67a99a50466, type: 3}
+  _inventoryAction: 0
+  _InventoryActionText: 
+  _replacementItem: {fileID: 0}
+  _collectableItem: {fileID: 3414118064667653478, guid: 8dc88e2e07781ac43a5728647668dc7b, type: 3}
+  _invDescription: 'An empty can that used to contain food.
+
+'
+  _category: 2
+  _audio: {fileID: 11400000, guid: dfb8315322147d1418abd09358985051, type: 2}

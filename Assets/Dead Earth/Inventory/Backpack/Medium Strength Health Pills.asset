@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a951c647ab9e304781edd0a692523ad, type: 3}
+  m_Name: Medium Strength Health Pills
+  m_EditorClassIdentifier: 
+  _singleton: 0
+  _pickupText: Press 'Use' to Pickup
+  _inventoryName: 'Health Tablets (Medium Strength) '
+  _inventoryImage: {fileID: 21300000, guid: aa1ee608fcac56d47ab7c34b8acc5891, type: 3}
+  _inventoryAction: 1
+  _InventoryActionText: 
+  _replacementItem: {fileID: 0}
+  _collectableItem: {fileID: 7517358401161974072, guid: 5253d3814df120546a10646a9eaafda8, type: 3}
+  _invDescription: 'Restores up to 25% of your basic health or restores you to full
+    health if your current health is greater than 75%.
+
+
+    Warning: This medicine
+    does not counteract infection by RAGE Namites.
+
+'
+  _category: 2
+  _audio: {fileID: 11400000, guid: 8c70f7fda509232499e8cf74ee2ae68b, type: 2}
+  _healingAmount: 25
+  _recipient: {fileID: 11400000, guid: 996433155c890314190cd5b10504ec6f, type: 2}
