@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 using UnityEngine.Serialization;
+using UnityEngine.EventSystems;
 
 public enum PlayerMoveStatus {NotMoving,Crouching,Walking,Running,NotGrounded,Landing };
 
@@ -69,6 +70,7 @@ public class FPSController : MonoBehaviour
     private LayerMask _groundMask;
 
     private bool _isCursorLocked;
+    private bool _uiOwnsCursor;
 
     private bool _isWalking = true;
     private bool _previouslyGrounded;
@@ -81,7 +83,8 @@ public class FPSController : MonoBehaviour
 
     private PlayerMoveStatus _movementStatus = PlayerMoveStatus.NotMoving;
 
-    private float _stamina = 100f;
+    [Header("Shared Variables")]
+    [SerializeField] private SharedFloat _stamina = null;
     //冻结移动
     private bool _freezeMovement;
 
@@ -103,7 +106,6 @@ public class FPSController : MonoBehaviour
     public PlayerMoveStatus movementStatus => _movementStatus;
     public float walkSpeed => _walkSpeed;
     public float runSpeed => _runSpeed;
-    public float stamina => _stamina;
     public bool freezeMovement
     {
         get { return _freezeMovement; }
@@ -157,7 +159,7 @@ public class FPSController : MonoBehaviour
     }
     private void Start()
     {
-        LockCursor();
+        if (_uiOwnsCursor) UnlockCursor(); else LockCursor();
 
         if (_flashlight != null)
             _flashlight.SetActive(_flashlightOnAtStart);
@@ -224,7 +226,7 @@ public class FPSController : MonoBehaviour
 
         _isWalking = !Input.GetKey(KeyCode.LeftShift);
 
-        float staminaFactor = _stamina / 100f;
+        float staminaFactor = _stamina != null ? _stamina.value / 100f : 0f;
         float currentSpeed = _isCrouching ? _crouchSpeed : _isWalking ? _walkSpeed : Mathf.Lerp(_walkSpeed, _runSpeed, staminaFactor);
 
         Vector3 desiredMove = transform.right * normalizedInput.x + transform.forward * normalizedInput.y;
@@ -300,11 +302,13 @@ public class FPSController : MonoBehaviour
 
     private void UpdateStamina()
     {
-        // 奔跑时消耗体力，其他状态恢复体力
+        if (_stamina == null)
+            return;
+
         if (_movementStatus == PlayerMoveStatus.Running)
-            _stamina = Mathf.Max(_stamina - _staminaDepletion * Time.deltaTime, 0f);
+            _stamina.value = Mathf.Max( _stamina.value - _staminaDepletion * Time.deltaTime, 0f);
         else
-            _stamina = Mathf.Min(_stamina + _staminaRecovery * Time.deltaTime, 100f);
+            _stamina.value = Mathf.Min( _stamina.value + _staminaRecovery * Time.deltaTime, 100f);
     }
     private void UpdateHeadBob()
     {
@@ -438,6 +442,12 @@ public class FPSController : MonoBehaviour
 
     private void UpdateCursorState()
     {
+        if (_uiOwnsCursor)
+        {
+            if (_isCursorLocked || Cursor.lockState != CursorLockMode.None || !Cursor.visible) UnlockCursor();
+            return;
+        }
+
         // Esc 解锁鼠标
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -445,8 +455,9 @@ public class FPSController : MonoBehaviour
             return;
         }
 
-        // 未暂停时，单击游戏画面重新锁定鼠标
-        if (!_isCursorLocked && Time.timeScale > Mathf.Epsilon && Input.GetMouseButtonDown(0))
+        // 只有点击非 UI 区域时才重新锁定；否则第一次点击库存按钮会把光标锁回中心。
+        bool pointerOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        if (!_isCursorLocked && Time.timeScale > Mathf.Epsilon && Input.GetMouseButtonDown(0) && !pointerOverUI)
         {
             LockCursor();
         }
@@ -466,6 +477,12 @@ public class FPSController : MonoBehaviour
         Cursor.visible = true;
 
         _isCursorLocked = false;
+    }
+
+    public void SetUIInputMode(bool enabled)
+    {
+        _uiOwnsCursor = enabled;
+        if (enabled) UnlockCursor(); else LockCursor();
     }
     //-----------------------------------------------------------------------------
     //焦点处理，避免切出游戏后 _isCursorLocked 与 Unity 的真实状态不同

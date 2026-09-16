@@ -5,10 +5,15 @@
 /// </summary>
 public class CharacterManager : MonoBehaviour
 {
+    [Header("Shared Variables")]
+    [SerializeField] private SharedFloat _health = null;
+    [SerializeField] private SharedFloat _infection = null;
+    [SerializeField] private SharedString _interactionText = null;
+
     [SerializeField] private CapsuleCollider _meleeTrigger = null;
     [SerializeField] private CameraBloodEffect _cameraBloodEffect = null;
     [SerializeField] private Camera _camera = null;
-    [SerializeField] private float _health = 100f;
+
     [SerializeField] private AISoundEmitter _soundEmitter = null;
 
     [SerializeField] private float _walkAudioRadius = 1.2f;
@@ -31,9 +36,6 @@ public class CharacterManager : MonoBehaviour
     private int _aiBodyPartLayer = -1;
     private int _interactiveMask = -1;
     private float _heavyLandingAttractionUntil;
-
-    public float health => _health;
-    public float stamina => _fpsController != null ? _fpsController.stamina : 0f;
 
     void Start()
     {
@@ -74,7 +76,8 @@ public class CharacterManager : MonoBehaviour
     }
     public void TakeDamage(float amount, bool doDamageSound = true, bool doPainSound = true)
     {
-        _health = Mathf.Max(_health - amount, 0f);
+        if (_health != null)
+            _health.value = Mathf.Max(_health.value - amount, 0f);
 
         if (doDamageSound && _damageSounds != null && AudioManager.Instance != null) 
             AudioManager.Instance.PlayOneShotSound(_damageSounds.audioGroup, _damageSounds.audioClip, transform.position, 
@@ -97,10 +100,11 @@ public class CharacterManager : MonoBehaviour
             _fpsController.dragMultiplier = 0f;
         }
 
-        if (_cameraBloodEffect != null)
+        if (_cameraBloodEffect != null && _health != null)
         {
-            _cameraBloodEffect.MinBloodAmount = 1f - _health/100f;
-            _cameraBloodEffect.BloodAmount = Mathf.Min(_cameraBloodEffect.MinBloodAmount + 0.3f, 1f);
+            _cameraBloodEffect.MinBloodAmount = 1f - _health.value / 100f;
+            _cameraBloodEffect.BloodAmount =
+                Mathf.Min(_cameraBloodEffect.MinBloodAmount + 0.3f, 1f);
         }
 
         _cameraRecoil.ApplyRecoil();
@@ -164,16 +168,16 @@ public class CharacterManager : MonoBehaviour
 
         if (priorityObject != null)
         {
-            if (_playerHUD != null)
-                _playerHUD.SetInteractionText(priorityObject.GetText());
+            if (_interactionText != null)
+                _interactionText.value = priorityObject.GetText();
 
             if (Input.GetButtonDown("Use"))
                 priorityObject.Activate(this);
         }
         else
         {
-            if (_playerHUD != null)
-                _playerHUD.SetInteractionText(null);
+            if (_interactionText != null)
+                _interactionText.value = null;
         }
 
         if (_playerHUD != null)
@@ -189,7 +193,11 @@ public class CharacterManager : MonoBehaviour
 
         if (_fpsController != null && _soundEmitter != null)
         {
-            float newRadius = Mathf.Max(_walkAudioRadius, (100.0f - _health) / _bloodRadiusScale);
+            float currentHealth = _health != null ? _health.value : 100f;
+
+            float newRadius =
+                Mathf.Max(_walkAudioRadius, (100f - currentHealth) / _bloodRadiusScale);
+
             switch (_fpsController.movementStatus)
             {
                 case PlayerMoveStatus.Running: newRadius = Mathf.Max(newRadius, _runAudioRadius); break;
@@ -203,11 +211,12 @@ public class CharacterManager : MonoBehaviour
 
         if (_fpsController != null)
         {
-            _fpsController.dragMultiplierLimit = Mathf.Max(_health / 100f, 0.4f);
+            if (_health != null)
+            {
+                _fpsController.dragMultiplierLimit = Mathf.Max(_health.value / 100f, 0.4f);
+            }
         }
 
-        if (_playerHUD != null)
-            _playerHUD.UpdateHUD(this);
     }
 }
 

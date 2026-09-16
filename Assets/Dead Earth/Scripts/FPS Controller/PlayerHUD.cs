@@ -7,16 +7,35 @@ public enum ScreenFadeType { FadeIn, FadeOut }
 //Heads-Up Display：抬头显示界面
 public class PlayerHUD : MonoBehaviour
 {
+    [Header("Crosshair")]
     [SerializeField] private GameObject _crosshair = null;
     [SerializeField] private Sprite _normalCrosshairSprite = null;
     [SerializeField] private Sprite _targetCrosshairSprite = null;
 
-    [SerializeField] private Text _healthText = null;
-    [SerializeField] private Text _staminaText = null;
+    [Header("UI Text")]
     [SerializeField] private Text _interactionText = null;//显示交互提示
+    [SerializeField] private Text _transcriptText = null;
+    [SerializeField] private Text _notificationText = null;
+
+    [Header("UI Sliders")]
+    [SerializeField] private Slider _healthSlider = null;
+    [SerializeField] private Slider _staminaSlider = null;
+    [SerializeField] private Slider _infectionSlider = null;
+    [SerializeField] private Slider _flashlightSlider = null;
+    [SerializeField] private Slider _nightVisionSlider = null;
+
+    [Header("Shared Variables")]
+    [SerializeField] private SharedFloat _health = null;
+    [SerializeField] private SharedFloat _stamina = null;
+    [SerializeField] private SharedFloat _infection = null;
+    [SerializeField] private SharedFloat _flashlight = null;
+    [SerializeField] private SharedFloat _nightVision = null;
+    [SerializeField] private SharedString _interactionString = null;
+    [SerializeField] private SharedString _transcriptString = null;
+    [SerializeField] private SharedTimedStringQueue _notificationQueue = null;
+
+    [Header("Additional")]
     [SerializeField] private Image _screenFade = null;
-    [SerializeField] private Text _missionText = null;//显示当前任务
-    [SerializeField] private float _missionTextDisplayTime = 3f;
 
     private float _currentFadeLevel = 1f;
     private IEnumerator _fadeCoroutine;
@@ -36,48 +55,47 @@ public class PlayerHUD : MonoBehaviour
             _screenFade.color = color;
         }
 
-        if (_missionText != null)
-            Invoke(nameof(HideMissionText), _missionTextDisplayTime);
     }
 
-    public void ShowMissionText(string text)
+    private void Update()
     {
-        if (_missionText == null) return;
+        if (_healthSlider != null && _health != null)
+            _healthSlider.value = _health.value;
 
-        _missionText.text = text;
-        _missionText.gameObject.SetActive(true);
-    }
+        if (_staminaSlider != null && _stamina != null)
+            _staminaSlider.value = _stamina.value;
 
-    public void HideMissionText()
-    {
-        if (_missionText != null)
-            _missionText.gameObject.SetActive(false);
-    }
+        if (_infectionSlider != null && _infection != null)
+            _infectionSlider.value = _infection.value;
 
-    /// <summary>
-    /// 将内部文本控件更新为指定 CharacterManager 的 health 和 stamina 的整数显示；characterManager 为 null 时不执行任何操作。
-    /// </summary>
-    public void UpdateHUD(CharacterManager characterManager)
-    {
-        if (characterManager == null) return;
+        if (_flashlightSlider != null && _flashlight != null)
+            _flashlightSlider.value = _flashlight.value;
 
-        if (_healthText != null)
-            _healthText.text = $"{(int)characterManager.health}";
+        if (_nightVisionSlider != null && _nightVision != null)
+            _nightVisionSlider.value = _nightVision.value;
 
-        if (_staminaText != null)
-            _staminaText.text = $"{(int)characterManager.stamina}";
-    }
+        if (_interactionText != null && _interactionString != null)
+        {
+            string currentInteraction = _interactionString.value ?? string.Empty;
 
-    /// <summary>
-    /// 设置交互提示文本
-    /// </summary>
-    public void SetInteractionText(string text)
-    {
-        if (_interactionText == null) return;
+            _interactionText.text = currentInteraction;
 
-        bool hasText = !string.IsNullOrEmpty(text);
-        _interactionText.text = hasText ? text : string.Empty;
-        _interactionText.gameObject.SetActive(hasText);
+            _interactionText.gameObject.SetActive(!string.IsNullOrEmpty(currentInteraction));
+        }
+
+        if (_transcriptText != null && _transcriptString != null)
+        {
+            _transcriptText.text = _transcriptString.value ?? string.Empty;
+        }
+
+        if (_notificationText != null && _notificationQueue != null)
+        {
+            string currentNotification = _notificationQueue.text ?? string.Empty;
+
+            _notificationText.text = currentNotification;
+
+            _notificationText.gameObject.SetActive(!string.IsNullOrEmpty(currentNotification));
+        }
     }
 
     public void Fade(float seconds, ScreenFadeType direction)

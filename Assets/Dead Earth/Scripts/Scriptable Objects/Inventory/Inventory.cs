@@ -53,4 +53,10 @@ public abstract class Inventory : ScriptableObject
 
     // 根据槽位编号获得背包槽的数据
     public abstract InventoryBackpackMountInfo GetBackpack(int mountIndex);
+
+    public abstract void DropAmmoItem(int mountIndex, bool playAudio = true);
+    public abstract void DropBackpackItem(int mountIndex, bool playAudio = true);
+    public abstract void DropWeaponItem(int mountIndex, bool playAudio = true);
+    public abstract bool UseBackpackItem(int mountIndex, bool playAudio = true);
+    public abstract bool ReloadWeapon(int mountIndex, bool playAudio = true);
 }

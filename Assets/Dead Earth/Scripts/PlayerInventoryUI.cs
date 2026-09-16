@@ -61,6 +61,11 @@ public struct InventoryUI_ActionButton
 
 public class PlayerInventoryUI : MonoBehaviour
 {
+    [Header("Inventory")]
+    [SerializeField]
+    protected Inventory _inventory = null;
+    [SerializeField] protected FPSController _fpsController = null;
+
     [Header("Equipment Mount References")]
     [SerializeField]
     //这是一个列表，用于存储背包挂载点的游戏对象
@@ -112,10 +117,12 @@ public class PlayerInventoryUI : MonoBehaviour
 
     [Header("Colors")]
     [SerializeField] Color _tabTextHover = Color.cyan;
-    [SerializeField] Color _tabTextInactive = Color.grey;
+    [SerializeField] Color _tabTextInactive = Color.cyan;
     [SerializeField] Color _backpackMountHover = Color.cyan;
-    [SerializeField] Color _ammoMountHover = Color.grey;
-    [SerializeField] Color _weaponMountHover = Color.red;
+    [SerializeField] Color _ammoMountHover = Color.cyan;
+    [SerializeField] Color _weaponMountHover = Color.cyan;
+
+    public Inventory inventory { get { return _inventory; } set { _inventory = value; } }
 
     // 内部变量
     protected Color _backpackMountColor;
@@ -131,8 +138,23 @@ public class PlayerInventoryUI : MonoBehaviour
 
     protected virtual void OnEnable()
     {
+        if (_fpsController == null) _fpsController = FindObjectOfType<FPSController>();
+        if (_fpsController != null)
+            _fpsController.SetUIInputMode(true);
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
         // 更新界面，以重置后的状态显示当前库存
         Invalidate();
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (_fpsController != null)
+            _fpsController.SetUIInputMode(false);
     }
 
     protected virtual void Invalidate()
@@ -168,7 +190,7 @@ public class PlayerInventoryUI : MonoBehaviour
                 if (_weaponMountNames[i] != null) _weaponMountNames[i].text = "";
                 if (_weaponMountSliders[i] != null) _weaponMountSliders[i].enabled = false;
 
-                //_weaponMounts[i].SetActive(false);
+                _weaponMounts[i].SetActive(false);
                 _weaponMounts[i].transform.GetComponent<Image>().fillCenter = false;
             }
         }
@@ -244,6 +266,124 @@ public class PlayerInventoryUI : MonoBehaviour
         if (_statusPanelUI.StaminaSlider) _statusPanelUI.StaminaSlider.value = _stamina.value;
         if (_statusPanelUI.FlashlightSlider) _statusPanelUI.FlashlightSlider.value = _flashlight.value;
         if (_statusPanelUI.NightVisionSlider) _statusPanelUI.NightVisionSlider.value = _nightvision.value;
+
+        if (_inventory != null)
+        {
+            // Configure Weapons Panel by iterating through each mount
+            for (int i = 0; i < _weaponMounts.Count; i++)
+            {
+                // Do we have a weapon mount here
+                if (_weaponMounts[i] != null)
+                {
+                    // Get the matching mount and weapon data from the inventory
+                    InventoryWeaponMountInfo weaponMountInfo = _inventory.GetWeapon(i);
+                    InventoryItemWeapon weapon = null;
+                    if (weaponMountInfo != null)
+                        weapon = weaponMountInfo.Weapon;
+
+                    // No weapon info here to skip this mount
+                    if (weapon == null) continue;
+
+                    // Set sprite and name of weapon
+                    if (_weaponMountImages[i] != null) _weaponMountImages[i].sprite = weapon.inventoryImage;
+                    if (_weaponMountNames[i] != null) _weaponMountNames[i].text = weapon.inventoryName;
+
+                    // If its a melee weapon then deactivate the entire AmmoInfo section of the UI
+                    // otherwise Enabled it and show the Reload Type and Rounds in Gun
+                    if (_weaponMountAmmoInfo[i] != null)
+                    {
+                        if (weapon.weaponFeedType == InventoryWeaponFeedType.Melee)
+                        {
+                            _weaponMountAmmoInfo[i].SetActive(false);
+                        }
+                        else
+                        {
+                            // Activate Mount
+                            _weaponMountAmmoInfo[i].SetActive(true);
+
+                            // Display Reload Type
+                            if (_weaponMountReloadType[i] != null)
+                                _weaponMountReloadType[i].text = weapon.reloadType.ToString();
+
+
+                            if (_weaponMountRounds[i] != null)
+                                _weaponMountRounds[i].text = weaponMountInfo.InGunRounds + " / " + weapon.ammoCapacity;
+                        }
+                    }
+
+                    // Update the condition slider
+                    if (_weaponMountSliders[i] != null)
+                    {
+                        _weaponMountSliders[i].enabled = true;
+                        _weaponMountSliders[i].value = weaponMountInfo.Condition;
+                    }
+
+                    _weaponMounts[i].SetActive(true);
+                }
+            }
+
+            // Configure Ammo Mounts
+            for (int i = 0; i < _ammoMounts.Count; i++)
+            {
+                // Clear Sprite and deactivate mount
+                if (_ammoMounts[i] != null)
+                {
+                    // Get the ammo and it's mount info for this mount
+                    InventoryAmmoMountInfo ammoMountInfo = _inventory.GetAmmo(i);
+                    InventoryItemAmmo ammo = null;
+                    if (ammoMountInfo != null)
+                        ammo = ammoMountInfo.Ammo;
+
+                    // No weapon at this mount so skip
+                    if (ammo == null) continue;
+
+                    // Set image
+                    if (_ammoMountImages[i])
+                    {
+                        _ammoMountImages[i].gameObject.SetActive(true);
+                        _ammoMountImages[i].sprite = ammoMountInfo.Ammo.inventoryImage;
+                    }
+                    // Set and Enable Rounds Text
+                    if (_ammoMountRoundsText[i] != null)
+                    {
+                        _ammoMountRoundsText[i].gameObject.SetActive(true);
+                        _ammoMountRoundsText[i].text = ammoMountInfo.Rounds.ToString();
+                    }
+
+                    // Disable Empty text
+                    if (_ammoMountEmptyText[i] != null)
+                        _ammoMountEmptyText[i].gameObject.SetActive(false);
+                }
+
+            }
+
+            // Iterate over the UI Backpack mounts and set all to empty and unselected
+            for (int i = 0; i < _backpackMounts.Count; i++)
+            {
+                if (_backpackMounts[i] != null)
+                {
+                    InventoryBackpackMountInfo backpackMountInfo = _inventory.GetBackpack(i);
+                    InventoryItem item = null;
+                    if (backpackMountInfo != null)
+                        item = backpackMountInfo.Item;
+
+                    if (item != null)
+                    {
+                        // Set sprite and activate mount
+                        if (_backpackMountImages[i] != null)
+                        {
+                            _backpackMountImages[i].gameObject.SetActive(true);
+                            _backpackMountImages[i].sprite = item.inventoryImage;
+                        }
+
+                        // Disable the text for this slot that says "EMPTY"
+                        if (_backpackMountText[i] != null)
+                            _backpackMountText[i].gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -281,6 +421,12 @@ public class PlayerInventoryUI : MonoBehaviour
             Image tmp = _weaponMounts[0].GetComponent<Image>();
             if (tmp) _weaponMountColor = tmp.color;
         }
+
+        // 三种槽位使用弹药栏相同的悬浮色和选中底色。
+        _backpackMountHover = _ammoMountHover;
+        _weaponMountHover = _ammoMountHover;
+        _backpackMountColor = _ammoMountColor;
+        _weaponMountColor = _ammoMountColor;
 
         // 记录标签文字的正常颜色
         if (_tabGroup.Items.Count > 0 &&
@@ -398,8 +544,14 @@ public class PlayerInventoryUI : MonoBehaviour
         }
     }
 
-    protected void DisplayWeaponDescription()
+    protected void DisplayWeaponDescription(InventoryItem item)
     {
+        if (item == null)
+        {
+            HideDescription();
+            return;
+        }
+
         // 禁用非武器布局
         if (_generalDescriptionLayout.LayoutContainer != null)
             _generalDescriptionLayout.LayoutContainer.SetActive(false);
@@ -408,16 +560,34 @@ public class PlayerInventoryUI : MonoBehaviour
         if (_weaponDescriptionLayout.LayoutContainer != null)
             _weaponDescriptionLayout.LayoutContainer.SetActive(true);
 
+        if (_weaponDescriptionLayout.Image != null) _weaponDescriptionLayout.Image.sprite = item.inventoryImage;
+        if (_weaponDescriptionLayout.Title != null) _weaponDescriptionLayout.Title.text = item.inventoryName;
+        if (_weaponDescriptionLayout.Description != null) _weaponDescriptionLayout.Description.text = item.inventoryDescription;
+
         // 启用操作按钮
         if (_actionButton1.GameObject != null)
-            _actionButton1.GameObject.SetActive(true);
+        {
+            _actionButton1.GameObject.SetActive(item.inventoryAction != InventoryAction.None);
+            if (_actionButton1.ButtonText != null) _actionButton1.ButtonText.text = item.inventoryActionText;
+        }
 
         if (_actionButton2.GameObject != null)
+        {
             _actionButton2.GameObject.SetActive(true);
+            if (_actionButton2.ButtonText != null) _actionButton2.ButtonText.text = "Drop";
+        }
+
+        if (_weaponDescriptionLayout.ScrollView != null) _weaponDescriptionLayout.ScrollView.verticalNormalizedPosition = 1.0f;
     }
 
-    protected void DisplayGeneralDescription()
+    protected void DisplayGeneralDescription(InventoryItem item)
     {
+        if (item == null)
+        {
+            HideDescription();
+            return;
+        }
+
         // 启用非武器布局
         if (_generalDescriptionLayout.LayoutContainer != null)
             _generalDescriptionLayout.LayoutContainer.SetActive(true);
@@ -426,12 +596,24 @@ public class PlayerInventoryUI : MonoBehaviour
         if (_weaponDescriptionLayout.LayoutContainer != null)
             _weaponDescriptionLayout.LayoutContainer.SetActive(false);
 
+        if (_generalDescriptionLayout.Image != null) _generalDescriptionLayout.Image.sprite = item.inventoryImage;
+        if (_generalDescriptionLayout.Title != null) _generalDescriptionLayout.Title.text = item.inventoryName;
+        if (_generalDescriptionLayout.Description != null) _generalDescriptionLayout.Description.text = item.inventoryDescription;
+
         // 启用操作按钮
         if (_actionButton1.GameObject != null)
-            _actionButton1.GameObject.SetActive(true);
+        {
+            _actionButton1.GameObject.SetActive(item.inventoryAction != InventoryAction.None);
+            if (_actionButton1.ButtonText != null) _actionButton1.ButtonText.text = item.inventoryActionText;
+        }
 
         if (_actionButton2.GameObject != null)
+        {
             _actionButton2.GameObject.SetActive(true);
+            if (_actionButton2.ButtonText != null) _actionButton2.ButtonText.text = "Drop";
+        }
+
+        if (_generalDescriptionLayout.ScrollView != null) _generalDescriptionLayout.ScrollView.verticalNormalizedPosition = 1.0f;
     }
 
     protected void HideDescription()
@@ -465,6 +647,9 @@ public class PlayerInventoryUI : MonoBehaviour
         // 索引是否有效？
         if (mount >= 0 && mount < _backpackMounts.Count)
         {
+            InventoryBackpackMountInfo itemMount = _inventory != null ? _inventory.GetBackpack(mount) : null;
+            if (itemMount == null || itemMount.Item == null) return;
+
             // 将该槽位的边框颜色设为悬停颜色
             if (_selectedPanelType != InventoryPanelType.Backpack || _selectedMount != mount)
                 image.color = _backpackMountHover;
@@ -474,7 +659,7 @@ public class PlayerInventoryUI : MonoBehaviour
             if (_selectedPanelType != InventoryPanelType.None) return;
 
             // 更新说明窗口
-            DisplayGeneralDescription();
+            DisplayGeneralDescription(itemMount.Item);
         }
 
     }
@@ -504,13 +689,16 @@ public class PlayerInventoryUI : MonoBehaviour
         // 检查被点击的挂载点是否有效
         if (mount >= 0 && mount < _backpackMounts.Count)
         {
+            InventoryBackpackMountInfo itemMount = _inventory != null ? _inventory.GetBackpack(mount) : null;
+            if (itemMount == null || itemMount.Item == null) return;
+
             // 点击的是当前已选中的物品，因此取消选择
             if (mount == _selectedMount && _selectedPanelType == InventoryPanelType.Backpack)
             {
                 Invalidate();
                 image.color = _backpackMountHover;
                 image.fillCenter = false;
-                DisplayGeneralDescription();
+                DisplayGeneralDescription(itemMount.Item);
             }
             else
             {
@@ -519,7 +707,7 @@ public class PlayerInventoryUI : MonoBehaviour
                 _selectedMount = mount;
                 image.color = _backpackMountColor;
                 image.fillCenter = true;
-                DisplayGeneralDescription();
+                DisplayGeneralDescription(itemMount.Item);
             }
 
         }
@@ -537,6 +725,9 @@ public class PlayerInventoryUI : MonoBehaviour
         // 槽位索引是否有效？
         if (mount >= 0 && mount < _ammoMounts.Count)
         {
+            InventoryAmmoMountInfo itemMount = _inventory != null ? _inventory.GetAmmo(mount) : null;
+            if (itemMount == null || itemMount.Ammo == null) return;
+
             // 设置边框的悬停颜色
             if (_selectedPanelType != InventoryPanelType.AmmoBelt || _selectedMount != mount)
                 image.color = _ammoMountHover;
@@ -545,7 +736,7 @@ public class PlayerInventoryUI : MonoBehaviour
             if (_selectedPanelType != InventoryPanelType.None) return;
 
             // 更新说明窗口
-            DisplayGeneralDescription();
+            DisplayGeneralDescription(itemMount.Ammo);
         }
     }
 
@@ -561,13 +752,16 @@ public class PlayerInventoryUI : MonoBehaviour
         // 检查被点击的挂载点是否有效
         if (mount >= 0 && mount < _ammoMounts.Count)
         {
+            InventoryAmmoMountInfo itemMount = _inventory != null ? _inventory.GetAmmo(mount) : null;
+            if (itemMount == null || itemMount.Ammo == null) return;
+
             // 点击的是当前已选中的物品，因此取消选择
             if (mount == _selectedMount && _selectedPanelType == InventoryPanelType.AmmoBelt)
             {
                 Invalidate();
                 image.color = _ammoMountHover;
                 image.fillCenter = false;
-                DisplayGeneralDescription();
+                DisplayGeneralDescription(itemMount.Ammo);
             }
             else
             {
@@ -576,7 +770,7 @@ public class PlayerInventoryUI : MonoBehaviour
                 _selectedMount = mount;
                 image.color = _ammoMountColor;
                 image.fillCenter = true;
-                DisplayGeneralDescription();
+                DisplayGeneralDescription(itemMount.Ammo);
             }
         }
     }
@@ -607,6 +801,9 @@ public class PlayerInventoryUI : MonoBehaviour
         // 挂载点索引是否有效？
         if (mount >= 0 && mount < _weaponMounts.Count)
         {
+            InventoryWeaponMountInfo itemMount = _inventory != null ? _inventory.GetWeapon(mount) : null;
+            if (itemMount == null || itemMount.Weapon == null) return;
+
             // 设置边框的悬停颜色
             if (_selectedPanelType != InventoryPanelType.Weapons || _selectedMount != mount)
                 image.color = _weaponMountHover;
@@ -615,7 +812,7 @@ public class PlayerInventoryUI : MonoBehaviour
             if (_selectedPanelType != InventoryPanelType.None) return;
 
             // 显示说明窗口
-            DisplayWeaponDescription();
+            DisplayWeaponDescription(itemMount.Weapon);
         }
     }
 
@@ -629,15 +826,18 @@ public class PlayerInventoryUI : MonoBehaviour
         }
 
         // 检查被点击的挂载点是否有效
-        if (mount >= 0 && mount < _ammoMounts.Count)
+        if (mount >= 0 && mount < _weaponMounts.Count)
         {
+            InventoryWeaponMountInfo itemMount = _inventory != null ? _inventory.GetWeapon(mount) : null;
+            if (itemMount == null || itemMount.Weapon == null) return;
+
             // 点击的是当前已选中的物品，因此取消选择
             if (mount == _selectedMount && _selectedPanelType == InventoryPanelType.Weapons)
             {
                 Invalidate();
                 image.color = _weaponMountHover;
                 image.fillCenter = false;
-                DisplayWeaponDescription();
+                DisplayWeaponDescription(itemMount.Weapon);
             }
             else
             {
@@ -646,7 +846,7 @@ public class PlayerInventoryUI : MonoBehaviour
                 _selectedMount = mount;
                 image.color = _weaponMountColor;
                 image.fillCenter = true;
-                DisplayWeaponDescription();
+                DisplayWeaponDescription(itemMount.Weapon);
             }
         }
     }
@@ -668,7 +868,7 @@ public class PlayerInventoryUI : MonoBehaviour
 
     public void OnEnterTab(int index)
     {
-        if (index >= 0 || index < _tabGroup.Items.Count)
+        if (index >= 0 && index < _tabGroup.Items.Count)
         {
             if (_tabGroup.Items[index].TabText != null)
             {
@@ -679,7 +879,7 @@ public class PlayerInventoryUI : MonoBehaviour
 
     public void OnExitTab(int index)
     {
-        if (index >= 0 || index < _tabGroup.Items.Count)
+        if (index >= 0 && index < _tabGroup.Items.Count)
         {
             if (_tabGroup.Items[index].TabText != null)
             {
@@ -690,10 +890,37 @@ public class PlayerInventoryUI : MonoBehaviour
 
     public void OnClickTab(int index)
     {
-        if (index >= 0 || index < _tabGroup.Items.Count)
+        if (index >= 0 && index < _tabGroup.Items.Count)
         {
             SelectTabGroup(index);
         }
+    }
+
+    public void OnActionButton1()
+    {
+        if (_inventory == null) return;
+
+        switch (_selectedPanelType)
+        {
+            case InventoryPanelType.Backpack: _inventory.UseBackpackItem(_selectedMount); break;
+            case InventoryPanelType.Weapons: _inventory.ReloadWeapon(_selectedMount); break;
+        }
+
+        Invalidate();
+    }
+
+    public void OnActionButton2()
+    {
+        if (_inventory == null) return;
+
+        switch (_selectedPanelType)
+        {
+            case InventoryPanelType.Backpack: _inventory.DropBackpackItem(_selectedMount); break;
+            case InventoryPanelType.Weapons: _inventory.DropWeaponItem(_selectedMount); break;
+            case InventoryPanelType.AmmoBelt: _inventory.DropAmmoItem(_selectedMount); break;
+        }
+
+        Invalidate();
     }
 
 }

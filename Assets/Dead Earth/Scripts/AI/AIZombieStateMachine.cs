@@ -478,7 +478,7 @@ public class AIZombieStateMachine :AIStateMachine
             if (NavMesh.SamplePosition(newRootPosition, out navMeshHit, 3.0f, NavMesh.AllAreas))
             {
                 Vector3 correctedPosition = navMeshHit.position + Vector3.up * _navAgent.baseOffset;
-                print("_navAgent.baseOffset" + _navAgent.baseOffset);
+                //print("_navAgent.baseOffset" + _navAgent.baseOffset);
                 transform.position = correctedPosition;
             }
             else

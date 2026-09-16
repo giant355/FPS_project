@@ -87,4 +87,31 @@ public class PlayerInventory : Inventory, ISerializationCallbackReceiver
         if (mountIndex < 0 || mountIndex >= _backpack.Count) return null;
         return _backpack[mountIndex];
     }
+
+    public override void DropAmmoItem(int mountIndex, bool playAudio = true)
+    {
+        Debug.Log("Ammo Dropped");
+    }
+
+    public override void DropBackpackItem(int mountIndex, bool playAudio = true)
+    {
+        Debug.Log("Backpack Item Dropped");
+    }
+
+    public override void DropWeaponItem(int mountIndex, bool playAudio = true)
+    {
+        Debug.Log("Weapon Dropped");
+    }
+
+    public override bool UseBackpackItem(int mountIndex, bool playAudio = true)
+    {
+        Debug.Log("Item Used");
+        return false;
+    }
+
+    public override bool ReloadWeapon(int mountIndex, bool playAudio = true)
+    {
+        Debug.Log("Weapon Reloaded");
+        return false;
+    }
 }
